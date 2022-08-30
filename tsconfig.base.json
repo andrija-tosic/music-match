@@ -13,9 +13,10 @@
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "strictPropertyInitialization": false,
     "baseUrl": ".",
     "paths": {
-      "@e-exam-workspace/api-interfaces": ["libs/api-interfaces/src/index.ts"]
+      "@e-exam-workspace/entities": ["libs/entities/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

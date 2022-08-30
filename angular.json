@@ -3,7 +3,7 @@
   "version": 2,
   "projects": {
     "api": "apps/api",
-    "api-interfaces": "libs/api-interfaces",
-    "e-exam": "apps/e-exam"
+    "e-exam": "apps/e-exam",
+    "entities": "libs/entities"
   }
 }
