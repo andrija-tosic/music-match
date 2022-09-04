@@ -16,7 +16,7 @@
     "strictPropertyInitialization": false,
     "baseUrl": ".",
     "paths": {
-      "@e-exam-workspace/entities": ["libs/entities/src/index.ts"]
+      "@music-match/entities": ["libs/entities/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

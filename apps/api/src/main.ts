@@ -1,28 +1,51 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
-import * as session from 'express-session'
-import * as passport from 'passport'
+import * as session from 'express-session';
+import * as passport from 'passport';
+import * as createRedisStore from 'connect-redis';
+import { createClient, RedisClientType } from 'redis';
+import { ConfigService } from '@nestjs/config';
+import { config } from 'dotenv';
+import connectRedis = require('connect-redis');
+import { environment } from './environments/environment';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
 
-  app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 360000
-    }
-  }));
+  config();
+  const configService = app.get(ConfigService);
+
+  const RedisStore = connectRedis(session);
+  const redisClient = createClient({
+    url: 'redis://localhost:6379',
+    legacyMode: true,
+  });
+
+  redisClient.on('error', (err) =>
+    Logger.error('Could not establish a connection with redis. ' + err)
+  );
+  redisClient.on('connect', () =>
+    Logger.log('Connected to redis successfully')
+  );
+
+  await redisClient.connect();
+
+  app.use(
+    session({
+      store: new RedisStore({ client: redisClient as any }),
+      name: environment.sessionName,
+      secret: configService.getOrThrow('SESSION_SECRET'),
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        maxAge: 360000,
+      },
+    })
+  );
   app.use(passport.initialize());
   app.use(passport.session());
 

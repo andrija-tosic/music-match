@@ -6,6 +6,6 @@
     "types": [],
     "strictPropertyInitialization": false
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "../entities.ts"],
   "exclude": ["jest.config.ts", "**/*.spec.ts"]
 }
