@@ -25,19 +25,12 @@ import { Request, Response } from 'express';
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
-  constructor(
-    @Inject(AuthService.name) private readonly authService: AuthService
-  ) {}
+  constructor(@Inject(AuthService.name) private readonly authService: AuthService) {}
 
   @Post('login')
   @UseGuards(SessionLoginGuard)
   async login(@Body() userDto: Pick<CreateUserDto, 'username' | 'password'>) {
-    console.log('1');
-    const user = await this.authService.validateUser(
-      userDto.username,
-      userDto.password
-    );
-    console.log('2');
+    const user = await this.authService.validateUser(userDto.username, userDto.password);
 
     if (!user) {
       throw new UnauthorizedException();

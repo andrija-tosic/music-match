@@ -9,7 +9,7 @@ export class Artist {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   imageUrl: string;
 
   @ManyToMany(() => Release)

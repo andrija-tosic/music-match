@@ -4,8 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
-import * as createRedisStore from 'connect-redis';
-import { createClient, RedisClientType } from 'redis';
+import { createClient } from 'redis';
 import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
 import connectRedis = require('connect-redis');
@@ -25,12 +24,8 @@ async function bootstrap() {
     legacyMode: true,
   });
 
-  redisClient.on('error', (err) =>
-    Logger.error('Could not establish a connection with redis. ' + err)
-  );
-  redisClient.on('connect', () =>
-    Logger.log('Connected to redis successfully')
-  );
+  redisClient.on('error', (err) => Logger.error('Could not establish a connection with redis. ' + err, 'Redis'));
+  redisClient.on('connect', () => Logger.log('Connected to redis successfully', 'Redis'));
 
   await redisClient.connect();
 
@@ -51,9 +46,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3333;
   await app.listen(port);
-  Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
-  );
+  Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
 }
 
 bootstrap();

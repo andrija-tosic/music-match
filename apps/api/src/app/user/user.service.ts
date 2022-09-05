@@ -6,14 +6,10 @@ import { hashPassword } from '../utils/bcrypt';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>
-  ) {}
+  constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
 
   async create(createUserDto: CreateUserDto) {
-    const userAlreadyExists = await this.findOneByUsername(
-      createUserDto.username
-    );
+    const userAlreadyExists = await this.userRepository.findOneBy({ username: createUserDto.username });
 
     if (userAlreadyExists) {
       throw new ConflictException();
@@ -32,6 +28,10 @@ export class UserService {
     return await this.userRepository.findOneBy({ id });
   }
 
+  async findOneByUsername(username: string) {
+    return await this.userRepository.findOneBy({ username });
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto) {
     await this.userRepository.update(id, updateUserDto);
     return await this.userRepository.findOneBy({ id });
@@ -39,9 +39,5 @@ export class UserService {
 
   async remove(id: number) {
     return await this.userRepository.delete(id);
-  }
-
-  async findOneByUsername(username: string) {
-    return await this.userRepository.findOneBy({ username });
   }
 }

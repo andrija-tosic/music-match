@@ -1,4 +1,3 @@
-import { CreateUserDto, User } from '@music-match/entities';
 import { UserService } from '../user/user.service';
 import { Inject, Injectable } from '@nestjs/common';
 import { compare } from '../utils/bcrypt';
@@ -7,13 +6,7 @@ import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    @Inject(UserService.name) private readonly userService: UserService
-  ) {}
-
-  public async signup(data: CreateUserDto): Promise<User> {
-    return this.userService.create(data);
-  }
+  constructor(@Inject(UserService.name) private readonly userService: UserService) {}
 
   public logout(req: Request, res: Response): void {
     req.session.destroy(console.error);

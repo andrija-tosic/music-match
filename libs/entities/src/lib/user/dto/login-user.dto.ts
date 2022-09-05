@@ -1,7 +1,6 @@
 import { IsNotEmpty, MinLength } from 'class-validator';
-import { Roles } from '../roles';
 
-export class CreateUserDto {
+export class LoginUserDto {
   @IsNotEmpty()
   @MinLength(3)
   username: string;
@@ -9,11 +8,4 @@ export class CreateUserDto {
   @IsNotEmpty()
   @MinLength(8)
   password: string;
-
-  @IsNotEmpty()
-  @MinLength(3)
-  name: string;
-
-  @IsNotEmpty()
-  role: Roles;
 }

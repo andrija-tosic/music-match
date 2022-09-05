@@ -58,7 +58,7 @@ export class Track {
   @Column()
   tempo: number;
 
-  @ManyToOne(() => Release, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Release, { onDelete: 'CASCADE', cascade: true })
   release: Release;
 
   @OneToMany(() => PlaylistTrack, (pt) => pt.track)

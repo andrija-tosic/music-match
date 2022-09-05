@@ -6,15 +6,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import * as redisStore from 'cache-manager-redis-store';
 import { config } from '../config';
-import {
-  Artist,
-  Playlist,
-  PlaylistTrack,
-  Release,
-  Track,
-  User,
-} from '@music-match/entities';
-import { AzureStorageModule } from '@nestjs/azure-storage';
+import { Artist, Playlist, PlaylistTrack, Release, Track, Genre, User } from '@music-match/entities';
+import { ArtistModule } from './artist/artist.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -31,7 +25,7 @@ import { AzureStorageModule } from '@nestjs/azure-storage';
         username: 'postgres',
         password: configService.getOrThrow('POSTGRES_PASSWORD'),
         database: 'music-match-db',
-        entities: [Artist, Playlist, PlaylistTrack, Release, Track, User],
+        entities: [Artist, Playlist, PlaylistTrack, Release, Track, Genre, User],
         synchronize: true,
       }),
       inject: [ConfigService],
@@ -42,16 +36,11 @@ import { AzureStorageModule } from '@nestjs/azure-storage';
       port: 6379,
       isGlobal: true,
     }),
-    AzureStorageModule.withConfigAsync({
-      useFactory: async () => ({
-        sasKey: process.env['AZURE_STORAGE_SAS_KEY'],
-        accountName: process.env['AZURE_STORAGE_ACCOUNT'],
-        containerName: 'music-match',
-      }),
-    }),
 
     UserModule,
     AuthModule,
+    ArtistModule,
+    FileModule,
   ],
   providers: [
     {
