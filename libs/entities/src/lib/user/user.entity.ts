@@ -33,6 +33,9 @@ export class User {
   @ManyToMany(() => Playlist)
   playlists: Playlist[];
 
+  @ManyToMany(() => Playlist)
+  likedPlaylists: Playlist[];
+
   @ManyToMany(() => Track)
   @JoinTable()
   likedTracks: Track[];

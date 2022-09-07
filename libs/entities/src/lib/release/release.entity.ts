@@ -1,4 +1,4 @@
-import { Genre } from '../tag/tag.entity';
+import { Genre } from '../genre/genre.entity';
 import { Track } from './../track/track.entity';
 import { Artist } from './../artist/artist.entity';
 import { ReleaseType } from './release-type';
@@ -15,7 +15,7 @@ export class Release {
   @Column({ type: 'date' })
   releaseDate: string;
 
-  @Column({ nullable: true })
+  @Column({ default: '' })
   imageUrl: string;
 
   @Column({
@@ -25,12 +25,13 @@ export class Release {
   type: ReleaseType;
 
   @ManyToMany(() => Artist, { onDelete: 'CASCADE', cascade: true })
+  @JoinTable()
   artists: Artist[];
 
-  @OneToMany(() => Track, (track) => track.release)
+  @OneToMany(() => Track, (track) => track.release, { cascade: ['insert', 'update'] })
   tracks: Track[];
 
-  @ManyToMany(() => Genre, (genre) => genre.releases)
+  @ManyToMany(() => Genre, (genre) => genre.releases, { cascade: ['insert', 'update'] })
   @JoinTable()
   genres: Genre[];
 }

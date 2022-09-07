@@ -1,15 +1,30 @@
-import { Controller, Get, Post, Param, Delete, UseInterceptors, UploadedFile, Logger } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  UseInterceptors,
+  UploadedFile,
+  Logger,
+  Body,
+  Query,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from './file.service';
-import { AzureStorageFileInterceptor, UploadedFileMetadata } from '@nestjs/azure-storage';
 
 @Controller('files')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
   @Post()
-  @UseInterceptors(AzureStorageFileInterceptor('file'))
-  uploadedFilesUsingInterceptor(@UploadedFile() file: UploadedFileMetadata) {
-    Logger.log(`Storage URL: ${file.storageUrl}`, 'FileController');
-    return file.storageUrl;
+  @UseInterceptors(FileInterceptor('file'))
+  async upload(@UploadedFile() file: Express.Multer.File): Promise<string> {
+    return await this.fileService.upload(file);
+  }
+
+  @Delete()
+  async delete(@Query('url') url: string) {
+    return await this.fileService.delete(url);
   }
 }

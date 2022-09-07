@@ -1,12 +1,6 @@
 import { Release } from './../release/release.entity';
 import { PlaylistTrack } from './../playlist-track/playlist-track.entity';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Track {
@@ -18,9 +12,6 @@ export class Track {
 
   @Column()
   number: number;
-
-  @Column({ type: 'date' })
-  releaseDate: string;
 
   @Column()
   duration: number;

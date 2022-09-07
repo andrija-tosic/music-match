@@ -9,7 +9,7 @@ export class PlaylistTrack {
   id: number;
 
   @Column()
-  number: number;
+  position: number;
 
   @ManyToOne(() => User)
   addedByUser: User;
