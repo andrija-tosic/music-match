@@ -1,4 +1,3 @@
-import { SessionGuard } from './../auth/guards/session.guard';
 import {
   Controller,
   Get,
@@ -19,11 +18,8 @@ import { CreateUserDto, UpdateUserDto } from '@music-match/entities';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
-@UseGuards(SessionGuard)
 export class UserController {
-  constructor(
-    @Inject(UserService.name) private readonly UserService: UserService
-  ) {}
+  constructor(@Inject(UserService.name) private readonly UserService: UserService) {}
 
   @Post()
   @UsePipes(ValidationPipe)

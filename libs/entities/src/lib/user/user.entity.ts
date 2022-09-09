@@ -1,7 +1,7 @@
 import { Playlist } from './../playlist/playlist.entity';
 import { Track } from './../track/track.entity';
 import { Roles } from './roles';
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 @Entity()

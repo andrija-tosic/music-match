@@ -47,7 +47,7 @@ export class AuthController {
 
   @Get('session')
   @UseGuards(SessionGuard)
-  getUserSession(@User() user) {
+  getUserSession(@User() user, @Res() res: Response) {
     return user;
   }
 

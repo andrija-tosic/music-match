@@ -7,11 +7,17 @@ import * as passport from 'passport';
 import { createClient } from 'redis';
 import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
-import connectRedis = require('connect-redis');
+import * as connectRedis from 'connect-redis';
 import { environment } from './environments/environment';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      credentials: true,
+      origin: 'http://localhost:4200',
+    },
+  });
+
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
 
@@ -44,7 +50,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || environment.port;
   await app.listen(port);
   Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
 }

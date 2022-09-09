@@ -5,9 +5,13 @@
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["libs/entities/**/*.ts"]
+        "lintFilePatterns": [
+          "libs/entities/**/*.ts"
+        ]
       }
     }
   },
