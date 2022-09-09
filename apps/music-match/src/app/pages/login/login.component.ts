@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router, private _snackBar: MatSnackBar) {
     this.form = new FormGroup({
       username: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-      password: new FormControl('', { nonNullable: true, validators: [Validators.minLength(8)] }),
+      password: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(8)] }),
     });
   }
 
