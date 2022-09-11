@@ -12,6 +12,8 @@ export * from './lib/artist/dto/update-artist.dto';
 export * from './lib/playlist/playlist.entity';
 export * from './lib/playlist/dto/create-playlist.dto';
 export * from './lib/playlist/dto/update-playlist.dto';
+export * from './lib/playlist/dto/playlist.dto';
+export * from './lib/playlist/dto/playlist-base.dto';
 
 export * from './lib/playlist/dto/add-tracks.dto';
 
@@ -24,5 +26,6 @@ export * from './lib/release/dto/update-release.dto';
 export * from './lib/track/track.entity';
 export * from './lib/track/dto/create-track.dto';
 export * from './lib/track/dto/update-track.dto';
+export * from './lib/track/dto/track.dto';
 
 export * from './lib/genre/genre.entity';

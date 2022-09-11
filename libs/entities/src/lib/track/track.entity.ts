@@ -16,38 +16,38 @@ export class Track {
   @Column()
   duration: number;
 
-  @Column()
-  danceability: number;
+  // @Column()
+  // danceability: number;
 
-  @Column()
-  energy: number;
+  // @Column()
+  // energy: number;
 
-  @Column()
-  key: number;
+  // @Column()
+  // key: number;
 
-  @Column()
-  loudness: number;
+  // @Column()
+  // loudness: number;
 
-  @Column()
-  mode: number;
+  // @Column()
+  // mode: number;
 
-  @Column()
-  speechiness: number;
+  // @Column()
+  // speechiness: number;
 
-  @Column()
-  acousticness: number;
+  // @Column()
+  // acousticness: number;
 
-  @Column()
-  instrumentalness: number;
+  // @Column()
+  // instrumentalness: number;
 
-  @Column()
-  liveness: number;
+  // @Column()
+  // liveness: number;
 
-  @Column()
-  valence: number;
+  // @Column()
+  // valence: number;
 
-  @Column()
-  tempo: number;
+  // @Column()
+  // tempo: number;
 
   @ManyToOne(() => Release, { onDelete: 'CASCADE', cascade: true })
   release: Release;

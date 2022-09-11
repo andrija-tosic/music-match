@@ -1,5 +1,5 @@
-import { Playlist } from './../playlist/playlist.entity';
-import { Track } from './../track/track.entity';
+import { Playlist } from '../playlist/playlist.entity';
+import { Track } from '../track/track.entity';
 import { Roles } from './roles';
 import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { Exclude } from 'class-transformer';
@@ -30,13 +30,19 @@ export class User {
   })
   role: Roles;
 
-  @ManyToMany(() => Playlist)
+  @ManyToMany(() => Playlist, (playlist) => playlist.owners)
+  @JoinTable()
   playlists: Playlist[];
 
-  @ManyToMany(() => Playlist)
+  @ManyToMany(() => Playlist, (playlist) => playlist.likedByUsers)
+  @JoinTable()
   likedPlaylists: Playlist[];
 
   @ManyToMany(() => Track)
   @JoinTable()
   likedTracks: Track[];
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  friends: User[];
 }

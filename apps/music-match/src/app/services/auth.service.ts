@@ -4,21 +4,24 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { constants } from '../constants';
-import { catchError, map, Observable, of, tap } from 'rxjs';
+import { catchError, map, Observable, of, tap, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  public user$ = new BehaviorSubject<User | null>(null);
+
   constructor(private readonly http: HttpClient) {}
 
   isAuthenticated(): Observable<boolean> {
-    return this.user().pipe(
+    return this.getUser().pipe(
       map((user: User) => {
         console.log(user);
         return user ? true : false;
       }),
       catchError((error) => {
+        console.error(error);
         return of(false);
       })
     );
@@ -41,7 +44,7 @@ export class AuthService {
     return this.http.get(`${environment.api}/auth/logout`);
   }
 
-  public user() {
+  public getUser() {
     return this.http.get<User>(`${environment.api}/auth/session`);
   }
 

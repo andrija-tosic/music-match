@@ -1,12 +1,16 @@
+import { Playlist } from './../../../../../libs/entities/src/lib/playlist/playlist.entity';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto, User } from '@music-match/entities';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { hashPassword } from '../utils/bcrypt';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Playlist) private readonly playlistRepository: Repository<Playlist>
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     const userAlreadyExists = await this.userRepository.findOneBy({ username: createUserDto.username });
@@ -39,5 +43,14 @@ export class UserService {
 
   async remove(id: number) {
     return await this.userRepository.delete(id);
+  }
+
+  async getUsersPlaylists(id: number) {
+    const { playlists, likedPlaylists } = await this.userRepository.findOne({
+      where: { id },
+      relations: { playlists: true, likedPlaylists: true },
+    });
+
+    return { playlists, likedPlaylists };
   }
 }

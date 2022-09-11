@@ -9,20 +9,16 @@ export class PlaylistTrack {
   id: number;
 
   @Column()
-  position: number;
+  number: number;
 
   @ManyToOne(() => User)
   addedByUser: Relation<User>;
 
   @ManyToOne(() => Track, (track) => track.playlistTracks, {
-    onDelete: 'CASCADE',
     cascade: true,
   })
   track: Relation<Track>;
 
-  @ManyToOne(() => Playlist, (playlists) => playlists.playlistTracks, {
-    onDelete: 'CASCADE',
-    cascade: true,
-  })
+  @ManyToOne(() => Playlist, (playlists) => playlists.playlistTracks)
   playlist: Relation<Playlist>;
 }

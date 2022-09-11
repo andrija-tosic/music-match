@@ -1,0 +1,9 @@
+<div>
+  <img [src]="(playlist$ | async)?.imageUrl" width="200" height="200" />
+
+  <h4>Playlist</h4>
+
+  <h2>{{ (playlist$ | async)?.name }}</h2>
+  <p>{{ (playlist$ | async)?.description }}</p>
+  <p>By: {{ playlistOwners() | async }}</p>
+</div>

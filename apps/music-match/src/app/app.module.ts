@@ -1,6 +1,7 @@
+import { playlistReducer } from './state/playlists/playlist.reducer';
+import { PlaylistsEffects } from './state/playlists/playlist.effects';
 import { WithCredentialsInterceptor } from './interceptors/with-credentials.interceptor';
 import { AppState } from './app.state';
-import { artistReducer } from './state/artists/artist.reducer';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
@@ -16,24 +17,34 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthService } from './services/auth.service';
 import { AngularMaterialModule } from './angular-material.module';
+
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+
 import { NavigationComponent } from './pages/navigation/navigation.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { HomeComponent } from './pages/home/home.component';
+import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { PlaylistComponent } from './pages/playlist/playlist.component';
+import { MusicItemComponent } from './components/music-item/music-item.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, NavigationComponent, RegisterComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    NavigationComponent,
+    RegisterComponent,
+    HomeComponent,
+    SidenavComponent,
+    PlaylistComponent,
+    MusicItemComponent,
+  ],
   imports: [
     BrowserModule,
     RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' }),
     StoreModule.forRoot<AppState>(
       {
-        artists: artistReducer,
+        playlists: playlistReducer,
       },
       {
         metaReducers: !environment.production ? [] : [],
@@ -43,7 +54,7 @@ import { RegisterComponent } from './pages/register/register.component';
         },
       }
     ),
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot([PlaylistsEffects]),
     !environment.production
       ? StoreDevtoolsModule.instrument({
           maxAge: 25,
@@ -58,11 +69,6 @@ import { RegisterComponent } from './pages/register/register.component';
     AngularMaterialModule,
     HttpClientModule,
     LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule,
     DragDropModule,
   ],
   providers: [

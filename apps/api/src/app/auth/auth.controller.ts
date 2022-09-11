@@ -18,6 +18,7 @@ import {
   HttpCode,
   Req,
   Res,
+  Logger,
 } from '@nestjs/common';
 import { SessionLoginGuard } from './guards/session-login.guard';
 import { Request, Response } from 'express';
@@ -47,7 +48,9 @@ export class AuthController {
 
   @Get('session')
   @UseGuards(SessionGuard)
-  getUserSession(@User() user, @Res() res: Response) {
+  getUserSession(@User() user) {
+    // Logger.log('a');
+    // Logger.log(user, 'user');
     return user;
   }
 

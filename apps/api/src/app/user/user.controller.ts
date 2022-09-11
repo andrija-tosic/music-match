@@ -19,31 +19,36 @@ import { CreateUserDto, UpdateUserDto } from '@music-match/entities';
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
-  constructor(@Inject(UserService.name) private readonly UserService: UserService) {}
+  constructor(@Inject(UserService.name) private readonly userService: UserService) {}
 
   @Post()
   @UsePipes(ValidationPipe)
   create(@Body() createUserDto: CreateUserDto) {
-    return this.UserService.create(createUserDto);
+    return this.userService.create(createUserDto);
   }
 
   @Get()
   findAll() {
-    return this.UserService.findAll();
+    return this.userService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.UserService.findOne(+id);
+    return this.userService.findOne(+id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.UserService.update(+id, updateUserDto);
+    return this.userService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.UserService.remove(+id);
+    return this.userService.remove(+id);
+  }
+
+  @Get(':id/playlists')
+  getUsersPlaylists(@Param('id') id: string) {
+    return this.userService.getUsersPlaylists(+id);
   }
 }

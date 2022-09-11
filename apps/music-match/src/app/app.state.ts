@@ -1,4 +1,4 @@
-import { ArtistsState } from './state/artists/artist.reducer';
+import { PlaylistsState } from './state/playlists/playlist.reducer';
 export interface AppState {
-  artists: ArtistsState;
+  playlists: PlaylistsState;
 }

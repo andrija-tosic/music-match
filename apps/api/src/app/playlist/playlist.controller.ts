@@ -9,8 +9,9 @@ export class PlaylistController {
   constructor(private readonly playlistService: PlaylistService) {}
 
   @Post()
-  create(@Body() createPlaylistDto: CreatePlaylistDto) {
-    return this.playlistService.create(createPlaylistDto);
+  @UseGuards(SessionGuard)
+  create(@Body() createPlaylistDto: CreatePlaylistDto, @User() user) {
+    return this.playlistService.create(createPlaylistDto, user);
   }
 
   @Get()
@@ -33,10 +34,15 @@ export class PlaylistController {
     return this.playlistService.remove(+id);
   }
 
-  @Get('session')
   @UseGuards(SessionGuard)
-  @Post(':id')
-  addTracks(@Param('id') id: string, @Body() addTracksDto: AddTracksDto, @User() user) {
-    return this.playlistService.addTracks(+id, addTracksDto, user);
+  @Post(':id/tracks')
+  addTracks(@Param('id') id: string, @Body() tracksDto: AddTracksDto, @User() user) {
+    return this.playlistService.addTracks(+id, tracksDto, user);
+  }
+
+  @UseGuards(SessionGuard)
+  @Delete(':id/tracks')
+  removeTracks(@Param('id') id: string, @Body() tracksDto: AddTracksDto, @User() user) {
+    return this.playlistService.removeTracks(+id, tracksDto, user);
   }
 }

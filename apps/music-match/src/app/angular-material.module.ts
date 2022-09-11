@@ -1,3 +1,4 @@
+import { MatIconModule } from '@angular/material/icon';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -23,6 +24,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+
 const materialModules: any = [
   MatCardModule,
   TextFieldModule,
@@ -47,6 +50,8 @@ const materialModules: any = [
   MatRadioModule,
   MatTooltipModule,
   MatGridListModule,
+  MatSidenavModule,
+  MatIconModule,
 ];
 
 @NgModule({

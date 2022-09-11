@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Artist, CreateReleaseDto, Genre, Release, Track, UpdateReleaseDto } from '@music-match/entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';

@@ -1,0 +1,21 @@
+<mat-sidenav-container>
+  <mat-sidenav mode="side" opened>
+    <h3>Music Match</h3>
+    <mat-nav-list>
+      <mat-list-item> Home </mat-list-item>
+      <mat-list-item> Search </mat-list-item>
+      <mat-list-item> Liked songs </mat-list-item>
+      <mat-divider></mat-divider>
+      <h4>Your playlists</h4>
+      <mat-list-item *ngFor="let playlist of usersPlaylist$ | async" [routerLink]="'/playlist/' + playlist.id">
+        {{ playlist.name }}
+      </mat-list-item>
+
+      <h4>Liked playlists</h4>
+      <mat-list-item *ngFor="let playlist of likedPlaylist$ | async" [routerLink]="'/playlist/' + playlist.id">
+        {{ playlist.name }}
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content><router-outlet></router-outlet></mat-sidenav-content>
+</mat-sidenav-container>
