@@ -1,5 +1,11 @@
 import { PlaylistTrack } from './../playlist-track/playlist-track.entity';
-import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from '@music-match/entities';
 
 @Entity()
@@ -13,10 +19,13 @@ export class Playlist {
   @Column({ nullable: true })
   description: string;
 
-  @Column({ nullable: true })
+  @Column({ default: '' })
   imageUrl: string;
 
-  @ManyToMany(() => User, (user) => user.playlists, { cascade: true })
+  @ManyToMany(() => User, (user) => user.playlists, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   owners: User[];
 
   @ManyToMany(() => User, (user) => user.likedPlaylists, { cascade: true })

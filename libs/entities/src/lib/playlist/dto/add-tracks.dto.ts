@@ -1,6 +1,6 @@
 import { IsNotEmptyObject } from 'class-validator';
 
-export class AddTracksDto {
+export class AddTrackDto {
   @IsNotEmptyObject()
-  trackIds: number[];
+  trackId: number;
 }

@@ -1,0 +1,9 @@
+<img
+  mat-card-sm-image
+  [src]="(this.release$ | async)?.imageUrl"
+  height="200"
+  width="200"
+/>
+<h2>{{ (this.release$ | async)?.name }}</h2>
+
+<h3>{{ (this.release$ | async)?.artists }}</h3>

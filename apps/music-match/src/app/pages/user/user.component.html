@@ -1,0 +1,7 @@
+<img
+  mat-card-sm-image
+  [src]="(this.user$ | async)?.imageUrl"
+  height="200"
+  width="200"
+/>
+<h2>{{ (this.user$ | async)?.name }}</h2>

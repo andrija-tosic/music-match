@@ -1,3 +1,4 @@
+import { Store } from '@ngrx/store';
 import { User, CreateUserDto } from '@music-match/entities';
 import { LoginUserDto } from '@music-match/entities';
 import { Injectable } from '@angular/core';
@@ -5,6 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { constants } from '../constants';
 import { catchError, map, Observable, of, tap, BehaviorSubject } from 'rxjs';
+import { AppState } from '../app.state';
+import { setCurrentUserSuccess } from '../state/users/user.action';
 
 @Injectable({
   providedIn: 'root',
@@ -12,13 +15,21 @@ import { catchError, map, Observable, of, tap, BehaviorSubject } from 'rxjs';
 export class AuthService {
   public user$ = new BehaviorSubject<User | null>(null);
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private store: Store<AppState>
+  ) {}
 
   isAuthenticated(): Observable<boolean> {
     return this.getUser().pipe(
       map((user: User) => {
         console.log(user);
-        return user ? true : false;
+        if (user) {
+          this.store.dispatch(setCurrentUserSuccess(user));
+          return true;
+        }
+
+        return false;
       }),
       catchError((error) => {
         console.error(error);
@@ -28,16 +39,24 @@ export class AuthService {
   }
 
   public login(credentials: LoginUserDto) {
-    return this.http.post<User>(`${environment.api}/auth/login`, credentials, { ...constants.httpOptions }).pipe(
-      tap((user: User) => {
-        console.log(user);
-        localStorage.setItem('user', JSON.stringify(user));
+    return this.http
+      .post<User>(`${environment.api}/auth/login`, credentials, {
+        ...constants.httpOptions,
       })
-    );
+      .pipe(
+        tap((user: User) => {
+          console.log(user);
+          localStorage.setItem('user', JSON.stringify(user));
+
+          this.store.dispatch(setCurrentUserSuccess(user));
+        })
+      );
   }
 
   public register(credentials: CreateUserDto) {
-    return this.http.post<User>(`${environment.api}/users`, credentials, { ...constants.httpOptions });
+    return this.http.post<User>(`${environment.api}/users`, credentials, {
+      ...constants.httpOptions,
+    });
   }
 
   public logout() {
@@ -51,5 +70,6 @@ export class AuthService {
   public autoLogin() {
     const loggedInUser: string | null = localStorage.getItem('user');
     if (!loggedInUser) return;
+    this.store.dispatch(setCurrentUserSuccess(JSON.parse(loggedInUser)));
   }
 }

@@ -6,4 +6,15 @@
   <h2>{{ (playlist$ | async)?.name }}</h2>
   <p>{{ (playlist$ | async)?.description }}</p>
   <p>By: {{ playlistOwners() | async }}</p>
+
+  <button (click)="openPlaylistFormDialog('Update')" mat-button>
+    <mat-icon>edit</mat-icon> Edit Playlist
+  </button>
+
+  <button (click)="toggleLike()" mat-button>
+    <mat-icon
+      [class]="(playlist$ | async)?.liked ? '' : 'material-icons-outline'"
+      >favorite</mat-icon
+    >
+  </button>
 </div>

@@ -1,3 +1,4 @@
+import { selectTracksByIds } from './../tracks/track.selector';
 import { AppState } from './../../app.state';
 import { createSelector } from '@ngrx/store';
 
@@ -6,8 +7,7 @@ export const selectPlaylists = createSelector(
   (playlists) => playlists
 );
 
-export const selectUserPlaylists = createSelector(selectPlaylists, (playlists) => {
-  return { usersPlaylists: playlists.usersPlaylists, usersLikedPlaylists: playlists.usersLikedPlaylists };
-});
-
-export const selectedPlaylist = createSelector(selectPlaylists, (playlists) => playlists.selectedPlaylist);
+export const selectPlaylistsByIds = (ids: number[]) =>
+  createSelector(selectPlaylists, (playlists) =>
+    ids.map((id) => playlists.entities[id]!)
+  );

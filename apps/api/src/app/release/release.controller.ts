@@ -1,6 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Logger } from '@nestjs/common';
+import { SessionGuard } from './../auth/guards/session.guard';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Logger,
+  UseGuards,
+} from '@nestjs/common';
 import { ReleaseService } from './release.service';
 import { CreateReleaseDto, UpdateReleaseDto } from '@music-match/entities';
+import { UserFromSession } from '../decorators/user.decorator';
 
 @Controller('releases')
 export class ReleaseController {
@@ -17,9 +29,10 @@ export class ReleaseController {
     return this.releaseService.findAll();
   }
 
+  @UseGuards(SessionGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.releaseService.findOne(+id);
+  findOne(@Param('id') id: string, @UserFromSession() user) {
+    return this.releaseService.findOne(+id, user);
   }
 
   @Patch(':id')

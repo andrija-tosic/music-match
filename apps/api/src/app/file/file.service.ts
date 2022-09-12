@@ -1,5 +1,9 @@
 import { ConfigService } from '@nestjs/config';
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { BlobServiceClient, BlockBlobClient } from '@azure/storage-blob';
 import { Multer } from 'multer';
 import * as crypto from 'node:crypto';
@@ -8,12 +12,18 @@ import * as path from 'node:path';
 @Injectable()
 export class FileService {
   constructor(private readonly configService: ConfigService) {}
-  azureConnectionString = this.configService.getOrThrow('AZURE_STOREGE_ACCOUNT_CONNECTION_STRING');
+  azureConnectionString = this.configService.getOrThrow(
+    'AZURE_STOREGE_ACCOUNT_CONNECTION_STRING'
+  );
   containerName = 'music-match';
 
   getBlobClient(fileName: string): BlockBlobClient {
-    const blobClientService = BlobServiceClient.fromConnectionString(this.azureConnectionString);
-    const containerClient = blobClientService.getContainerClient(this.containerName);
+    const blobClientService = BlobServiceClient.fromConnectionString(
+      this.azureConnectionString
+    );
+    const containerClient = blobClientService.getContainerClient(
+      this.containerName
+    );
     const blobClient = containerClient.getBlockBlobClient(fileName);
     return blobClient;
   }
@@ -25,7 +35,7 @@ export class FileService {
 
     Logger.log(blobClient.url, 'File uploaded to Azure blob storage');
 
-    return blobClient.url;
+    return { url: blobClient.url };
   }
 
   async delete(url: string) {

@@ -19,7 +19,9 @@ export class FileController {
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  async upload(@UploadedFile() file: Express.Multer.File): Promise<string> {
+  async upload(
+    @UploadedFile() file: Express.Multer.File
+  ): Promise<{ url: string }> {
     return await this.fileService.upload(file);
   }
 

@@ -1,7 +1,14 @@
 import { Playlist } from '../playlist/playlist.entity';
 import { Track } from '../track/track.entity';
 import { Roles } from './roles';
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 @Entity()
@@ -20,7 +27,7 @@ export class User {
   @Column()
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ default: ''})
   imageUrl: string;
 
   @Column({
@@ -38,7 +45,7 @@ export class User {
   @JoinTable()
   likedPlaylists: Playlist[];
 
-  @ManyToMany(() => Track)
+  @ManyToMany(() => Track, (track) => track.likedByUsers)
   @JoinTable()
   likedTracks: Track[];
 

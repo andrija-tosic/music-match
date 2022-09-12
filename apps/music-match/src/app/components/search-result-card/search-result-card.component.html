@@ -1,0 +1,6 @@
+<button mat-button [routerLink]="getRouterLinkBasedOnType(this.type)">
+  <mat-card>
+    <img mat-card-sm-image [src]="item?.imageUrl" />
+    {{ item?.name }}
+  </mat-card>
+</button>

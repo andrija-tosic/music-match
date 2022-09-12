@@ -1,11 +1,12 @@
+import { PlaylistDto } from '@music-match/entities';
 import { ActivatedRoute } from '@angular/router';
-import { selectedPlaylist } from './../../state/playlists/playlist.selector';
-import { Observable } from 'rxjs';
+import { selectedPlaylist } from '../../state/selectors';
+import { filter, Observable } from 'rxjs';
 import { AppState } from './../../app.state';
 import { Store } from '@ngrx/store';
 import { Component, OnInit } from '@angular/core';
-import { PlaylistDto } from '@music-match/entities';
 import { loadPlaylistWithTracks } from '../../state/playlists/playlist.action';
+import { isNotUndefined } from '../../type-guards';
 
 @Component({
   selector: 'music-match-playlist',
@@ -22,6 +23,8 @@ export class PlaylistComponent implements OnInit {
       this.store.dispatch(loadPlaylistWithTracks({ id: params['id'] }));
     });
 
-    this.playlist$ = this.store.select(selectedPlaylist);
+    this.playlist$ = this.store
+      .select(selectedPlaylist)
+      .pipe(filter(isNotUndefined));
   }
 }

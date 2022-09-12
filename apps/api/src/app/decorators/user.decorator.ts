@@ -1,9 +1,9 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { User as UserEntity } from '@music-match/entities';
+import { User } from '@music-match/entities';
 
-export const User = createParamDecorator(
+export const UserFromSession = createParamDecorator(
   (_data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    return (request.user as UserEntity) || null;
+    return (request.user as User) || null;
   }
 );

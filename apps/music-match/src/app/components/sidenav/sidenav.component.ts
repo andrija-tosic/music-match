@@ -1,10 +1,18 @@
+import { PlaylistFormDialogComponent } from './../playlist-form-dialog/playlist-form-dialog.component';
 import { AppState } from './../../app.state';
-import { selectUserPlaylists } from './../../state/playlists/playlist.selector';
-import { loadUserPlaylists } from './../../state/playlists/playlist.action';
+import {
+  selectUsersPlaylists,
+  selectUsersLikedPlaylists,
+} from './../../state/users/user.selector';
+import {
+  loadUserPlaylists,
+  loadCurrentUserPlaylists,
+} from './../../state/playlists/playlist.action';
 import { Component, OnInit } from '@angular/core';
-import { PlaylistBaseDto } from '@music-match/entities';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { PlaylistEntity } from '@music-match/state-entities';
 
 @Component({
   selector: 'music-match-sidenav',
@@ -12,17 +20,20 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./sidenav.component.css'],
 })
 export class SidenavComponent implements OnInit {
-  usersPlaylist$ = new BehaviorSubject<PlaylistBaseDto[]>([]);
-  likedPlaylist$ = new BehaviorSubject<PlaylistBaseDto[]>([]);
+  usersPlaylist$ = new Observable<PlaylistEntity[]>();
+  likedPlaylist$ = new Observable<PlaylistEntity[]>();
 
-  constructor(private store: Store<AppState>) {}
+  constructor(private store: Store<AppState>, private dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.store.dispatch(loadUserPlaylists());
+    this.store.dispatch(loadCurrentUserPlaylists());
+    this.usersPlaylist$ = this.store.select(selectUsersPlaylists);
+    this.likedPlaylist$ = this.store.select(selectUsersLikedPlaylists);
+  }
 
-    this.store.select(selectUserPlaylists).subscribe(({ usersPlaylists, usersLikedPlaylists }) => {
-      this.usersPlaylist$.next(usersPlaylists);
-      this.likedPlaylist$.next(usersLikedPlaylists);
+  openPlaylistFormDialog(actionType: string) {
+    const dialogRef = this.dialog.open(PlaylistFormDialogComponent, {
+      data: actionType,
     });
   }
 }

@@ -1,6 +1,6 @@
 import { RolesGuard } from './guards/roles.guard';
 import { Role } from './../decorators/role.decorator';
-import { User } from '../decorators/user.decorator';
+import { UserFromSession } from '../decorators/user.decorator';
 import { SessionGuard } from './guards/session.guard';
 import { AuthService } from './auth.service';
 import { CreateUserDto, Roles } from '@music-match/entities';
@@ -26,12 +26,17 @@ import { Request, Response } from 'express';
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
-  constructor(@Inject(AuthService.name) private readonly authService: AuthService) {}
+  constructor(
+    @Inject(AuthService.name) private readonly authService: AuthService
+  ) {}
 
   @Post('login')
   @UseGuards(SessionLoginGuard)
   async login(@Body() userDto: Pick<CreateUserDto, 'username' | 'password'>) {
-    const user = await this.authService.validateUser(userDto.username, userDto.password);
+    const user = await this.authService.validateUser(
+      userDto.username,
+      userDto.password
+    );
 
     if (!user) {
       throw new UnauthorizedException();
@@ -48,7 +53,7 @@ export class AuthController {
 
   @Get('session')
   @UseGuards(SessionGuard)
-  getUserSession(@User() user) {
+  getUserSession(@UserFromSession() user) {
     // Logger.log('a');
     // Logger.log(user, 'user');
     return user;
@@ -58,7 +63,7 @@ export class AuthController {
   @UseGuards(SessionGuard)
   @UseGuards(RolesGuard)
   @Role(Roles.Admin)
-  getAdminSession(@User() admin) {
+  getAdminSession(@UserFromSession() admin) {
     return admin;
   }
 }

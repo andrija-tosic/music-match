@@ -1,3 +1,8 @@
+import { UserEffects } from './state/users/user.effects';
+import { ArtistsEffects } from './state/artists/artist.effects';
+import { trackReducer } from './state/tracks/track.reducer';
+import { releaseReducer } from './state/releases/release.reducer';
+import { searchReducer } from './state/search/search.reducer';
 import { playlistReducer } from './state/playlists/playlist.reducer';
 import { PlaylistsEffects } from './state/playlists/playlist.effects';
 import { WithCredentialsInterceptor } from './interceptors/with-credentials.interceptor';
@@ -27,6 +32,16 @@ import { HomeComponent } from './pages/home/home.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { PlaylistComponent } from './pages/playlist/playlist.component';
 import { MusicItemComponent } from './components/music-item/music-item.component';
+import { TracksComponent } from './components/tracks/tracks.component';
+import { UserComponent } from './pages/user/user.component';
+import { ReleaseComponent } from './pages/release/release.component';
+import { ArtistComponent } from './pages/artist/artist.component';
+import { PlaylistFormDialogComponent } from './components/playlist-form-dialog/playlist-form-dialog.component';
+import { SearchComponent } from './pages/search/search.component';
+import { SearchEffects } from './state/search/search.effects';
+import { artistReducer } from './state/artists/artist.reducer';
+import { userReducer } from './state/users/user.reducer';
+import { SearchResultCardComponent } from './components/search-result-card/search-result-card.component';
 
 @NgModule({
   declarations: [
@@ -38,13 +53,25 @@ import { MusicItemComponent } from './components/music-item/music-item.component
     SidenavComponent,
     PlaylistComponent,
     MusicItemComponent,
+    TracksComponent,
+    UserComponent,
+    ReleaseComponent,
+    ArtistComponent,
+    PlaylistFormDialogComponent,
+    SearchComponent,
+    SearchResultCardComponent,
   ],
   imports: [
     BrowserModule,
     RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' }),
     StoreModule.forRoot<AppState>(
       {
+        releases: releaseReducer,
+        artists: artistReducer,
+        users: userReducer,
         playlists: playlistReducer,
+        searchResults: searchReducer,
+        tracks: trackReducer,
       },
       {
         metaReducers: !environment.production ? [] : [],
@@ -54,7 +81,12 @@ import { MusicItemComponent } from './components/music-item/music-item.component
         },
       }
     ),
-    EffectsModule.forRoot([PlaylistsEffects]),
+    EffectsModule.forRoot([
+      PlaylistsEffects,
+      SearchEffects,
+      ArtistsEffects,
+      UserEffects,
+    ]),
     !environment.production
       ? StoreDevtoolsModule.instrument({
           maxAge: 25,

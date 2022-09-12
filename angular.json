@@ -3,7 +3,8 @@
   "version": 2,
   "projects": {
     "api": "apps/api",
+    "entities": "libs/entities",
     "music-match": "apps/music-match",
-    "entities": "libs/entities"
+    "state-entities": "libs/state-entities"
   }
 }

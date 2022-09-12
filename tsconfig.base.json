@@ -16,7 +16,8 @@
     "strictPropertyInitialization": false,
     "baseUrl": ".",
     "paths": {
-      "@music-match/entities": ["libs/entities/src/index.ts"]
+      "@music-match/entities": ["libs/entities/src/index.ts"],
+      "@music-match/state-entities": ["libs/state-entities/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

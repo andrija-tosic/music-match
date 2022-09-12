@@ -1,6 +1,14 @@
 import { Release } from './../release/release.entity';
 import { PlaylistTrack } from './../playlist-track/playlist-track.entity';
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { User } from '@music-match/entities';
 
 @Entity()
 export class Track {
@@ -54,4 +62,7 @@ export class Track {
 
   @OneToMany(() => PlaylistTrack, (pt) => pt.track)
   playlistTracks: PlaylistTrack[];
+
+  @ManyToMany(() => User, (user) => user.likedTracks, { cascade: true })
+  likedByUsers: User[];
 }

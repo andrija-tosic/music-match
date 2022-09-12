@@ -1,6 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { TrackService } from './track.service';
 import { CreateTrackDto, UpdateTrackDto } from '@music-match/entities';
+import { SessionGuard } from '../auth/guards/session.guard';
+import { UserFromSession } from '../decorators/user.decorator';
 
 @Controller('tracks')
 export class TrackController {
@@ -29,5 +41,11 @@ export class TrackController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.trackService.remove(+id);
+  }
+
+  @UseGuards(SessionGuard)
+  @Put(':id/toggle-like')
+  toggleLike(@Param('id') id: string, @UserFromSession() user) {
+    return this.trackService.toggleLike(+id, user);
   }
 }

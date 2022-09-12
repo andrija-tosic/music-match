@@ -7,11 +7,20 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import * as redisStore from 'cache-manager-redis-store';
 import { config } from '../config';
-import { Artist, Playlist, PlaylistTrack, Release, Track, Genre, User } from '@music-match/entities';
+import {
+  Artist,
+  Playlist,
+  PlaylistTrack,
+  Release,
+  Track,
+  Genre,
+  User,
+} from '@music-match/entities';
 import { ArtistModule } from './artist/artist.module';
 import { FileModule } from './file/file.module';
 import { TrackModule } from './track/track.module';
 import { PlaylistModule } from './playlist/playlist.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -28,7 +37,15 @@ import { PlaylistModule } from './playlist/playlist.module';
         username: 'postgres',
         password: configService.getOrThrow('POSTGRES_PASSWORD'),
         database: 'music-match-db',
-        entities: [Artist, Playlist, PlaylistTrack, Release, Track, Genre, User],
+        entities: [
+          Artist,
+          Playlist,
+          PlaylistTrack,
+          Release,
+          Track,
+          Genre,
+          User,
+        ],
         synchronize: true,
       }),
       inject: [ConfigService],
@@ -47,6 +64,7 @@ import { PlaylistModule } from './playlist/playlist.module';
     TrackModule,
     FileModule,
     PlaylistModule,
+    SearchModule,
   ],
   providers: [
     {

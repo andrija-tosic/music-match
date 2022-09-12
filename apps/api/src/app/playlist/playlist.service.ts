@@ -1,10 +1,15 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
 import {
-  AddTracksDto,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import {
+  AddTrackDto,
   CreatePlaylistDto,
   Playlist,
   PlaylistDto,
   PlaylistTrack,
+  RemoveTrackDto,
   Track,
   UpdatePlaylistDto,
   User,
@@ -15,9 +20,13 @@ import { Repository, In } from 'typeorm';
 @Injectable()
 export class PlaylistService {
   constructor(
-    @InjectRepository(Playlist) private readonly playlistRepository: Repository<Playlist>,
-    @InjectRepository(Track) private readonly trackRepository: Repository<Track>,
-    @InjectRepository(PlaylistTrack) private readonly ptRepository: Repository<PlaylistTrack>
+    @InjectRepository(Playlist)
+    private readonly playlistRepository: Repository<Playlist>,
+    @InjectRepository(Track)
+    private readonly trackRepository: Repository<Track>,
+    @InjectRepository(PlaylistTrack)
+    private readonly ptRepository: Repository<PlaylistTrack>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>
   ) {}
 
   async create(createPlaylistDto: CreatePlaylistDto, user: User) {
@@ -32,14 +41,19 @@ export class PlaylistService {
     return await this.playlistRepository.find();
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, user: User) {
     const playlist = await this.playlistRepository.findOne({
       where: { id },
-      relations: { owners: true, playlistTracks: { track: true } },
+      relations: { owners: true, playlistTracks: { track: { release: true } } },
     });
 
-    const tracks = await this.trackRepository.find({
-      where: { id: In(playlist.playlistTracks.map((pt) => pt.track.id)) },
+    const tracksInPlaylist = playlist.playlistTracks.map((pt) => {
+      return { ...pt.track, number: pt.number };
+    });
+
+    const userFromDb = await this.userRepository.findOne({
+      where: { id: user.id },
+      relations: { likedPlaylists: true, likedTracks: true },
     });
 
     const playlistDto: PlaylistDto = {
@@ -48,63 +62,151 @@ export class PlaylistService {
       imageUrl: playlist.imageUrl,
       name: playlist.name,
       owners: playlist.owners,
-      tracks,
+      tracks: tracksInPlaylist.map((track) => {
+        return {
+          ...track,
+          liked: userFromDb.likedTracks.map((t) => t.id).includes(track.id),
+        };
+      }),
+      liked: userFromDb.likedPlaylists.map((p) => p.id).includes(playlist.id),
     };
 
     return playlistDto;
   }
 
-  async update(id: number, updatePlaylistDto: UpdatePlaylistDto) {
+  async update(id: number, updatePlaylistDto: UpdatePlaylistDto, user: User) {
     await this.playlistRepository.update(id, updatePlaylistDto);
-    return await this.playlistRepository.findOneBy({ id });
+    return await this.findOne(id, user);
   }
 
   async remove(id: number) {
     return await this.playlistRepository.delete(id);
   }
 
-  async addTracks(id: number, addTracksDto: AddTracksDto, user: User) {
+  async addTrack(id: number, trackDto: AddTrackDto, user: User) {
     const playlist: Playlist = await this.playlistRepository.findOne({
       where: {
         id,
       },
-      relations: { playlistTracks: true, owners: true },
+      relations: { playlistTracks: { track: { release: true } }, owners: true },
     });
 
     if (!playlist.owners.map((owner) => owner.id).includes(user.id)) {
       throw new UnauthorizedException();
     }
 
-    const tracksToAdd: Track[] = await this.trackRepository.findBy({ id: In(addTracksDto.trackIds) });
-
-    const playlistTracksToCreate = tracksToAdd.map<Omit<PlaylistTrack, 'id'>>((track, i) => {
-      return {
-        number: playlist.playlistTracks.length + i,
-        addedByUser: user,
-        playlist: playlist,
-        track: track,
-      };
+    const trackToAdd: Track = await this.trackRepository.findOneBy({
+      id: trackDto.trackId,
     });
 
-    const playlistTracksToAdd: PlaylistTrack[] = this.ptRepository.create(playlistTracksToCreate);
+    const playlistTrackToCreate: Omit<PlaylistTrack, 'id'> = {
+      number: playlist.playlistTracks.length + 1,
+      addedByUser: user,
+      playlist: playlist,
+      track: trackToAdd,
+    };
 
-    return await this.ptRepository.save(playlistTracksToAdd);
+    const playlistTrackToAdd: PlaylistTrack = this.ptRepository.create(
+      playlistTrackToCreate
+    );
+
+    await this.ptRepository.save(playlistTrackToAdd);
+
+    const tracksToReturn = playlist.playlistTracks
+      .map((pt) => {
+        return { ...pt.track, number: pt.number };
+      })
+      .concat([{ ...trackToAdd, number: playlistTrackToAdd.number }]);
+
+    return tracksToReturn;
   }
 
-  async removeTracks(id: number, tracksDto: AddTracksDto, user: User) {
+  async removeTrack(id: number, trackDto: RemoveTrackDto, user: User) {
     const playlist = await this.playlistRepository.findOne({
       where: { id },
-      relations: { owners: true, playlistTracks: { track: true } },
+      relations: { playlistTracks: { track: { release: true } }, owners: true },
     });
 
     if (!playlist.owners.map((owner) => owner.id).includes(user.id)) {
       throw new UnauthorizedException();
     }
 
-    const playlistTracksIdsToRemove = playlist.playlistTracks
-      .filter((pt) => tracksDto.trackIds.includes(pt.track.id))
-      .map((pt) => pt.id);
+    const playlistTrackToRemove = playlist.playlistTracks.find(
+      (pt) => trackDto.number === pt.number
+    );
 
-    return await this.ptRepository.delete(playlistTracksIdsToRemove);
+    if (!playlistTrackToRemove) {
+      throw new NotFoundException();
+    }
+
+    playlist.playlistTracks = playlist.playlistTracks
+      .filter((pt) => pt.number !== trackDto.number)
+      .map((pt) => {
+        if (pt.number > playlistTrackToRemove.number) {
+          pt.number--;
+        }
+
+        return pt;
+      });
+
+    await this.playlistRepository.save(playlist);
+    await this.ptRepository.delete(playlistTrackToRemove.id);
+
+    const tracksToReturn = playlist.playlistTracks.map((pt) => {
+      return { ...pt.track, number: pt.number };
+    });
+
+    return tracksToReturn;
+  }
+
+  async toggleLike(id: number, user: User) {
+    const playlist = await this.playlistRepository.findOne({
+      where: { id },
+      relations: { likedByUsers: true },
+    });
+    const userFromDb = await this.userRepository.findOneBy({ id: user.id });
+    if (playlist.likedByUsers.map((u) => u.id).includes(user.id)) {
+      playlist.likedByUsers.splice(playlist.likedByUsers.indexOf(userFromDb));
+    } else {
+      playlist.likedByUsers.push(userFromDb);
+    }
+
+    return await this.playlistRepository.save(playlist);
+  }
+
+  async addOwner(id: number, ownerId: number, user: User) {
+    const playlist = await this.playlistRepository.findOne({
+      where: { id },
+      relations: { owners: true },
+    });
+
+    if (!playlist.owners.map((user) => user.id).includes(user.id)) {
+      throw new UnauthorizedException();
+    }
+
+    const newOwner = await this.userRepository.findOneBy({ id: ownerId });
+
+    if (!newOwner) {
+      throw new NotFoundException();
+    }
+
+    playlist.owners.push(newOwner);
+
+    return await this.playlistRepository.save(playlist);
+  }
+
+  async removeOwner(id: number, ownerId: number, user: User) {
+    const playlist = await this.playlistRepository.findOne({
+      where: { id },
+      relations: { owners: true },
+    });
+
+    if (!playlist.owners.map((user) => user.id).includes(user.id)) {
+      throw new UnauthorizedException();
+    }
+
+    playlist.owners = playlist.owners.filter((user) => user.id !== ownerId);
+
+    return await this.playlistRepository.save(playlist);
   }
 }

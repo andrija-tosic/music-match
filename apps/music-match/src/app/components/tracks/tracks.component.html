@@ -1,0 +1,25 @@
+<div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+  <ng-container>
+    <div *ngFor="let track of (playlist$ | async)?.tracks; let i = index">
+      <div class="example-box" cdkDrag>
+        <ng-container>
+          <span>
+            {{ track.name }}
+          </span>
+          <span>
+            {{ track.release.name }}
+          </span>
+          <span>
+            {{ track.duration }}
+          </span>
+          <div class="edit-icons">
+            <button mat-icon-button color="warn" (click)="removeTrack(track)">
+              <mat-icon class="material-icons-outlined">delete</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+  <div class="flex-end"></div>
+</div>
