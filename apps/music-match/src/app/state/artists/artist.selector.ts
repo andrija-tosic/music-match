@@ -6,7 +6,7 @@ export const selectArtists = createSelector(
   (artists) => artists
 );
 
-export const selectArtistsByIds = (ids?: number[]) =>
+export const selectArtistsByIds = (ids: number[]) =>
   createSelector(selectArtists, (artists) =>
-    ids?.map((id) => artists.entities[id]!)
+    ids.map((id) => artists.entities[id])
   );

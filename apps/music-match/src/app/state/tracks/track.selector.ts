@@ -8,5 +8,5 @@ export const selectTracks = createSelector(
 
 export const selectTracksByIds = (ids: number[]) =>
   createSelector(selectTracks, (tracks) =>
-    ids.map((id) => tracks.entities[id]!)
+    ids.map((id) => tracks.entities[id])
   );

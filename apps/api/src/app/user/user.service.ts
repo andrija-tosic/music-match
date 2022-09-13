@@ -1,5 +1,9 @@
 import { Playlist } from './../../../../../libs/entities/src/lib/playlist/playlist.entity';
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto, User } from '@music-match/entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
@@ -9,11 +13,14 @@ import { hashPassword } from '../utils/bcrypt';
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(Playlist) private readonly playlistRepository: Repository<Playlist>
+    @InjectRepository(Playlist)
+    private readonly playlistRepository: Repository<Playlist>
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const userAlreadyExists = await this.userRepository.findOneBy({ username: createUserDto.username });
+    const userAlreadyExists = await this.userRepository.findOneBy({
+      username: createUserDto.username,
+    });
 
     if (userAlreadyExists) {
       throw new ConflictException();
@@ -30,6 +37,39 @@ export class UserService {
 
   async findOne(id: number) {
     return await this.userRepository.findOneBy({ id });
+  }
+
+  async getAbout(id: number) {
+    const { playlists, likedPlaylists, following } =
+      await this.userRepository.findOne({
+        where: { id },
+        relations: { playlists: true, likedPlaylists: true, following: true },
+      });
+
+    return { playlists, likedPlaylists, following };
+  }
+
+  async toggleFollowing(friendId: number, user: User) {
+    const userFromDb = await this.userRepository.findOne({
+      where: { id: user.id },
+      relations: { following: true },
+    });
+
+    const newFriend = await this.userRepository.findOneBy({ id: friendId });
+
+    if (!userFromDb || !newFriend) {
+      throw new NotFoundException();
+    }
+
+    if (!userFromDb.following.map((f) => f.id).includes(friendId)) {
+      userFromDb.following.push(newFriend);
+    } else {
+      userFromDb.following = userFromDb.following.filter(
+        (f) => friendId !== f.id
+      );
+    }
+
+    return await this.userRepository.save(userFromDb);
   }
 
   async findOneByUsername(username: string) {

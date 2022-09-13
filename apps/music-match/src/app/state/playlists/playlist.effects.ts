@@ -21,7 +21,7 @@ export class PlaylistsEffects {
       switchMap(({ id }) =>
         this.playlistService.getUserPlaylists(id).pipe(
           map(({ playlists, likedPlaylists }) =>
-            PlaylistActions.loadUserPlaylistsSuccess({
+            PlaylistActions.loadedUserPlaylists({
               usersPlaylists: playlists,
               usersLikedPlaylists: likedPlaylists,
             })
@@ -37,7 +37,7 @@ export class PlaylistsEffects {
       switchMap(() =>
         this.playlistService.getCurrentUserPlaylists().pipe(
           map(({ playlists, likedPlaylists }) =>
-            PlaylistActions.loadUserPlaylistsSuccess({
+            PlaylistActions.loadedUserPlaylists({
               usersPlaylists: playlists,
               usersLikedPlaylists: likedPlaylists,
             })
@@ -55,7 +55,7 @@ export class PlaylistsEffects {
           .getPlaylist(id)
           .pipe(
             map((playlist) =>
-              PlaylistActions.loadPlaylistWithTracksSuccess({ playlist })
+              PlaylistActions.loadedPlaylistWithTracks({ playlist })
             )
           )
       )
@@ -69,9 +69,7 @@ export class PlaylistsEffects {
         this.playlistService
           .createPlaylist(playlist)
           .pipe(
-            map((playlist) =>
-              PlaylistActions.createPlaylistSuccess({ playlist })
-            )
+            map((playlist) => PlaylistActions.createdPlaylist({ playlist }))
           )
       )
     )
@@ -89,7 +87,7 @@ export class PlaylistsEffects {
               .updatePlaylist(oldPlaylist.id, playlist)
               .pipe(
                 map((playlist) =>
-                  PlaylistActions.updateSelectedPlaylistSuccess({ playlist })
+                  PlaylistActions.updatedSelectedPlaylist({ playlist })
                 )
               )
           )
@@ -104,7 +102,7 @@ export class PlaylistsEffects {
       switchMap(({ id }) =>
         this.playlistService
           .deletePlaylist(id)
-          .pipe(map(() => PlaylistActions.deletePlaylistSuccess()))
+          .pipe(map(() => PlaylistActions.deletedPlaylist()))
       )
     )
   );
@@ -116,9 +114,7 @@ export class PlaylistsEffects {
         this.playlistService
           .addTracks(id, tracksDto)
           .pipe(
-            map((tracks) =>
-              PlaylistActions.addTracksToPlaylistSuccess({ tracks })
-            )
+            map((tracks) => PlaylistActions.addedTracksToPlaylist({ tracks }))
           )
       )
     )
@@ -132,7 +128,7 @@ export class PlaylistsEffects {
           .removeTracks(id, tracksDto)
           .pipe(
             map((tracks) =>
-              PlaylistActions.removeTracksFromPlaylistSuccess({ tracks })
+              PlaylistActions.removedTracksFromPlaylist({ tracks })
             )
           )
       )

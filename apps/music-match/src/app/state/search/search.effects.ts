@@ -18,7 +18,7 @@ export class SearchEffects {
               ...searchResults,
               query,
             };
-            return SearchActions.querySearchSuccess({
+            return SearchActions.queriedSearch({
               searchResults: searchResultsWithQuery,
             });
           })

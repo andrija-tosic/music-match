@@ -7,21 +7,21 @@ export interface SearchState extends EntityState<SearchEntity> {
   latestQuery: string;
 }
 
-const searchAdapter = createEntityAdapter<SearchEntity>({
+const adapter = createEntityAdapter<SearchEntity>({
   selectId: (entity: SearchEntity) => entity.query,
 });
 
-export const initialState: SearchState = searchAdapter.getInitialState({
+export const initialState: SearchState = adapter.getInitialState({
   latestQuery: '',
 });
 
 export const searchReducer = createReducer(
   initialState,
-  on(Actions.querySearchSuccess, (state, payload) => {
+  on(Actions.queriedSearch, (state, payload) => {
     console.log(payload);
 
     return {
-      ...searchAdapter.upsertOne(
+      ...adapter.upsertOne(
         {
           query: payload.searchResults.query,
           artistIds: payload.searchResults.users.map(({ id }) => id),

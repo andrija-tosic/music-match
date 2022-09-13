@@ -8,17 +8,30 @@ import { constants, snackbarError } from '../../constants';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'music-match-register',
+  selector: 'register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
   form;
-  constructor(private authService: AuthService, private router: Router, private _snackBar: MatSnackBar) {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private _snackBar: MatSnackBar
+  ) {
     this.form = new FormGroup({
-      name: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(3)] }),
-      username: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-      password: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(8)] }),
+      name: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.minLength(3)],
+      }),
+      username: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      password: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.minLength(8)],
+      }),
     });
   }
 

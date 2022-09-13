@@ -42,7 +42,10 @@ export class SearchService {
       await Promise.all([
         this.artistRepository.find(queryOptions),
         this.releaseRepository.find(queryOptions),
-        this.trackRepository.find(queryOptions),
+        this.trackRepository.find({
+          ...queryOptions,
+          relations: { release: { artists: true } },
+        }),
         this.userRepository.find(queryOptions),
         this.playlistRepository.find(queryOptions),
         this.userRepository.findOne({

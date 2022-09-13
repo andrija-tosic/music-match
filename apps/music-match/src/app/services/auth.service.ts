@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
 import { constants } from '../constants';
 import { catchError, map, Observable, of, tap, BehaviorSubject } from 'rxjs';
 import { AppState } from '../app.state';
-import { setCurrentUserSuccess } from '../state/users/user.action';
+import { currentUserSet } from '../state/users/user.action';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +25,7 @@ export class AuthService {
       map((user: User) => {
         console.log(user);
         if (user) {
-          this.store.dispatch(setCurrentUserSuccess(user));
+          this.store.dispatch(currentUserSet(user));
           return true;
         }
 
@@ -48,7 +48,7 @@ export class AuthService {
           console.log(user);
           localStorage.setItem('user', JSON.stringify(user));
 
-          this.store.dispatch(setCurrentUserSuccess(user));
+          this.store.dispatch(currentUserSet(user));
         })
       );
   }
@@ -70,6 +70,6 @@ export class AuthService {
   public autoLogin() {
     const loggedInUser: string | null = localStorage.getItem('user');
     if (!loggedInUser) return;
-    this.store.dispatch(setCurrentUserSuccess(JSON.parse(loggedInUser)));
+    this.store.dispatch(currentUserSet(JSON.parse(loggedInUser)));
   }
 }

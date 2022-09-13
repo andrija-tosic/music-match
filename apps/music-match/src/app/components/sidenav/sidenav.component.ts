@@ -15,7 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PlaylistEntity } from '@music-match/state-entities';
 
 @Component({
-  selector: 'music-match-sidenav',
+  selector: 'sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.css'],
 })

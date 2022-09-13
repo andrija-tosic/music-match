@@ -2,7 +2,7 @@ import { AuthService } from './services/auth.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'music-match-root',
+  selector: 'root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })

@@ -10,34 +10,31 @@ export interface UsersState extends EntityState<UserEntity> {
   currentUserId: number;
 }
 
-export const usersAdapter = createEntityAdapter<UserEntity>();
+export const adapter = createEntityAdapter<UserEntity>();
 
-export const initialState: UsersState = usersAdapter.getInitialState({
+export const initialState: UsersState = adapter.getInitialState({
   selectedUserId: -1,
   currentUserId: -1,
 });
 
 export const userReducer = createReducer(
   initialState,
-  on(SearchActions.querySearchSuccess, (state, searchResults) =>
-    usersAdapter.upsertMany(
-      searchResults.searchResults.users as UserEntity[],
-      state
-    )
+  on(SearchActions.queriedSearch, (state, searchResults) =>
+    adapter.upsertMany(searchResults.searchResults.users as UserEntity[], state)
   ),
-  on(UserActions.setCurrentUserSuccess, (state, user) => {
+  on(UserActions.currentUserSet, (state, user) => {
     return {
-      ...usersAdapter.upsertOne(
-        { ...user, likedPlaylistsIds: [], playlistsIds: [] },
+      ...adapter.upsertOne(
+        { ...user, likedPlaylistsIds: [], playlistsIds: [], friendsIds: [] },
         state
       ),
       currentUserId: user.id,
     };
   }),
   on(
-    PlaylistActions.loadUserPlaylistsSuccess,
+    PlaylistActions.loadedUserPlaylists,
     (state, { usersPlaylists, usersLikedPlaylists }) =>
-      usersAdapter.upsertOne(
+      adapter.upsertOne(
         {
           ...state.entities[state.currentUserId]!,
           likedPlaylistsIds: usersLikedPlaylists.map(({ id }) => id),

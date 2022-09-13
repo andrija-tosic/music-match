@@ -61,12 +61,22 @@ export class TrackService {
       relations: { likedByUsers: true },
     });
     const userFromDb = await this.userRepository.findOneBy({ id: user.id });
-    if (track.likedByUsers.map((u) => u.id).includes(user.id)) {
+
+    const previouslyLiked = track.likedByUsers
+      .map((u) => u.id)
+      .includes(user.id);
+
+    if (previouslyLiked) {
       track.likedByUsers.splice(track.likedByUsers.indexOf(userFromDb));
     } else {
       track.likedByUsers.push(userFromDb);
     }
 
-    return await this.trackRepository.save(track);
+    const trackResponse = await this.trackRepository.save(track);
+
+    return {
+      ...trackResponse,
+      liked: !previouslyLiked,
+    };
   }
 }

@@ -11,7 +11,7 @@ import { updateSelectedPlaylist } from '../../state/playlists/playlist.action';
 import { isNotUndefined } from '../../type-guards';
 
 @Component({
-  selector: 'music-match-playlist-form-dialog',
+  selector: 'playlist-form-dialog',
   templateUrl: './playlist-form-dialog.component.html',
   styleUrls: ['./playlist-form-dialog.component.css'],
 })

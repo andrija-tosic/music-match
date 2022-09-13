@@ -8,18 +8,18 @@ export interface ArtistsState extends EntityState<Artist> {
   selectedArtistId: number;
 }
 
-export const artistAdapter = createEntityAdapter<Artist>();
+export const adapter = createEntityAdapter<Artist>();
 
-export const initialState: ArtistsState = artistAdapter.getInitialState({
+export const initialState: ArtistsState = adapter.getInitialState({
   selectedArtistId: -1,
 });
 
 export const artistReducer = createReducer(
   initialState,
-  on(SearchActions.querySearchSuccess, (state, searchResults) =>
-    artistAdapter.upsertMany(searchResults.searchResults.artists, state)
+  on(SearchActions.queriedSearch, (state, searchResults) =>
+    adapter.upsertMany(searchResults.searchResults.artists, state)
   ),
-  on(ReleaseActions.loadReleaseSuccess, (state, { release }) =>
-    artistAdapter.upsertMany(release.artists, state)
+  on(ReleaseActions.loadedRelease, (state, { release }) =>
+    adapter.upsertMany(release.artists, state)
   )
 );

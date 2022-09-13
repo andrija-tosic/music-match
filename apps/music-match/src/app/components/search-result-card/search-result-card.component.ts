@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'music-match-search-result-card',
+  selector: 'search-result-card',
   templateUrl: './search-result-card.component.html',
   styleUrls: ['./search-result-card.component.css'],
 })

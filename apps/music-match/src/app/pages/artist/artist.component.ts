@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'music-match-artist',
+  selector: 'artist',
   templateUrl: './artist.component.html',
   styleUrls: ['./artist.component.css'],
 })

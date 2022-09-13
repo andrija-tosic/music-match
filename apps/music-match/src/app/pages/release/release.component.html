@@ -4,6 +4,13 @@
   height="200"
   width="200"
 />
-<h2>{{ (this.release$ | async)?.name }}</h2>
 
-<h3>{{ (this.release$ | async)?.artists }}</h3>
+<h5>{{ (this.release$ | async)?.type | titlecase }}</h5>
+
+<h1>{{ (this.release$ | async)?.name }}</h1>
+
+<h3>{{ getArtistNames() | async }}</h3>
+
+<span>{{ (this.release$ | async)?.releaseDate | date }}</span>
+
+<tracks [item]="this.release$ | async"></tracks>

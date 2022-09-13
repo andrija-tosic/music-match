@@ -9,7 +9,7 @@ import { loadPlaylistWithTracks } from '../../state/playlists/playlist.action';
 import { isNotUndefined } from '../../type-guards';
 
 @Component({
-  selector: 'music-match-playlist',
+  selector: 'playlist',
   templateUrl: './playlist.component.html',
   styleUrls: ['./playlist.component.css'],
 })

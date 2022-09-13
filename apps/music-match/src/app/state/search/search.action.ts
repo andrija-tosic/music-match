@@ -2,10 +2,10 @@ import { SearchResultsDto } from '@music-match/entities';
 import { createAction, props } from '@ngrx/store';
 
 export const querySearch = createAction(
-  'Query search',
+  'Init query search',
   props<{ query: string }>()
 );
-export const querySearchSuccess = createAction(
-  'Query search success',
+export const queriedSearch = createAction(
+  'Queried search',
   props<{ searchResults: SearchResultsDto }>()
 );

@@ -7,17 +7,17 @@ export interface PlaylistsState extends EntityState<PlaylistEntity> {
   selectedPlaylistId: number;
 }
 
-const playlistAdapter = createEntityAdapter<PlaylistEntity>();
+const adapter = createEntityAdapter<PlaylistEntity>();
 
-export const initialState: PlaylistsState = playlistAdapter.getInitialState({
+export const initialState: PlaylistsState = adapter.getInitialState({
   selectedPlaylistId: -1,
 });
 
 export const playlistReducer = createReducer(
   initialState,
-  on(Actions.loadPlaylistWithTracksSuccess, (state, { playlist }) => {
+  on(Actions.loadedPlaylistWithTracks, (state, { playlist }) => {
     return {
-      ...playlistAdapter.upsertOne(
+      ...adapter.upsertOne(
         {
           ...playlist,
           ownerIds: playlist.owners.map(({ id }) => id),
@@ -30,20 +30,20 @@ export const playlistReducer = createReducer(
     };
   }),
   on(
-    Actions.loadUserPlaylistsSuccess,
+    Actions.loadedUserPlaylists,
     (state, { usersPlaylists, usersLikedPlaylists }) => {
       const newLikedPlaylists = <PlaylistEntity[]>usersLikedPlaylists; //.map(p =>  {return{...p, description: '', liked: true }}) ;
       const newUsersPlaylists = <PlaylistEntity[]>usersPlaylists; //.map(p => { return { ...p, description: '', liked: false}});
 
-      return playlistAdapter.upsertMany(
+      return adapter.upsertMany(
         newLikedPlaylists.concat(newUsersPlaylists),
         state
       );
     }
   ),
-  on(Actions.updateSelectedPlaylistSuccess, (state, { playlist }) => {
+  on(Actions.updatedSelectedPlaylist, (state, { playlist }) => {
     return {
-      ...playlistAdapter.upsertOne(
+      ...adapter.upsertOne(
         {
           ...playlist,
           ownerIds: playlist.owners.map(({ id }) => id),
@@ -67,12 +67,12 @@ export const playlistReducer = createReducer(
   //   };
   // }),
   on(
-    Actions.removeTracksFromPlaylistSuccess,
-    Actions.addTracksToPlaylistSuccess,
+    Actions.removedTracksFromPlaylist,
+    Actions.addedTracksToPlaylist,
     (state, { tracks }) => {
       const playlist = state.entities[state.selectedPlaylistId]!;
 
-      return playlistAdapter.updateOne(
+      return adapter.updateOne(
         {
           id: playlist.id,
           changes: {

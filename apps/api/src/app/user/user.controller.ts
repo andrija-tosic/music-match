@@ -1,3 +1,4 @@
+import { SessionGuard } from './../auth/guards/session.guard';
 import {
   Controller,
   Get,
@@ -12,14 +13,18 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from '@music-match/entities';
+import { UserFromSession } from '../decorators/user.decorator';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
-  constructor(@Inject(UserService.name) private readonly userService: UserService) {}
+  constructor(
+    @Inject(UserService.name) private readonly userService: UserService
+  ) {}
 
   @Post()
   @UsePipes(ValidationPipe)
@@ -37,6 +42,11 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
+  @Get(':id/about')
+  getAbout(@Param('id') id: string) {
+    return this.userService.getAbout(+id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
@@ -50,5 +60,11 @@ export class UserController {
   @Get(':id/playlists')
   getUsersPlaylists(@Param('id') id: string) {
     return this.userService.getUsersPlaylists(+id);
+  }
+
+  @Put(':id/toggle-following')
+  @UseGuards(SessionGuard)
+  addFriend(@Param('id') friendId: string, @UserFromSession() user) {
+    return this.userService.toggleFollowing(+friendId, user);
   }
 }

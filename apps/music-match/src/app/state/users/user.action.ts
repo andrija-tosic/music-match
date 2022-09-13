@@ -4,11 +4,13 @@ import { createAction, props } from '@ngrx/store';
 export const loadUser = createAction('Load user', props<{ id: number }>());
 
 export const loadUserSuccess = createAction(
-  'Load user success',
+  'Init load user',
   props<{ user: User }>()
 );
 
-export const setCurrentUserSuccess = createAction(
-  'Set current user success',
-  props<User>()
+export const currentUserSet = createAction('Current user set', props<User>());
+
+export const toggleUserFollowing = createAction(
+  'Toggle user following',
+  props<{ id: number }>()
 );

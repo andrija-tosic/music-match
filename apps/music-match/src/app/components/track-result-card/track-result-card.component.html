@@ -1,0 +1,7 @@
+<button mat-button [routerLink]="'/release/' + this.track?.release?.id">
+  <mat-card>
+    <img mat-card-sm-image [src]="track?.release?.imageUrl" />
+    <h3 style="text-align: left">{{ track?.name }}</h3>
+    {{ trackArtistsNames() }}
+  </mat-card>
+</button>

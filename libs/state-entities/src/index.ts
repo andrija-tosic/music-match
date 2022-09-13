@@ -1,4 +1,4 @@
-import { PlaylistDto, Release, User } from '@music-match/entities';
+import { PlaylistDto, Release, User, TrackDto } from '@music-match/entities';
 
 export type ReleaseEntity = Pick<
   Release,
@@ -11,6 +11,7 @@ export type ReleaseEntity = Pick<
 export type UserEntity = User & {
   likedPlaylistsIds: number[];
   playlistsIds: number[];
+  friendsIds: number[];
 };
 
 export class SearchEntity {

@@ -6,16 +6,26 @@ import { AuthService } from '../../services/auth.service';
 import { constants } from '../../constants';
 
 @Component({
-  selector: 'music-match-login',
+  selector: 'login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
   form;
-  constructor(private authService: AuthService, private router: Router, private _snackBar: MatSnackBar) {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private _snackBar: MatSnackBar
+  ) {
     this.form = new FormGroup({
-      username: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-      password: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(8)] }),
+      username: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      password: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.minLength(8)],
+      }),
     });
   }
 

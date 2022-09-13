@@ -15,7 +15,7 @@ import { querySearch } from '../../state/search/search.action';
 import { isNotUndefined } from '../../type-guards';
 
 @Component({
-  selector: 'music-match-search',
+  selector: 'search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css'],
 })
@@ -63,5 +63,9 @@ export class SearchComponent implements OnInit {
           .select(selectPlaylistsFromSearchResults(query))
           .pipe(filter(isNotUndefined));
       });
+  }
+
+  ngAfterViewInit() {
+    this.input.nativeElement.focus();
   }
 }

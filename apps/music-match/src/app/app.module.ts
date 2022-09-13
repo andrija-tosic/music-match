@@ -1,3 +1,5 @@
+import { TrackEffects } from './state/tracks/track.effects';
+import { ReleaseEffects } from './state/releases/release.effects';
 import { UserEffects } from './state/users/user.effects';
 import { ArtistsEffects } from './state/artists/artist.effects';
 import { trackReducer } from './state/tracks/track.reducer';
@@ -42,6 +44,7 @@ import { SearchEffects } from './state/search/search.effects';
 import { artistReducer } from './state/artists/artist.reducer';
 import { userReducer } from './state/users/user.reducer';
 import { SearchResultCardComponent } from './components/search-result-card/search-result-card.component';
+import { TrackResultCardComponent } from './components/track-result-card/track-result-card.component';
 
 @NgModule({
   declarations: [
@@ -60,18 +63,19 @@ import { SearchResultCardComponent } from './components/search-result-card/searc
     PlaylistFormDialogComponent,
     SearchComponent,
     SearchResultCardComponent,
+    TrackResultCardComponent,
   ],
   imports: [
     BrowserModule,
     RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' }),
     StoreModule.forRoot<AppState>(
       {
-        releases: releaseReducer,
         artists: artistReducer,
+        releases: releaseReducer,
+        tracks: trackReducer,
         users: userReducer,
         playlists: playlistReducer,
         searchResults: searchReducer,
-        tracks: trackReducer,
       },
       {
         metaReducers: !environment.production ? [] : [],
@@ -82,10 +86,12 @@ import { SearchResultCardComponent } from './components/search-result-card/searc
       }
     ),
     EffectsModule.forRoot([
+      ArtistsEffects,
+      ReleaseEffects,
+      TrackEffects,
+      UserEffects,
       PlaylistsEffects,
       SearchEffects,
-      ArtistsEffects,
-      UserEffects,
     ]),
     !environment.production
       ? StoreDevtoolsModule.instrument({

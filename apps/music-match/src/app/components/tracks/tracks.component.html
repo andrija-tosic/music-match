@@ -1,19 +1,31 @@
 <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
   <ng-container>
-    <div *ngFor="let track of (playlist$ | async)?.tracks; let i = index">
+    <div *ngFor="let track of item?.tracks; let i = index">
       <div class="example-box" cdkDrag>
         <ng-container>
           <span>
-            {{ track.name }}
+            {{ track?.name }}
           </span>
           <span>
-            {{ track.release.name }}
+            {{ track?.release?.name }}
           </span>
           <span>
-            {{ track.duration }}
+            {{ track && track.duration * 1000 | date: 'mm:ss' }}
           </span>
+
           <div class="edit-icons">
-            <button mat-icon-button color="warn" (click)="removeTrack(track)">
+            <button mat-icon-button (click)="toggleTrackLike(track)">
+              <mat-icon color="warn">{{
+                track?.liked ? 'favorite' : 'favorite_outline'
+              }}</mat-icon>
+            </button>
+
+            <button
+              mat-icon-button
+              color="warn"
+              *ngIf="this.type === 'playlist'"
+              (click)="removeTrackFromPlaylist(track)"
+            >
               <mat-icon class="material-icons-outlined">delete</mat-icon>
             </button>
           </div>

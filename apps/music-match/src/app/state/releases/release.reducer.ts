@@ -8,16 +8,16 @@ export interface ReleasesState extends EntityState<ReleaseEntity> {
   selectedReleaseId: number;
 }
 
-export const releaseAdapter = createEntityAdapter<ReleaseEntity>();
+export const adapter = createEntityAdapter<ReleaseEntity>();
 
-export const initialState: ReleasesState = releaseAdapter.getInitialState({
+export const initialState: ReleasesState = adapter.getInitialState({
   selectedReleaseId: -1,
 });
 
 export const releaseReducer = createReducer(
   initialState,
-  on(SearchActions.querySearchSuccess, (state, { searchResults }) =>
-    releaseAdapter.upsertMany(
+  on(SearchActions.queriedSearch, (state, { searchResults }) =>
+    adapter.upsertMany(
       searchResults.releases.map((release) => {
         return {
           ...release,
@@ -28,14 +28,18 @@ export const releaseReducer = createReducer(
       state
     )
   ),
-  on(ReleaseActions.loadReleaseSuccess, (state, { release }) =>
-    releaseAdapter.upsertOne(
-      {
-        ...release,
-        trackIds: release.tracks.map(({ id }) => id),
-        artistIds: release.artists.map(({ id }) => id),
-      },
-      state
-    )
-  )
+
+  on(ReleaseActions.loadedRelease, (state, { release }) => {
+    return {
+      ...adapter.upsertOne(
+        {
+          ...release,
+          trackIds: release.tracks.map(({ id }) => id),
+          artistIds: release.artists.map(({ id }) => id),
+        },
+        state
+      ),
+      selectedReleaseId: release.id,
+    };
+  })
 );

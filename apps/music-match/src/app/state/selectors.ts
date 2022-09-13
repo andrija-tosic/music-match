@@ -33,6 +33,7 @@ export const selectedRelease = createSelector(
   selectTracks,
   (releases, artists, tracks) => {
     const release = releases.entities[releases.selectedReleaseId];
+
     return release
       ? {
           ...release,

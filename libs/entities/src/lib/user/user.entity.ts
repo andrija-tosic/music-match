@@ -6,7 +6,9 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
+  RelationCount,
   Unique,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
@@ -27,7 +29,7 @@ export class User {
   @Column()
   name: string;
 
-  @Column({ default: ''})
+  @Column({ default: '' })
   imageUrl: string;
 
   @Column({
@@ -49,7 +51,10 @@ export class User {
   @JoinTable()
   likedTracks: Track[];
 
-  @ManyToMany(() => User)
+  @ManyToMany(() => User, (user) => user.following)
   @JoinTable()
-  friends: User[];
+  followers: User[];
+
+  @ManyToMany(() => User, (user) => user.followers)
+  following: User[];
 }

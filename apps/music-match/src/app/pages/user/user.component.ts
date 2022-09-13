@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 import { isNotUndefined } from '../../type-guards';
 
 @Component({
-  selector: 'music-match-user',
+  selector: 'user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css'],
 })

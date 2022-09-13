@@ -5,40 +5,42 @@
   matInputAutofocus
   placeholder="Search"
   type="text"
+  autofocus
   (keyup)="this.subject.next($any($event).target.value)"
 />
 
 <div>
   <h3 *ngIf="(artistResult$ | async)?.length">Artists</h3>
-  <music-match-search-result-card
+  <search-result-card
     *ngFor="let artist of artistResult$ | async"
     [item]="artist"
     [type]="'artist'"
-  ></music-match-search-result-card>
+  ></search-result-card>
 
   <h3 *ngIf="(releaseResult$ | async)?.length">Releases</h3>
-  <music-match-search-result-card
+  <search-result-card
     *ngFor="let release of releaseResult$ | async"
     [item]="release"
     [type]="'release'"
-  ></music-match-search-result-card>
+  ></search-result-card>
 
   <h3 *ngIf="(trackResult$ | async)?.length">Tracks</h3>
-  <music-match-search-result-card *ngFor="let track of trackResult$ | async">{{
-    track | json
-  }}</music-match-search-result-card>
+  <track-result-card
+    *ngFor="let track of trackResult$ | async"
+    [track]="track"
+  ></track-result-card>
 
   <h3 *ngIf="(userResult$ | async)?.length">Users</h3>
-  <music-match-search-result-card
+  <search-result-card
     *ngFor="let user of userResult$ | async"
     [item]="user"
     [type]="'user'"
-  ></music-match-search-result-card>
+  ></search-result-card>
 
   <h3 *ngIf="(playlistResult$ | async)?.length">Playlists</h3>
-  <music-match-search-result-card
+  <search-result-card
     *ngFor="let playlist of playlistResult$ | async"
     [item]="playlist"
     [type]="'playlist'"
-  ></music-match-search-result-card>
+  ></search-result-card>
 </div>
