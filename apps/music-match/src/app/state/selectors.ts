@@ -6,6 +6,8 @@ import { selectTracks } from './tracks/track.selector';
 import { createSelector } from '@ngrx/store';
 import { selectPlaylists } from './playlists/playlist.selector';
 import { isNotUndefined } from '../type-guards';
+import { selectUserCompatibilityById } from './user-compatibility/user-compatibility.selector';
+import { Artist } from '@music-match/entities';
 
 export const selectedPlaylist = createSelector(
   selectPlaylists,
@@ -13,6 +15,7 @@ export const selectedPlaylist = createSelector(
   selectUsers,
   (playlists, tracks, users) => {
     const playlist = playlists.entities[playlists.selectedPlaylistId];
+
     return playlist
       ? {
           ...playlist,
@@ -47,3 +50,26 @@ export const selectedRelease = createSelector(
       : undefined;
   }
 );
+
+export interface UserCompatibilityReport {
+  artists: Artist[];
+  genres: string[];
+}
+
+export const selectUserCompatibilityReport = (id: number) =>
+  createSelector(
+    selectArtists,
+    selectUserCompatibilityById(id),
+    (artists, userCompatibility) => {
+      return userCompatibility
+        ? {
+            artists: userCompatibility.artistResults
+              .map(({ artistId }) => artistId)
+              .map((artistId) => artists.entities[artistId])
+              .filter(isNotUndefined),
+
+            genres: userCompatibility.genreResults.map(({ genre }) => genre),
+          }
+        : undefined;
+    }
+  );

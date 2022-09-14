@@ -1,3 +1,4 @@
+import { userCompatibilityReducer } from './state/user-compatibility/user-compatibility.reducer';
 import { TrackEffects } from './state/tracks/track.effects';
 import { ReleaseEffects } from './state/releases/release.effects';
 import { UserEffects } from './state/users/user.effects';
@@ -33,7 +34,6 @@ import { RegisterComponent } from './pages/register/register.component';
 import { HomeComponent } from './pages/home/home.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { PlaylistComponent } from './pages/playlist/playlist.component';
-import { MusicItemComponent } from './components/music-item/music-item.component';
 import { TracksComponent } from './components/tracks/tracks.component';
 import { UserComponent } from './pages/user/user.component';
 import { ReleaseComponent } from './pages/release/release.component';
@@ -45,6 +45,9 @@ import { artistReducer } from './state/artists/artist.reducer';
 import { userReducer } from './state/users/user.reducer';
 import { SearchResultCardComponent } from './components/search-result-card/search-result-card.component';
 import { TrackResultCardComponent } from './components/track-result-card/track-result-card.component';
+import { AddToPlaylistFormDialogComponent } from './components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
+import { UserMusicMatchEffects } from './state/user-compatibility/user-compatibility.effects';
+import { LibraryComponent } from './pages/library/library.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +58,6 @@ import { TrackResultCardComponent } from './components/track-result-card/track-r
     HomeComponent,
     SidenavComponent,
     PlaylistComponent,
-    MusicItemComponent,
     TracksComponent,
     UserComponent,
     ReleaseComponent,
@@ -64,6 +66,8 @@ import { TrackResultCardComponent } from './components/track-result-card/track-r
     SearchComponent,
     SearchResultCardComponent,
     TrackResultCardComponent,
+    AddToPlaylistFormDialogComponent,
+    LibraryComponent,
   ],
   imports: [
     BrowserModule,
@@ -76,6 +80,7 @@ import { TrackResultCardComponent } from './components/track-result-card/track-r
         users: userReducer,
         playlists: playlistReducer,
         searchResults: searchReducer,
+        userCompatibilities: userCompatibilityReducer,
       },
       {
         metaReducers: !environment.production ? [] : [],
@@ -92,6 +97,7 @@ import { TrackResultCardComponent } from './components/track-result-card/track-r
       UserEffects,
       PlaylistsEffects,
       SearchEffects,
+      UserMusicMatchEffects,
     ]),
     !environment.production
       ? StoreDevtoolsModule.instrument({

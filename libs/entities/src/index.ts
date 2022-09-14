@@ -33,3 +33,5 @@ export * from './lib/track/dto/track.dto';
 export * from './lib/genre/genre.entity';
 
 export * from './lib/search-results.dto';
+
+export * from './lib/user-compatibility/user-compatibility.dto';

@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { TrackDto } from '@music-match/entities';
-import { EntityState, createEntityAdapter } from '@ngrx/entity';
+import { EntityState, createEntityAdapter, Update } from '@ngrx/entity';
 import * as SearchActions from '../search/search.action';
 import * as PlaylistActions from '../playlists/playlist.action';
 import * as ReleaseActions from '../releases/release.action';
@@ -10,9 +10,9 @@ export interface TracksState extends EntityState<TrackDto> {
   selectedTrackId: number;
 }
 
-export const adapter = createEntityAdapter<TrackDto>();
+const adapter = createEntityAdapter<TrackDto>();
 
-export const initialState: TracksState = adapter.getInitialState({
+const initialState: TracksState = adapter.getInitialState({
   selectedTrackId: -1,
 });
 
@@ -30,4 +30,18 @@ export const trackReducer = createReducer(
   on(TrackActions.toggledTrackLike, (state, { track }) =>
     adapter.updateOne({ id: track.id, changes: { liked: track.liked } }, state)
   )
+  // on(
+  //   PlaylistActions.addedTracksToPlaylist,
+  //   PlaylistActions.removedTracksFromPlaylist,
+  //   (state, { tracks }) => {
+  //     const updates: Update<TrackDto>[] = tracks.map((track) => {
+  //       return {
+  //         id: track.id,
+  //         changes: track,
+  //       };
+  //     });
+
+  //     return adapter.updateMany(updates, state);
+  //   }
+  // )
 );

@@ -1,3 +1,4 @@
+import { UserCompatibilityState } from './state/user-compatibility/user-compatibility.reducer';
 import { TracksState } from './state/tracks/track.reducer';
 import { UsersState } from './state/users/user.reducer';
 import { ReleasesState } from './state/releases/release.reducer';
@@ -12,4 +13,5 @@ export interface AppState {
   users: UsersState;
   playlists: PlaylistsState;
   searchResults: SearchState;
+  userCompatibilities: UserCompatibilityState;
 }

@@ -1,4 +1,4 @@
-import { User } from '@music-match/entities';
+import { User, UserCompatibilityDto } from '@music-match/entities';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
@@ -11,5 +11,11 @@ export class UserService {
 
   getUser(id: number) {
     return this.http.get<User>(`${environment.api}/users/${id}`);
+  }
+
+  getUserMusicMatch(id: number) {
+    return this.http.get<UserCompatibilityDto>(
+      `${environment.api}/users/${id}/music-match`
+    );
   }
 }

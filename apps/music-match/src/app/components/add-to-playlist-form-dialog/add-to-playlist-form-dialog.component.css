@@ -1,0 +1,7 @@
+.dialog {
+  min-height: 24em;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

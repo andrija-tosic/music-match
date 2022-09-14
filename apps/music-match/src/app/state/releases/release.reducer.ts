@@ -8,9 +8,9 @@ export interface ReleasesState extends EntityState<ReleaseEntity> {
   selectedReleaseId: number;
 }
 
-export const adapter = createEntityAdapter<ReleaseEntity>();
+const adapter = createEntityAdapter<ReleaseEntity>();
 
-export const initialState: ReleasesState = adapter.getInitialState({
+const initialState: ReleasesState = adapter.getInitialState({
   selectedReleaseId: -1,
 });
 

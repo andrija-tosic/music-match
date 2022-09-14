@@ -1,1 +1,19 @@
-<p>artist works!</p>
+<mat-card>
+  <mat-card-title-group>
+    <img mat-card-xl-image [src]="artist?.imageUrl" width="200" height="200" />
+    <mat-card-title><h5>Artist</h5></mat-card-title>
+
+    <mat-card-title>
+      <h3>{{ artist?.name }}</h3>
+    </mat-card-title>
+  </mat-card-title-group>
+  <mat-card-content>
+    <button (click)="openArtistFormDialog('Update')" mat-button>
+      <mat-icon>edit</mat-icon> Edit artist
+    </button>
+
+    <button color="warn" (click)="deleteArtist()" mat-button>
+      <mat-icon>delete</mat-icon> Delete artist
+    </button>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,27 @@
+<ng-container *ngIf="this.track">
+  <h2>Add "{{ track.name }}" to playlist</h2>
+  <button
+    *ngFor="let playlist of playlist$ | async"
+    mat-button
+    (click)="addToPlaylist(playlist)"
+  >
+    <mat-card>
+      <img mat-card-sm-image [src]="playlist.imageUrl" />
+      {{ playlist.name }}
+    </mat-card>
+  </button>
+</ng-container>
+
+<ng-container *ngIf="!this.track">
+  <h2>Add collaborator to playlist</h2>
+  <button
+    *ngFor="let friend of friend$ | async"
+    mat-button
+    (click)="addCollaboratorToPlaylist(friend)"
+  >
+    <mat-card>
+      <img mat-card-sm-image [src]="friend.imageUrl" />
+      {{ friend.name }}
+    </mat-card>
+  </button>
+</ng-container>

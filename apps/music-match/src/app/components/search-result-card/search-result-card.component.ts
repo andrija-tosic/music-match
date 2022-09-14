@@ -9,16 +9,10 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./search-result-card.component.css'],
 })
 export class SearchResultCardComponent implements OnInit {
-  @Input() item$: Observable<
-    Artist[] | ReleaseEntity[] | User[] | PlaylistEntity[]
-  >;
-
   @Input() item: Artist | ReleaseEntity | User | PlaylistEntity | undefined;
   @Input() type: 'artist' | 'release' | 'user' | 'playlist';
 
-  constructor() {
-    console.log(this.item);
-  }
+  constructor() {}
 
   ngOnInit(): void {}
 

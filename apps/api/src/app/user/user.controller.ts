@@ -39,11 +39,6 @@ export class UserController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
-  @Get(':id/about')
-  getAbout(@Param('id') id: string) {
     return this.userService.getAbout(+id);
   }
 
@@ -66,5 +61,11 @@ export class UserController {
   @UseGuards(SessionGuard)
   addFriend(@Param('id') friendId: string, @UserFromSession() user) {
     return this.userService.toggleFollowing(+friendId, user);
+  }
+
+  @Get(':id/music-match')
+  @UseGuards(SessionGuard)
+  calculateCompatibility(@Param('id') id: string, @UserFromSession() user) {
+    return this.userService.calculateCompatibility(+id, user);
   }
 }

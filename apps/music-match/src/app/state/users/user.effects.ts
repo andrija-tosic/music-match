@@ -14,7 +14,7 @@ export class UserEffects {
       switchMap(({ id }) =>
         this.userService
           .getUser(id)
-          .pipe(map((user) => UserActions.loadUserSuccess({ user })))
+          .pipe(map((user) => UserActions.loadedUser({ user })))
       )
     )
   );

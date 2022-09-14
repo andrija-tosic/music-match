@@ -15,7 +15,7 @@ import { isNotUndefined } from '../../type-guards';
   templateUrl: './playlist-form-dialog.component.html',
   styleUrls: ['./playlist-form-dialog.component.css'],
 })
-export class PlaylistFormDialogComponent implements OnInit {
+export class PlaylistFormDialogComponent {
   form;
 
   constructor(
@@ -33,14 +33,7 @@ export class PlaylistFormDialogComponent implements OnInit {
         nonNullable: true,
       }),
     });
-  }
 
-  imageUrl: string = '';
-  imageFile: any = undefined;
-
-  uploading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-  ngOnInit(): void {
     if (this.actionType === 'Update') {
       this.store
         .select(selectedPlaylist)
@@ -52,6 +45,11 @@ export class PlaylistFormDialogComponent implements OnInit {
         });
     }
   }
+
+  imageUrl: string = '';
+  imageFile: any = undefined;
+
+  uploading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   removeImage() {
     this.imageUrl = '';

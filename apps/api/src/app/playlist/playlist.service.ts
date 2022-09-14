@@ -44,7 +44,10 @@ export class PlaylistService {
   async findOne(id: number, user: User) {
     const playlist = await this.playlistRepository.findOne({
       where: { id },
-      relations: { owners: true, playlistTracks: { track: { release: true } } },
+      relations: {
+        owners: true,
+        playlistTracks: { track: { release: { artists: true } } },
+      },
     });
 
     const tracksInPlaylist = playlist.playlistTracks.map((pt) => {

@@ -1,4 +1,10 @@
-import { PlaylistDto, Release, User, TrackDto } from '@music-match/entities';
+import {
+  PlaylistDto,
+  Release,
+  User,
+  Artist,
+  UserCompatibilityDto,
+} from '@music-match/entities';
 
 export type ReleaseEntity = Pick<
   Release,
@@ -29,4 +35,19 @@ export type PlaylistEntity = Pick<
 > & {
   ownerIds: number[];
   trackIds: number[];
+};
+
+export type UsersCompatibilityEntity = Pick<
+  UserCompatibilityDto,
+  'withUserId'
+> & {
+  artistResults: {
+    artistId: number;
+    occurences: number;
+  }[];
+
+  genreResults: {
+    genre: string;
+    occurences: number;
+  }[];
 };

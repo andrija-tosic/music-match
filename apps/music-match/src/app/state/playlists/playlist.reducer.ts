@@ -9,7 +9,7 @@ export interface PlaylistsState extends EntityState<PlaylistEntity> {
 
 const adapter = createEntityAdapter<PlaylistEntity>();
 
-export const initialState: PlaylistsState = adapter.getInitialState({
+const initialState: PlaylistsState = adapter.getInitialState({
   selectedPlaylistId: -1,
 });
 
@@ -20,6 +20,7 @@ export const playlistReducer = createReducer(
       ...adapter.upsertOne(
         {
           ...playlist,
+
           ownerIds: playlist.owners.map(({ id }) => id),
           trackIds: playlist.tracks.map(({ id }) => id),
         },
@@ -53,22 +54,9 @@ export const playlistReducer = createReducer(
       ),
     };
   }),
-  // on(Actions.addTracksToPlaylistSuccess, (state, { tracks }) => {
-  //   const playlist = state.entities[state.selectedPlaylistId]!;
-
-  //   return {
-  //     ...playlistAdapter.upsertOne(
-  //       {
-  //         ...playlist,
-  //         trackIds: tracks.map(({ id }) => id),
-  //       },
-  //       state
-  //     ),
-  //   };
-  // }),
   on(
-    Actions.removedTracksFromPlaylist,
     Actions.addedTracksToPlaylist,
+    Actions.removedTracksFromPlaylist,
     (state, { tracks }) => {
       const playlist = state.entities[state.selectedPlaylistId]!;
 
@@ -82,5 +70,20 @@ export const playlistReducer = createReducer(
         state
       );
     }
-  )
+  ),
+  on(Actions.createdPlaylist, (state, { playlist }) => {
+    return {
+      ...adapter.addOne(
+        {
+          ...playlist,
+          ownerIds: playlist.owners.map(({ id }) => id),
+          trackIds: [],
+        },
+        state
+      ),
+
+      selectedPlaylistId: playlist.id,
+    };
+  }),
+  on(Actions.deletePlaylist, (state, { id }) => adapter.removeOne(id, state))
 );

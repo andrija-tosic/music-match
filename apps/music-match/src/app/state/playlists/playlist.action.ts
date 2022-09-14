@@ -25,14 +25,6 @@ export const loadedUserPlaylists = createAction(
     usersLikedPlaylists: PlaylistBaseDto[];
   }>()
 );
-export const loadPlaylist = createAction(
-  'Init load playlist',
-  props<{ id: number }>()
-);
-export const loadedPlaylist = createAction(
-  'Loaded playlist',
-  props<{ playlist: PlaylistDto }>()
-);
 
 export const loadPlaylistWithTracks = createAction(
   'Init load playlist with tracks',
@@ -66,7 +58,7 @@ export const deletePlaylist = createAction(
   props<{ id: number }>()
 );
 
-export const deletedPlaylist = createAction('Delete playlist success');
+export const deletedPlaylist = createAction('Deleted playlist');
 
 export const addTracksToPlaylist = createAction(
   'Init add tracks to playlist',

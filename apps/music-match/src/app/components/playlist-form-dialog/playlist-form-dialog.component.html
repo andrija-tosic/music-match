@@ -10,6 +10,21 @@
           type="file"
           (change)="onFileChanged($event)"
         />
+      </div>
+      <div class="dugme">
+        <form [formGroup]="form">
+          <mat-card-content>
+            <mat-form-field appearance="outline">
+              <input matInput formControlName="name" type="text" />
+              <mat-label>Name</mat-label>
+            </mat-form-field>
+            <br />
+            <mat-form-field appearance="outline">
+              <input matInput formControlName="description" type="text" />
+              <mat-label>Description</mat-label>
+            </mat-form-field>
+          </mat-card-content>
+        </form>
 
         <button
           [disabled]="this.uploading$ | async"
@@ -18,23 +33,6 @@
         >
           <mat-icon>file_upload</mat-icon> Upload image
         </button>
-      </div>
-      <div class="dugme">
-        <form [formGroup]="form">
-          <mat-card-content>
-            <div class="form-fields-container">
-              <mat-form-field appearance="outline">
-                <input matInput formControlName="name" type="text" />
-                <mat-label>Name</mat-label>
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <input matInput formControlName="description" type="text" />
-                <mat-label>Description</mat-label>
-              </mat-form-field>
-            </div>
-          </mat-card-content>
-        </form>
-
         <button
           [disabled]="!this.imageUrl || (this.uploading$ | async)"
           (click)="removeImage()"
@@ -54,22 +52,6 @@
         align-items: center;
       "
     >
-      <mat-icon
-        class="user-icon"
-        mat-card-sm-image
-        *ngIf="this.imageUrl === ''"
-      >
-        school
-      </mat-icon>
-
-      <mat-icon
-        class="user-icon"
-        mat-card-sm-image
-        *ngIf="this.imageUrl === ''"
-      >
-        account_circle
-      </mat-icon>
-
       <img
         class="user-img"
         *ngIf="this.imageUrl !== ''"

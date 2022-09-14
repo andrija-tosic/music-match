@@ -16,7 +16,27 @@ export const selectUsersByIds = (ids: number[]) =>
     ids.map((id) => users.entities[id]).filter(isNotUndefined)
   );
 
-export const selectUsersPlaylists = createSelector(
+export const selectCurrentUser = createSelector(
+  selectUsers,
+  (users) => users.entities[users.currentUserId]
+);
+
+export const selectCurrentUsersFriends = createSelector(
+  selectUsers,
+  selectCurrentUser,
+  (users, user) => {
+    console.log(
+      user?.following.map(({ id }) => id).map((id) => users.entities[id])
+    );
+
+    return user?.following
+      .map(({ id }) => id)
+      .map((id) => users.entities[id])
+      .filter(isNotUndefined);
+  }
+);
+
+export const selectCurrentUsersPlaylists = createSelector(
   selectUsers,
   selectPlaylists,
   (users, playlists) =>

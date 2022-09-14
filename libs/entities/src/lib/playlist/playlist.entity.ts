@@ -28,7 +28,10 @@ export class Playlist {
   })
   owners: User[];
 
-  @ManyToMany(() => User, (user) => user.likedPlaylists, { cascade: true })
+  @ManyToMany(() => User, (user) => user.likedPlaylists, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   likedByUsers: User[];
 
   @OneToMany(() => PlaylistTrack, (pt) => pt.playlist, { cascade: true })

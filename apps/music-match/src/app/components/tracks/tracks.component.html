@@ -1,14 +1,23 @@
 <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
   <ng-container>
-    <div *ngFor="let track of item?.tracks; let i = index">
+    <div *ngFor="let track of tracks; let i = index">
       <div class="example-box" cdkDrag>
         <ng-container>
           <span>
-            {{ track?.name }}
+            {{ i + 1 }}
           </span>
           <span>
-            {{ track?.release?.name }}
+            {{ track?.name }}
           </span>
+          <a [routerLink]="'/release/' + track?.release?.id">
+            {{ track?.release?.name }}
+          </a>
+          <a
+            [routerLink]="'/artist/' + artist?.id"
+            *ngFor="let artist of track?.release?.artists"
+          >
+            {{ artist.name }}
+          </a>
           <span>
             {{ track && track.duration * 1000 | date: 'mm:ss' }}
           </span>
@@ -18,6 +27,10 @@
               <mat-icon color="warn">{{
                 track?.liked ? 'favorite' : 'favorite_outline'
               }}</mat-icon>
+            </button>
+
+            <button mat-icon-button (click)="addTrackToPlaylist(track)">
+              <mat-icon>add</mat-icon>
             </button>
 
             <button

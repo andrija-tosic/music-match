@@ -1,7 +1,7 @@
 import { PlaylistFormDialogComponent } from './../playlist-form-dialog/playlist-form-dialog.component';
 import { AppState } from './../../app.state';
 import {
-  selectUsersPlaylists,
+  selectCurrentUsersPlaylists,
   selectUsersLikedPlaylists,
 } from './../../state/users/user.selector';
 import {
@@ -27,7 +27,7 @@ export class SidenavComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(loadCurrentUserPlaylists());
-    this.usersPlaylist$ = this.store.select(selectUsersPlaylists);
+    this.usersPlaylist$ = this.store.select(selectCurrentUsersPlaylists);
     this.likedPlaylist$ = this.store.select(selectUsersLikedPlaylists);
   }
 

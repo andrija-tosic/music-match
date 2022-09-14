@@ -1,3 +1,4 @@
+import { LibraryComponent } from './pages/library/library.component';
 import { SearchComponent } from './pages/search/search.component';
 import { PlaylistComponent } from './pages/playlist/playlist.component';
 import { RegisterComponent } from './pages/register/register.component';
@@ -25,6 +26,7 @@ const routes: Routes = [
       { path: 'artist/:id', component: ArtistComponent },
       { path: 'user/:id', component: UserComponent },
       { path: 'search', component: SearchComponent },
+      { path: 'library', component: LibraryComponent },
     ],
   },
   { path: 'login', component: LoginComponent },

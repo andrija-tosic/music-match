@@ -2,18 +2,26 @@
   <mat-sidenav mode="side" opened>
     <h3>Music Match</h3>
     <mat-nav-list>
-      <mat-list-item [routerLink]="'/home'"> Home </mat-list-item>
-      <mat-list-item [routerLink]="'/search'"> Search </mat-list-item>
-      <mat-list-item [routerLink]="'/liked'"> Liked tracks </mat-list-item>
+      <mat-list-item [routerLink]="'/home'" [routerLinkActive]="['is-active']"
+        ><mat-icon>home</mat-icon> Home
+      </mat-list-item>
+      <mat-list-item [routerLink]="'/search'" [routerLinkActive]="['is-active']"
+        ><mat-icon>search</mat-icon> Search
+      </mat-list-item>
+      <mat-list-item [routerLink]="'/liked'" [routerLinkActive]="['is-active']"
+        ><mat-icon>favorite</mat-icon> Favorite tracks
+      </mat-list-item>
       <mat-divider></mat-divider>
       <button (click)="openPlaylistFormDialog('Create')" mat-button>
-        <mat-icon>add</mat-icon> New Playlist
+        <mat-icon>add</mat-icon> New playlist
       </button>
       <h4>Your playlists</h4>
       <mat-list-item
         *ngFor="let playlist of usersPlaylist$ | async"
         [routerLink]="'/playlist/' + playlist.id"
+        [routerLinkActive]="['is-active']"
       >
+        <img [src]="playlist.imageUrl" width="40" height="40" />
         {{ playlist.name }}
       </mat-list-item>
 
@@ -21,6 +29,7 @@
       <mat-list-item
         *ngFor="let playlist of likedPlaylist$ | async"
         [routerLink]="'/playlist/' + playlist.id"
+        [routerLinkActive]="['is-active']"
       >
         {{ playlist.name }}
       </mat-list-item>

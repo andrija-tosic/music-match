@@ -11,7 +11,7 @@ const adapter = createEntityAdapter<SearchEntity>({
   selectId: (entity: SearchEntity) => entity.query,
 });
 
-export const initialState: SearchState = adapter.getInitialState({
+const initialState: SearchState = adapter.getInitialState({
   latestQuery: '',
 });
 

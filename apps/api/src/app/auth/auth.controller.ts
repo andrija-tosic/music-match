@@ -1,9 +1,10 @@
+import { UserService } from './../user/user.service';
 import { RolesGuard } from './guards/roles.guard';
 import { Role } from './../decorators/role.decorator';
 import { UserFromSession } from '../decorators/user.decorator';
 import { SessionGuard } from './guards/session.guard';
 import { AuthService } from './auth.service';
-import { CreateUserDto, Roles } from '@music-match/entities';
+import { CreateUserDto, Roles, User } from '@music-match/entities';
 import {
   Controller,
   Post,
@@ -27,7 +28,8 @@ import { Request, Response } from 'express';
 @UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(
-    @Inject(AuthService.name) private readonly authService: AuthService
+    @Inject(AuthService.name) private readonly authService: AuthService,
+    @Inject(UserService.name) private readonly userService: UserService
   ) {}
 
   @Post('login')
@@ -42,7 +44,11 @@ export class AuthController {
       throw new UnauthorizedException();
     }
 
-    return user;
+    const userFromDb = await this.userService.findOneByUsername(
+      userDto.username
+    );
+
+    return await this.userService.getAbout(userFromDb.id);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -53,17 +59,22 @@ export class AuthController {
 
   @Get('session')
   @UseGuards(SessionGuard)
-  getUserSession(@UserFromSession() user) {
+  async getUserSession(@UserFromSession() user: User) {
     // Logger.log('a');
     // Logger.log(user, 'user');
-    return user;
+
+    // return user;
+
+    return await this.userService.getAbout(user.id);
   }
 
   @Get('admin')
   @UseGuards(SessionGuard)
   @UseGuards(RolesGuard)
   @Role(Roles.Admin)
-  getAdminSession(@UserFromSession() admin) {
-    return admin;
+  async getAdminSession(@UserFromSession() admin: User) {
+    // return admin;
+
+    return await this.userService.getAbout(admin.id);
   }
 }

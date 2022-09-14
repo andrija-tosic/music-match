@@ -4,3 +4,7 @@ mat-sidenav-container {
   background: transparent;
   position: fixed;
 }
+
+.is-active {
+  background-color: rgb(143, 162, 218);
+}
