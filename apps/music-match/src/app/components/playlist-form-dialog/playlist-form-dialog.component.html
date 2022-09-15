@@ -26,13 +26,13 @@
           </mat-card-content>
         </form>
 
-        <button
+        <!-- <button
           [disabled]="this.uploading$ | async"
           (click)="fileInput.click()"
           mat-raised-button
         >
           <mat-icon>file_upload</mat-icon> Upload image
-        </button>
+        </button> -->
         <button
           [disabled]="!this.imageUrl || (this.uploading$ | async)"
           (click)="removeImage()"
@@ -52,12 +52,18 @@
         align-items: center;
       "
     >
-      <img
-        class="user-img"
-        *ngIf="this.imageUrl !== ''"
-        mat-card-sm-image
-        [src]="this.imageUrl"
-      />
+      <button
+        [disabled]="this.uploading$ | async"
+        (click)="fileInput.click()"
+        mat-raised-button
+      >
+        <img
+          class="user-img"
+          mat-card-sm-image
+          [src]="this.imageUrl"
+          src-fallback="/assets/music-fallback.jpg"
+        />
+      </button>
     </div>
   </div>
 

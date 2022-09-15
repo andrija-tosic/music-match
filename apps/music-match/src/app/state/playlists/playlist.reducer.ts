@@ -1,4 +1,4 @@
-import * as Actions from './playlist.action';
+import * as Actions from './playlist.actions';
 import { createReducer, on } from '@ngrx/store';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { PlaylistEntity } from '@music-match/state-entities';
@@ -85,5 +85,31 @@ export const playlistReducer = createReducer(
       selectedPlaylistId: playlist.id,
     };
   }),
-  on(Actions.deletePlaylist, (state, { id }) => adapter.removeOne(id, state))
+  on(Actions.deletePlaylist, (state, { id }) => adapter.removeOne(id, state)),
+
+  on(Actions.addedCollaboratorToPlaylist, (state, { playlist }) =>
+    adapter.updateOne(
+      {
+        id: playlist.id,
+        changes: {
+          ownerIds: playlist.owners.map(({ id }) => id),
+        },
+      },
+      state
+    )
+  ),
+
+  on(Actions.removeCollaboratorFromPlaylist, (state, { playlistId, userId }) =>
+    adapter.updateOne(
+      {
+        id: playlistId,
+        changes: {
+          ownerIds: state.entities[playlistId]!.ownerIds.filter(
+            (id) => id !== userId
+          ),
+        },
+      },
+      state
+    )
+  )
 );

@@ -1,12 +1,12 @@
 import { AppState } from './../app.state';
 import { selectArtists } from './artists/artist.selector';
-import { selectReleases } from './releases/release.selector';
-import { selectUsers } from './users/user.selector';
-import { selectTracks } from './tracks/track.selector';
+import { selectReleases } from './releases/release.selectors';
+import { selectUsers } from './users/user.selectors';
+import { selectTracks } from './tracks/track.selectors';
 import { createSelector } from '@ngrx/store';
-import { selectPlaylists } from './playlists/playlist.selector';
+import { selectPlaylists } from './playlists/playlist.selectors';
 import { isNotUndefined } from '../type-guards';
-import { selectUserCompatibilityById } from './user-compatibility/user-compatibility.selector';
+import { selectUserCompatibilityById } from './user-compatibility/user-compatibility.selectors';
 import { Artist } from '@music-match/entities';
 
 export const selectedPlaylist = createSelector(

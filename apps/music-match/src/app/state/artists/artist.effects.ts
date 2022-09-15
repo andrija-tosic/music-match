@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { switchMap, map } from 'rxjs';
 import { AppState } from '../../app.state';
 import { PlaylistService } from '../../services/playlist.service';
-import * as ReleaseActions from '../releases/release.action';
+import * as ReleaseActions from '../releases/release.actions';
 
 @Injectable()
 export class ArtistsEffects {

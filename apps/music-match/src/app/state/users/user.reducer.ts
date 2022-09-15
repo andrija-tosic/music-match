@@ -1,9 +1,9 @@
 import { createReducer, on } from '@ngrx/store';
 import { UserEntity } from '@music-match/state-entities';
 import { EntityState, createEntityAdapter, Update } from '@ngrx/entity';
-import * as SearchActions from '../search/search.action';
-import * as UserActions from './user.action';
-import * as PlaylistActions from '../playlists/playlist.action';
+import * as SearchActions from '../search/search.actions';
+import * as UserActions from './user.actions';
+import * as PlaylistActions from '../playlists/playlist.actions';
 
 export interface UsersState extends EntityState<UserEntity> {
   selectedUserId: number;
@@ -22,26 +22,43 @@ export const userReducer = createReducer(
   on(SearchActions.queriedSearch, (state, searchResults) =>
     adapter.upsertMany(searchResults.searchResults.users as UserEntity[], state)
   ),
-  on(UserActions.currentUserSet, (state, user) => {
+  on(UserActions.setCurrentUserId, (state, { id }) => {
     return {
-      ...adapter.upsertOne(
-        { ...user, likedPlaylistsIds: [], playlistsIds: [], friendsIds: [] },
-        state
-      ),
-      currentUserId: user.id,
+      ...state,
+      currentUserId: id,
     };
   }),
-  on(UserActions.loadedUser, (state, { user }) =>
-    adapter.upsertOne(
-      {
-        ...user,
-        playlistsIds: user.playlists.map(({ id }) => id),
-        likedPlaylistsIds: user.likedPlaylists.map(({ id }) => id),
-        friendsIds: user.following.map(({ id }) => id),
-      },
+  on(UserActions.loadedUser, (state, { user }) => {
+    console.log('[Reducer] UserActions.loadedUser');
+
+    return adapter.upsertMany(
+      [
+        {
+          ...user,
+          playlistsIds: user.playlists.map(({ id }) => id),
+          likedPlaylistsIds: user.likedPlaylists.map(({ id }) => id),
+          friendsIds: user.following.map(({ id }) => id),
+        },
+        ...user.following.map((friend) => {
+          return {
+            ...friend,
+            likedPlaylistsIds: [],
+            playlistsIds: [],
+            friendsIds: [],
+          };
+        }),
+        ...user.followers.map((follower) => {
+          return {
+            ...follower,
+            likedPlaylistsIds: [],
+            playlistsIds: [],
+            friendsIds: [],
+          };
+        }),
+      ],
       state
-    )
-  ),
+    );
+  }),
   on(
     PlaylistActions.loadedUserPlaylists,
     (state, { usersPlaylists, usersLikedPlaylists }) =>

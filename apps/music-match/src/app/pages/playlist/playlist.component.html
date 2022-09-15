@@ -1,56 +1,66 @@
-<!-- <music-item [playlist]="playlist$ | async"></music-item> -->
+<ng-container *ngIf="playlist$ | async as playlist">
+  <mat-card>
+    <mat-card-title-group>
+      <ng-container *ngFor="let user of playlist.owners">
+        <div *ngIf="user.id !== (currentUser$ | async)?.id">
+          <button mat-button [routerLink]="'/user/' + user.id">
+            <mat-card-title>
+              <h6>
+                <img [src]="user.imageUrl" width="30" height="30" />
+                {{ user.name }}
+              </h6>
+            </mat-card-title>
+          </button>
 
-<mat-card>
-  <mat-card-title-group>
-    <img
-      mat-card-xl-image
-      [src]="(playlist$ | async)?.imageUrl"
-      width="200"
-      height="200"
-    />
-    <mat-card-title><h5>Playlist</h5></mat-card-title>
+          <button mat-button (click)="onRemoveCollaborator(playlist, user)">
+            <mat-icon>remove</mat-icon>Remove
+          </button>
+        </div>
+      </ng-container>
 
-    <mat-card-title>
-      <h3>{{ (playlist$ | async)?.name }}</h3>
-    </mat-card-title>
-    <mat-card-title
-      ><h6>{{ (playlist$ | async)?.description }}</h6>
-    </mat-card-title>
+      <img
+        mat-card-xl-image
+        [src]="playlist.imageUrl"
+        src-fallback="/assets/music-fallback.jpg"
+        width="200"
+        height="200"
+      />
+      <mat-card-title><h5>Playlist</h5></mat-card-title>
 
-    <mat-card-title *ngFor="let user of (playlist$ | async)?.owners">
-      <h6>
-        <img [src]="user.imageUrl" width="30" height="30" /> {{ user.name }}
-      </h6>
-    </mat-card-title>
-  </mat-card-title-group>
-  <mat-card-content>
-    <button color="accent" (click)="toggleLike()" mat-button>
-      <mat-icon
-        [class]="(playlist$ | async)?.liked ? '' : 'material-icons-outline'"
-      >
-        favorite
-      </mat-icon>
-      Favorite
-    </button>
+      <mat-card-title>
+        <h3>{{ playlist.name }}</h3>
+      </mat-card-title>
+      <mat-card-title
+        ><h6>{{ playlist.description }}</h6>
+      </mat-card-title>
+    </mat-card-title-group>
+    <mat-card-content>
+      <button color="accent" (click)="toggleLike()" mat-button>
+        <mat-icon [class]="playlist.liked ? '' : 'material-icons-outline'">
+          favorite
+        </mat-icon>
+        Favorite
+      </button>
 
-    <button mat-button (click)="onAddCollaboratorToPlaylist()">
-      <mat-icon>group_add</mat-icon> Add collaborator
-    </button>
+      <button mat-button (click)="onAddCollaboratorToPlaylist(playlist)">
+        <mat-icon>group_add</mat-icon> Add collaborator
+      </button>
 
-    <button (click)="openPlaylistFormDialog('Update')" mat-button>
-      <mat-icon>edit</mat-icon> Edit playlist
-    </button>
+      <button (click)="openPlaylistFormDialog('Update')" mat-button>
+        <mat-icon>edit</mat-icon> Edit playlist
+      </button>
 
-    <button color="warn" (click)="deletePlaylist()" mat-button>
-      <mat-icon>delete</mat-icon> Delete playlist
-    </button>
-  </mat-card-content>
-</mat-card>
+      <button color="warn" (click)="deletePlaylist(playlist)" mat-button>
+        <mat-icon>delete</mat-icon> Delete playlist
+      </button>
+    </mat-card-content>
+  </mat-card>
 
-<tracks
-  (onRemoveTrack)="onRemoveTrack($event)"
-  (onToggleLike)="onToggleLike($event)"
-  (onAddToPlaylist)="onAddTrackToPlaylist($event)"
-  [tracks]="(playlist$ | async)?.tracks"
-  [type]="'playlist'"
-></tracks>
+  <tracks
+    (onRemoveTrack)="onRemoveTrack($event, playlist)"
+    (onToggleLike)="onToggleLike($event)"
+    (onAddToPlaylist)="onAddTrackToPlaylist($event)"
+    [tracks]="playlist.tracks"
+    [type]="'playlist'"
+  ></tracks>
+</ng-container>

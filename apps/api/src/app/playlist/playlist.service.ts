@@ -81,7 +81,7 @@ export class PlaylistService {
     await this.playlistRepository.update(id, updatePlaylistDto);
     return await this.findOne(id, user);
   }
-
+  
   async remove(id: number) {
     return await this.playlistRepository.delete(id);
   }
@@ -177,9 +177,9 @@ export class PlaylistService {
     return await this.playlistRepository.save(playlist);
   }
 
-  async addOwner(id: number, ownerId: number, user: User) {
+  async addOwner(playlistId: number, newOwnerId: number, user: User) {
     const playlist = await this.playlistRepository.findOne({
-      where: { id },
+      where: { id: playlistId },
       relations: { owners: true },
     });
 
@@ -187,7 +187,7 @@ export class PlaylistService {
       throw new UnauthorizedException();
     }
 
-    const newOwner = await this.userRepository.findOneBy({ id: ownerId });
+    const newOwner = await this.userRepository.findOneBy({ id: newOwnerId });
 
     if (!newOwner) {
       throw new NotFoundException();
@@ -198,9 +198,9 @@ export class PlaylistService {
     return await this.playlistRepository.save(playlist);
   }
 
-  async removeOwner(id: number, ownerId: number, user: User) {
+  async removeOwner(playlistId: number, ownerId: number, user: User) {
     const playlist = await this.playlistRepository.findOne({
-      where: { id },
+      where: { id: playlistId },
       relations: { owners: true },
     });
 

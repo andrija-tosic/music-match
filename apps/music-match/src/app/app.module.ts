@@ -29,6 +29,8 @@ import { AngularMaterialModule } from './angular-material.module';
 import { LayoutModule } from '@angular/cdk/layout';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
+import { ImgFallbackModule } from 'ngx-img-fallback';
+
 import { NavigationComponent } from './pages/navigation/navigation.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -48,6 +50,7 @@ import { TrackResultCardComponent } from './components/track-result-card/track-r
 import { AddToPlaylistFormDialogComponent } from './components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
 import { UserMusicMatchEffects } from './state/user-compatibility/user-compatibility.effects';
 import { LibraryComponent } from './pages/library/library.component';
+import { AddCollaboratorFormDialogComponent } from './components/add-collaborator-form-dialog/add-collaborator-form-dialog.component';
 
 @NgModule({
   declarations: [
@@ -68,6 +71,7 @@ import { LibraryComponent } from './pages/library/library.component';
     TrackResultCardComponent,
     AddToPlaylistFormDialogComponent,
     LibraryComponent,
+    AddCollaboratorFormDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -114,6 +118,7 @@ import { LibraryComponent } from './pages/library/library.component';
     HttpClientModule,
     LayoutModule,
     DragDropModule,
+    ImgFallbackModule,
   ],
   providers: [
     AuthService,

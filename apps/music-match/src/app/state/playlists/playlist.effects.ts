@@ -2,34 +2,21 @@ import { selectedPlaylist } from '../selectors';
 import { Store } from '@ngrx/store';
 import { Injectable } from '@angular/core';
 import { createEffect, Actions, ofType } from '@ngrx/effects';
-import { filter, first, map, switchMap } from 'rxjs';
+import { filter, first, map, switchMap, tap } from 'rxjs';
 import { PlaylistService } from '../../services/playlist.service';
-import * as PlaylistActions from './playlist.action';
+import * as PlaylistActions from './playlist.actions';
 import { AppState } from '../../app.state';
 import { isNotUndefined } from '../../type-guards';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class PlaylistsEffects {
   constructor(
     private action$: Actions,
     private playlistService: PlaylistService,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private router: Router
   ) {}
-  loadUserPlaylist$ = createEffect(() =>
-    this.action$.pipe(
-      ofType(PlaylistActions.loadUserPlaylists),
-      switchMap(({ id }) =>
-        this.playlistService.getUserPlaylists(id).pipe(
-          map(({ playlists, likedPlaylists }) =>
-            PlaylistActions.loadedUserPlaylists({
-              usersPlaylists: playlists,
-              usersLikedPlaylists: likedPlaylists,
-            })
-          )
-        )
-      )
-    )
-  );
 
   loadCurrentUserPlaylist$ = createEffect(() =>
     this.action$.pipe(
@@ -75,7 +62,18 @@ export class PlaylistsEffects {
     )
   );
 
-  updatePlaylist$ = createEffect(() =>
+  navigateToCreatedPlaylist$ = createEffect(
+    () =>
+      this.action$.pipe(
+        ofType(PlaylistActions.createdPlaylist),
+        tap(({ playlist }) =>
+          this.router.navigate(['/playlist/' + playlist.id])
+        )
+      ),
+    { dispatch: false }
+  );
+
+  updateSelectedPlaylist$ = createEffect(() =>
     this.action$.pipe(
       ofType(PlaylistActions.updateSelectedPlaylist),
       switchMap(({ playlist }) =>
@@ -96,15 +94,18 @@ export class PlaylistsEffects {
     )
   );
 
-  deletePlaylist$ = createEffect(() =>
-    this.action$.pipe(
-      ofType(PlaylistActions.deletePlaylist),
-      switchMap(({ id }) =>
-        this.playlistService
-          .deletePlaylist(id)
-          .pipe(map(() => PlaylistActions.deletedPlaylist()))
-      )
-    )
+  deletePlaylist$ = createEffect(
+    () =>
+      this.action$.pipe(
+        ofType(PlaylistActions.deletePlaylist),
+        tap(({ id }) => console.log(id)),
+        switchMap(({ id }) =>
+          this.playlistService
+            .deletePlaylist(id)
+            .pipe(map(() => PlaylistActions.deletedPlaylist()))
+        )
+      ),
+    { dispatch: false }
   );
 
   addTracksToPlaylist$ = createEffect(() =>
@@ -131,6 +132,33 @@ export class PlaylistsEffects {
               PlaylistActions.removedTracksFromPlaylist({ tracks })
             )
           )
+      )
+    )
+  );
+
+  addCollaboratorToPlaylist$ = createEffect(() =>
+    this.action$.pipe(
+      ofType(PlaylistActions.addCollaboratorToPlaylist),
+      tap(({ playlistId, userId }) => console.log(playlistId, userId)),
+      switchMap(({ playlistId, userId }) =>
+        this.playlistService.addCollaborator(playlistId, userId).pipe(
+          map((playlist) =>
+            PlaylistActions.addedCollaboratorToPlaylist({
+              playlist,
+            })
+          )
+        )
+      )
+    )
+  );
+
+  removeCollaboratorFromPlaylist$ = createEffect(() =>
+    this.action$.pipe(
+      ofType(PlaylistActions.removeCollaboratorFromPlaylist),
+      switchMap(({ playlistId, userId }) =>
+        this.playlistService
+          .removeCollaborator(playlistId, userId)
+          .pipe(map(() => PlaylistActions.removedCollaboratorFromPlaylist()))
       )
     )
   );

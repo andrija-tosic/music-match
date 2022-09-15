@@ -2,7 +2,7 @@ import { TrackService } from './../../services/track.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, map, tap, mergeMap } from 'rxjs';
-import * as TrackActions from './track.action';
+import * as TrackActions from './track.actions';
 
 @Injectable()
 export class TrackEffects {

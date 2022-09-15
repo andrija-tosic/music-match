@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
 import { constants } from '../constants';
 import { catchError, map, Observable, of, tap, BehaviorSubject } from 'rxjs';
 import { AppState } from '../app.state';
-import { currentUserSet } from '../state/users/user.action';
+import { setCurrentUserId, loadUser } from '../state/users/user.actions';
 
 @Injectable({
   providedIn: 'root',
@@ -23,9 +23,7 @@ export class AuthService {
   isAuthenticated(): Observable<boolean> {
     return this.getUser().pipe(
       map((user: User) => {
-        console.log(user);
         if (user) {
-          this.store.dispatch(currentUserSet(user));
           return true;
         }
 
@@ -45,10 +43,12 @@ export class AuthService {
       })
       .pipe(
         tap((user: User) => {
-          console.log(user);
           localStorage.setItem('user', JSON.stringify(user));
 
-          this.store.dispatch(currentUserSet(user));
+          console.log('[login] loadUser');
+
+          this.store.dispatch(loadUser({ id: user.id }));
+          this.store.dispatch(setCurrentUserId({ id: user.id }));
         })
       );
   }
@@ -69,7 +69,14 @@ export class AuthService {
 
   public autoLogin() {
     const loggedInUser: string | null = localStorage.getItem('user');
+
     if (!loggedInUser) return;
-    this.store.dispatch(currentUserSet(JSON.parse(loggedInUser)));
+
+    const user: User = JSON.parse(loggedInUser);
+
+    console.log('[autoLogin] loadUser');
+
+    this.store.dispatch(loadUser({ id: user.id }));
+    this.store.dispatch(setCurrentUserId({ id: user.id }));
   }
 }

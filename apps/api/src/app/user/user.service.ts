@@ -49,7 +49,12 @@ export class UserService {
   async getAbout(id: number) {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: { playlists: true, likedPlaylists: true, following: true },
+      relations: {
+        playlists: true,
+        likedPlaylists: true,
+        following: true,
+        followers: true,
+      },
     });
 
     return user;

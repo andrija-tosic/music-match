@@ -4,7 +4,7 @@ import { Playlist } from '../playlist.entity';
 import { PlaylistBaseDto } from './playlist-base.dto';
 
 export type PlaylistDto = PlaylistBaseDto &
-  Pick<Playlist, 'description' | 'imageUrl'> & {
+  Pick<Playlist, 'id' | 'description' | 'imageUrl'> & {
     owners: Pick<User, 'id' | 'name' | 'imageUrl'>[];
     tracks: TrackDto[];
     liked: boolean;

@@ -1,0 +1,17 @@
+<ng-container *ngIf="(friend$ | async)?.length">
+  <h2>Choose a friend to collaborate with</h2>
+  <button
+    *ngFor="let friend of friend$ | async"
+    mat-button
+    (click)="addCollaboratorToPlaylist(friend)"
+  >
+    <mat-card>
+      <img mat-card-sm-image [src]="friend.imageUrl" />
+      {{ friend.name }}
+    </mat-card>
+  </button>
+</ng-container>
+
+<h3 *ngIf="!(friend$ | async)?.length">
+  No more friends to add as collaborators.
+</h3>

@@ -1,8 +1,8 @@
 import { MatDialog } from '@angular/material/dialog';
 import { AddToPlaylistFormDialogComponent } from './../../components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
-import { toggleTrackLike } from './../../state/tracks/track.action';
+import { toggleTrackLike } from '../../state/tracks/track.actions';
 import { selectedRelease } from './../../state/selectors';
-import { loadRelease } from './../../state/releases/release.action';
+import { loadRelease } from '../../state/releases/release.actions';
 import { filter, map, Observable, tap, switchMap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute } from '@angular/router';

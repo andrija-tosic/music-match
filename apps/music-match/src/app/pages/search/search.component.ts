@@ -6,12 +6,19 @@ import {
   selectReleasesFromSearchResults,
   selectTracksFromSearchResults,
   selectUsersFromSearchResults,
-} from './../../state/search/search.selector';
+} from '../../state/search/search.selectors';
 import { Store } from '@ngrx/store';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { debounceTime, filter, map, Subject, Observable } from 'rxjs';
+import {
+  debounceTime,
+  filter,
+  map,
+  Subject,
+  Observable,
+  distinctUntilChanged,
+} from 'rxjs';
 import { AppState } from '../../app.state';
-import { querySearch } from '../../state/search/search.action';
+import { querySearch } from '../../state/search/search.actions';
 import { isNotUndefined } from '../../type-guards';
 
 @Component({
@@ -35,8 +42,9 @@ export class SearchComponent implements OnInit {
     this.subject
       .pipe(
         debounceTime(300),
-        map((text) => text.trim()),
-        filter((text) => !!text)
+        distinctUntilChanged(),
+        filter((text) => !!text),
+        map((text) => text.trim())
       )
       .subscribe((query) => {
         console.log(query);

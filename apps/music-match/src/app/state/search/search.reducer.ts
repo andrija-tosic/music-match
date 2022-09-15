@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { EntityState, createEntityAdapter } from '@ngrx/entity';
-import * as Actions from './search.action';
+import * as Actions from './search.actions';
 import { SearchEntity } from '@music-match/state-entities';
 
 export interface SearchState extends EntityState<SearchEntity> {

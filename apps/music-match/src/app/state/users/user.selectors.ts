@@ -1,6 +1,6 @@
 import { AppState } from '../../app.state';
 import { createSelector } from '@ngrx/store';
-import { selectPlaylists } from '../playlists/playlist.selector';
+import { selectPlaylists } from '../playlists/playlist.selectors';
 import { isNotUndefined } from '../../type-guards';
 
 export const selectUsers = createSelector(
@@ -25,10 +25,6 @@ export const selectCurrentUsersFriends = createSelector(
   selectUsers,
   selectCurrentUser,
   (users, user) => {
-    console.log(
-      user?.following.map(({ id }) => id).map((id) => users.entities[id])
-    );
-
     return user?.following
       .map(({ id }) => id)
       .map((id) => users.entities[id])

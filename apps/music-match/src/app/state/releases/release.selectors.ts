@@ -1,4 +1,4 @@
-import { AppState } from './../../app.state';
+import { AppState } from '../../app.state';
 import { createSelector } from '@ngrx/store';
 import { isNotUndefined } from '../../type-guards';
 

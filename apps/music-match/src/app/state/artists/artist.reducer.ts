@@ -1,8 +1,8 @@
 import { createReducer, on } from '@ngrx/store';
 import { Release, Artist } from '@music-match/entities';
 import { EntityState, createEntityAdapter } from '@ngrx/entity';
-import * as SearchActions from '../search/search.action';
-import * as ReleaseActions from '../releases/release.action';
+import * as SearchActions from '../search/search.actions';
+import * as ReleaseActions from '../releases/release.actions';
 import * as UserCompatibilityActions from '../user-compatibility/user-compatibility.actions';
 
 export interface ArtistsState extends EntityState<Artist> {

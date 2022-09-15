@@ -1,8 +1,8 @@
-import { selectTracks } from './../tracks/track.selector';
-import { selectPlaylists } from './../playlists/playlist.selector';
-import { selectUsers } from './../users/user.selector';
-import { selectArtists } from './../artists/artist.selector';
-import { selectReleases } from './../releases/release.selector';
+import { selectTracks } from '../tracks/track.selectors';
+import { selectPlaylists } from '../playlists/playlist.selectors';
+import { selectUsers } from '../users/user.selectors';
+import { selectArtists } from '../artists/artist.selector';
+import { selectReleases } from '../releases/release.selectors';
 import { createSelector } from '@ngrx/store';
 import { AppState } from '../../app.state';
 import { isNotUndefined } from '../../type-guards';

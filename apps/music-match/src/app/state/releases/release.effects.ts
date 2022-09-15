@@ -2,7 +2,7 @@ import { ReleaseService } from './../../services/release.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, map, tap, mergeMap } from 'rxjs';
-import * as ReleaseActions from './release.action';
+import * as ReleaseActions from './release.actions';
 
 @Injectable()
 export class ReleaseEffects {

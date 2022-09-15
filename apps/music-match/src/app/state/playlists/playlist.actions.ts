@@ -10,16 +10,16 @@ import {
 import { createAction, props } from '@ngrx/store';
 
 export const loadUserPlaylists = createAction(
-  'Init load user playlists',
+  '[Playlist] Init load user playlists',
   props<{ id: number }>()
 );
 
 export const loadCurrentUserPlaylists = createAction(
-  'Init load current user playlists'
+  '[Playlist] Init load current user playlists'
 );
 
 export const loadedUserPlaylists = createAction(
-  'Loaded user playlists',
+  '[Playlist] Loaded user playlists',
   props<{
     usersPlaylists: PlaylistBaseDto[];
     usersLikedPlaylists: PlaylistBaseDto[];
@@ -27,53 +27,72 @@ export const loadedUserPlaylists = createAction(
 );
 
 export const loadPlaylistWithTracks = createAction(
-  'Init load playlist with tracks',
+  '[Playlist] Init load playlist with tracks',
   props<{ id: number }>()
 );
 export const loadedPlaylistWithTracks = createAction(
-  'Loaded playlist with tracks',
+  '[Playlist] Loaded playlist with tracks',
   props<{ playlist: PlaylistDto }>()
 );
 
 export const createPlaylist = createAction(
-  'Init create playlist',
+  '[Playlist] Init create playlist',
   props<{ playlist: CreatePlaylistDto }>()
 );
 
 export const createdPlaylist = createAction(
-  'Created playlist',
+  '[Playlist] Created playlist',
   props<{ playlist: PlaylistDto }>()
 );
 export const updateSelectedPlaylist = createAction(
-  'Init update selected playlist',
+  '[Playlist] Init update selected playlist',
   props<{ playlist: UpdatePlaylistDto }>()
 );
 export const updatedSelectedPlaylist = createAction(
-  'Updated playlist',
+  '[Playlist] Updated playlist',
   props<{ playlist: PlaylistDto }>()
 );
 
 export const deletePlaylist = createAction(
-  'Deleted playlist',
+  '[Playlist] Deleted playlist',
   props<{ id: number }>()
 );
 
-export const deletedPlaylist = createAction('Deleted playlist');
+export const deletedPlaylist = createAction('[Playlist] Deleted playlist');
 
 export const addTracksToPlaylist = createAction(
-  'Init add tracks to playlist',
+  '[Playlist] Init add tracks to playlist',
   props<{ id: number; tracksDto: AddTrackDto }>()
 );
 export const addedTracksToPlaylist = createAction(
-  'Added tracks to playlist',
+  '[Playlist] Added tracks to playlist',
   props<{ tracks: TrackDto[] }>()
 );
 
 export const removeTracksFromPlaylist = createAction(
-  'Init remove tracks from playlist',
+  '[Playlist] Init remove tracks from playlist',
   props<{ id: number; removeTrackDto: RemoveTrackDto }>()
 );
 export const removedTracksFromPlaylist = createAction(
-  'Removed tracks from playlist',
+  '[Playlist] Removed tracks from playlist',
   props<{ tracks: TrackDto[] }>()
+);
+
+export const addCollaboratorToPlaylist = createAction(
+  '[Playlist] Init add collaborator to playlist',
+  props<{ playlistId: number; userId: number }>()
+);
+
+export const addedCollaboratorToPlaylist = createAction(
+  '[Playlist] Added collaborator to playlist',
+  props<{ playlist: PlaylistDto }>()
+);
+
+export const removeCollaboratorFromPlaylist = createAction(
+  '[Playlist] Init remove collaborator from playlist',
+  props<{ playlistId: number; userId: number }>()
+);
+
+export const removedCollaboratorFromPlaylist = createAction(
+  '[Playlist] Init removed collaborator from playlist'
 );

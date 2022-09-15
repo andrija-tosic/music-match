@@ -3,7 +3,7 @@ import { SearchService } from './../../search.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, map } from 'rxjs';
-import * as SearchActions from '../search/search.action';
+import * as SearchActions from './search.actions';
 
 @Injectable()
 export class SearchEffects {

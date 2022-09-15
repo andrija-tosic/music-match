@@ -1,10 +1,10 @@
 import { createReducer, on } from '@ngrx/store';
 import { TrackDto } from '@music-match/entities';
 import { EntityState, createEntityAdapter, Update } from '@ngrx/entity';
-import * as SearchActions from '../search/search.action';
-import * as PlaylistActions from '../playlists/playlist.action';
-import * as ReleaseActions from '../releases/release.action';
-import * as TrackActions from './track.action';
+import * as SearchActions from '../search/search.actions';
+import * as PlaylistActions from '../playlists/playlist.actions';
+import * as ReleaseActions from '../releases/release.actions';
+import * as TrackActions from './track.actions';
 
 export interface TracksState extends EntityState<TrackDto> {
   selectedTrackId: number;

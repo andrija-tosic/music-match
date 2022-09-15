@@ -21,7 +21,7 @@
         [routerLink]="'/playlist/' + playlist.id"
         [routerLinkActive]="['is-active']"
       >
-        <img [src]="playlist.imageUrl" width="40" height="40" />
+        <img [src]="playlist.imageUrl" src-fallback="/assets/music-fallback.jpg" width="40" height="40" />
         {{ playlist.name }}
       </mat-list-item>
 

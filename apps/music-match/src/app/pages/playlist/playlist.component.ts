@@ -1,20 +1,34 @@
 import { AddToPlaylistFormDialogComponent } from './../../components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
 import { PlaylistFormDialogComponent } from './../../components/playlist-form-dialog/playlist-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { PlaylistDto, TrackDto } from '@music-match/entities';
+import { PlaylistDto, TrackDto, User } from '@music-match/entities';
 import { ActivatedRoute, Router } from '@angular/router';
 import { selectedPlaylist } from '../../state/selectors';
-import { filter, Observable, tap, switchMap, take } from 'rxjs';
+import {
+  filter,
+  Observable,
+  tap,
+  switchMap,
+  take,
+  mergeMap,
+  combineLatest,
+} from 'rxjs';
 import { AppState } from './../../app.state';
 import { Store } from '@ngrx/store';
 import { Component, OnInit } from '@angular/core';
 import {
+  addCollaboratorToPlaylist,
+  addTracksToPlaylist,
   deletePlaylist,
   loadPlaylistWithTracks,
+  removeCollaboratorFromPlaylist,
   removeTracksFromPlaylist,
-} from '../../state/playlists/playlist.action';
+} from '../../state/playlists/playlist.actions';
 import { isNotUndefined } from '../../type-guards';
-import { toggleTrackLike } from '../../state/tracks/track.action';
+import { toggleTrackLike } from '../../state/tracks/track.actions';
+import { PlaylistEntity, UserEntity } from '@music-match/state-entities';
+import { AddCollaboratorFormDialogComponent } from '../../components/add-collaborator-form-dialog/add-collaborator-form-dialog.component';
+import { selectCurrentUser } from '../../state/users/user.selectors';
 
 @Component({
   selector: 'playlist',
@@ -23,6 +37,7 @@ import { toggleTrackLike } from '../../state/tracks/track.action';
 })
 export class PlaylistComponent {
   playlist$: Observable<PlaylistDto>;
+  currentUser$: Observable<UserEntity>;
 
   constructor(
     private store: Store<AppState>,
@@ -37,17 +52,19 @@ export class PlaylistComponent {
     this.playlist$ = this.store
       .select(selectedPlaylist)
       .pipe(filter(isNotUndefined));
+
+    this.currentUser$ = this.store
+      .select(selectCurrentUser)
+      .pipe(filter(isNotUndefined));
   }
 
-  onRemoveTrack(trackNumber: number) {
-    this.playlist$.pipe(take(1)).subscribe((playlist) => {
-      this.store.dispatch(
-        removeTracksFromPlaylist({
-          id: playlist.id,
-          removeTrackDto: { number: trackNumber },
-        })
-      );
-    });
+  onRemoveTrack(trackNumber: number, playlist: PlaylistDto) {
+    this.store.dispatch(
+      removeTracksFromPlaylist({
+        id: playlist.id,
+        removeTrackDto: { number: trackNumber },
+      })
+    );
   }
 
   onToggleLike(trackId: number) {
@@ -56,12 +73,51 @@ export class PlaylistComponent {
 
   onAddTrackToPlaylist(track: TrackDto) {
     const dialogRef = this.dialog.open(AddToPlaylistFormDialogComponent, {
-      data: track,
+      data: 'Playlist',
+    });
+
+    dialogRef
+      .afterClosed()
+      .subscribe((playlist: PlaylistEntity | undefined) => {
+        if (playlist) {
+          this.store.dispatch(
+            addTracksToPlaylist({
+              id: playlist.id,
+              tracksDto: { trackId: track.id },
+            })
+          );
+          this.router.navigate(['/playlist/' + playlist.id]);
+        }
+      });
+  }
+
+  onAddCollaboratorToPlaylist(playlist: PlaylistDto) {
+    const dialogRef = this.dialog.open(AddCollaboratorFormDialogComponent, {
+      data: playlist,
+    });
+
+    dialogRef.afterClosed().subscribe((user: User | undefined) => {
+      if (user) {
+        this.store.dispatch(
+          addCollaboratorToPlaylist({
+            playlistId: playlist.id,
+            userId: user.id,
+          })
+        );
+      }
     });
   }
 
-  onAddCollaboratorToPlaylist() {
-    const dialogRef = this.dialog.open(AddToPlaylistFormDialogComponent);
+  onRemoveCollaborator(
+    playlist: PlaylistDto,
+    collaborator: Pick<User, 'id' | 'name' | 'imageUrl'>
+  ) {
+    this.store.dispatch(
+      removeCollaboratorFromPlaylist({
+        playlistId: playlist.id,
+        userId: collaborator.id,
+      })
+    );
   }
 
   playlistOwnersName$() {
@@ -76,12 +132,10 @@ export class PlaylistComponent {
     });
   }
 
-  deletePlaylist() {
-    this.playlist$.pipe(take(1)).subscribe((playlist) => {
-      this.store.dispatch(deletePlaylist({ id: playlist.id }));
+  deletePlaylist(playlist: PlaylistDto) {
+    this.store.dispatch(deletePlaylist({ id: playlist.id }));
 
-      this.router.navigate(['/home']);
-    });
+    this.router.navigate(['/home']);
   }
 
   toggleLike() {}

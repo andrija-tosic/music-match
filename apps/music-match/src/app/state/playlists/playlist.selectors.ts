@@ -1,5 +1,5 @@
-import { selectTracksByIds } from './../tracks/track.selector';
-import { AppState } from './../../app.state';
+import { selectTracksByIds } from '../tracks/track.selectors';
+import { AppState } from '../../app.state';
 import { createSelector } from '@ngrx/store';
 
 export const selectPlaylists = createSelector(

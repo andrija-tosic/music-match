@@ -78,4 +78,18 @@ export class PlaylistService {
       }
     );
   }
+
+  addCollaborator(playlistId: number, userId: number) {
+    return this.http.post<PlaylistDto>(
+      `${environment.api}/playlists/${playlistId}/owners/${userId}`,
+      {}
+    );
+  }
+
+  removeCollaborator(playlistId: number, userId: number) {
+    return this.http.delete<void>(
+      `${environment.api}/playlists/${playlistId}/owners/${userId}`,
+      {}
+    );
+  }
 }

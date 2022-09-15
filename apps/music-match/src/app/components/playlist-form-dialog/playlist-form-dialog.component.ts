@@ -1,4 +1,7 @@
-import { createPlaylist } from './../../state/playlists/playlist.action';
+import {
+  createdPlaylist,
+  createPlaylist,
+} from '../../state/playlists/playlist.actions';
 import { selectedPlaylist } from '../../state/selectors';
 import { Store } from '@ngrx/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -7,7 +10,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, filter, take } from 'rxjs';
 import { FileService } from '../../services/file.service';
 import { AppState } from '../../app.state';
-import { updateSelectedPlaylist } from '../../state/playlists/playlist.action';
+import { updateSelectedPlaylist } from '../../state/playlists/playlist.actions';
 import { isNotUndefined } from '../../type-guards';
 
 @Component({

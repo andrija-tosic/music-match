@@ -3,11 +3,8 @@ import { AppState } from './../../app.state';
 import {
   selectCurrentUsersPlaylists,
   selectUsersLikedPlaylists,
-} from './../../state/users/user.selector';
-import {
-  loadUserPlaylists,
-  loadCurrentUserPlaylists,
-} from './../../state/playlists/playlist.action';
+} from '../../state/users/user.selectors';
+import { loadCurrentUserPlaylists } from '../../state/playlists/playlist.actions';
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable } from 'rxjs';
