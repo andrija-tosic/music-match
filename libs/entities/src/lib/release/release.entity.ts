@@ -2,7 +2,14 @@ import { Genre } from '../genre/genre.entity';
 import { Track } from './../track/track.entity';
 import { Artist } from './../artist/artist.entity';
 import { ReleaseType } from './release-type';
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Release {
@@ -24,14 +31,20 @@ export class Release {
   })
   type: ReleaseType;
 
-  @ManyToMany(() => Artist, { onDelete: 'CASCADE', cascade: true })
-  @JoinTable()
+  @ManyToMany(() => Artist, (artist) => artist.releases, {
+    onDelete: 'CASCADE',
+    cascade: true,
+  })
   artists: Artist[];
 
-  @OneToMany(() => Track, (track) => track.release, { cascade: ['insert', 'update'] })
+  @OneToMany(() => Track, (track) => track.release, {
+    cascade: ['insert', 'update'],
+  })
   tracks: Track[];
 
-  @ManyToMany(() => Genre, (genre) => genre.releases, { cascade: ['insert', 'update'] })
+  @ManyToMany(() => Genre, (genre) => genre.releases, {
+    cascade: ['insert', 'update'],
+  })
   @JoinTable()
   genres: Genre[];
 }

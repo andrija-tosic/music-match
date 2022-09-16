@@ -1,15 +1,11 @@
-import { TrackDto } from '@music-match/entities';
-import { PlaylistEntity, UserEntity } from '@music-match/state-entities';
-import {
-  selectCurrentUsersFriends,
-  selectCurrentUsersPlaylists,
-} from '../../state/users/user.selectors';
-import { filter, Observable, tap } from 'rxjs';
+import { Component } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { PlaylistEntity } from '@music-match/state-entities';
 import { Store } from '@ngrx/store';
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { PlaylistFormDialogComponent } from '../playlist-form-dialog/playlist-form-dialog.component';
+import { Observable } from 'rxjs';
 import { AppState } from '../../app.state';
+import { selectCurrentUsersPlaylists } from '../../state/users/user.selectors';
+import { PlaylistFormDialogComponent } from '../playlist-form-dialog/playlist-form-dialog.component';
 
 @Component({
   selector: 'music-match-add-to-playlist-form-dialog',

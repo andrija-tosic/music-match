@@ -2,14 +2,19 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddToPlaylistFormDialogComponent } from './../../components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
 import { toggleTrackLike } from '../../state/tracks/track.actions';
 import { selectedRelease } from './../../state/selectors';
-import { loadRelease } from '../../state/releases/release.actions';
+import {
+  deleteRelease,
+  loadRelease,
+} from '../../state/releases/release.actions';
 import { filter, map, Observable, tap, switchMap } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { AppState } from '../../app.state';
 import { ReleaseDto, TrackDto } from '@music-match/entities';
 import { isNotUndefined } from '../../type-guards';
+import { addTracksToPlaylist } from '../../state/playlists/playlist.actions';
+import { PlaylistEntity } from '@music-match/state-entities';
 
 @Component({
   selector: 'release',
@@ -20,7 +25,8 @@ export class ReleaseComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private store: Store<AppState>,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) {}
 
   release$: Observable<ReleaseDto>;
@@ -55,6 +61,7 @@ export class ReleaseComponent implements OnInit {
         release.genres
           .map(({ type }) =>
             type
+              .toString()
               .split('')
               .map((w) => w[0].toUpperCase() + w.substring(1))
               .join('')
@@ -69,14 +76,28 @@ export class ReleaseComponent implements OnInit {
   }
 
   onAddTrackToPlaylist(track: TrackDto) {
-    console.log('addtrack');
-
     const dialogRef = this.dialog.open(AddToPlaylistFormDialogComponent, {
       data: track,
     });
+
+    dialogRef
+      .afterClosed()
+      .subscribe((playlist: PlaylistEntity | undefined) => {
+        if (playlist) {
+          this.store.dispatch(
+            addTracksToPlaylist({
+              id: playlist.id,
+              tracksDto: { trackId: track.id },
+            })
+          );
+        }
+      });
   }
 
   openReleaseFormDialog(type: 'Create' | 'Update') {}
 
-  deleteRelease() {}
+  dispatchDeleteRelease(release: ReleaseDto) {
+    this.store.dispatch(deleteRelease(release));
+    this.router.navigate(['/home']);
+  }
 }

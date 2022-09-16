@@ -1,4 +1,9 @@
-import { Release, ReleaseDto } from '@music-match/entities';
+import {
+  CreateReleaseDto,
+  Release,
+  ReleaseDto,
+  UpdateReleaseDto,
+} from '@music-match/entities';
 import { ReleaseEntity } from '@music-match/state-entities';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -12,5 +17,17 @@ export class ReleaseService {
 
   getRelease(id: number) {
     return this.http.get<ReleaseDto>(`${environment.api}/releases/${id}`);
+  }
+
+  createRelease(release: CreateReleaseDto) {
+    return this.http.post<Release>(`${environment.api}/releases`, release);
+  }
+
+  updateRelease(release: UpdateReleaseDto) {
+    return this.http.patch<Release>(`${environment.api}/releases`, release);
+  }
+
+  deleteRelease(id: number) {
+    return this.http.delete<void>(`${environment.api}/releases/${id}`);
   }
 }

@@ -1,4 +1,9 @@
-import { PlaylistEntity, ReleaseEntity } from '@music-match/state-entities';
+import {
+  ArtistEntity,
+  PlaylistEntity,
+  ReleaseEntity,
+  UserEntity,
+} from '@music-match/state-entities';
 import { Artist, TrackDto, User } from '@music-match/entities';
 import {
   selectPlaylistsFromSearchResults,
@@ -8,7 +13,13 @@ import {
   selectUsersFromSearchResults,
 } from '../../state/search/search.selectors';
 import { Store } from '@ngrx/store';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   debounceTime,
   filter,
@@ -27,16 +38,19 @@ import { isNotUndefined } from '../../type-guards';
   styleUrls: ['./search.component.css'],
 })
 export class SearchComponent implements OnInit {
-  artistResult$ = new Observable<Artist[]>();
-  releaseResult$ = new Observable<ReleaseEntity[]>();
-  trackResult$ = new Observable<TrackDto[]>();
-  userResult$ = new Observable<User[]>();
-  playlistResult$ = new Observable<PlaylistEntity[]>();
+  artistResult$: Observable<ArtistEntity[]>;
+  releaseResult$: Observable<ReleaseEntity[]>;
+  trackResult$: Observable<TrackDto[]>;
+  userResult$: Observable<UserEntity[]>;
+  playlistResult$: Observable<PlaylistEntity[]>;
 
-  constructor(private store: Store<AppState>) {}
+  constructor(
+    private store: Store<AppState>,
+    private cdRef: ChangeDetectorRef
+  ) {}
 
   @ViewChild('searchInput') input: ElementRef;
-  public subject: Subject<string> = new Subject();
+  public subject = new Subject<string>();
 
   ngOnInit(): void {
     this.subject
@@ -75,5 +89,7 @@ export class SearchComponent implements OnInit {
 
   ngAfterViewInit() {
     this.input.nativeElement.focus();
+
+    this.cdRef.detectChanges();
   }
 }

@@ -34,6 +34,6 @@ export class Playlist {
   })
   likedByUsers: User[];
 
-  @OneToMany(() => PlaylistTrack, (pt) => pt.playlist, { cascade: true })
+  @OneToMany(() => PlaylistTrack, (pt) => pt.playlist)
   playlistTracks: PlaylistTrack[];
 }

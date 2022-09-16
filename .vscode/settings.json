@@ -1,4 +1,7 @@
 {
   "vsicons.presets.angular": true,
-  "material-icon-theme.activeIconPack": "angular_ngrx"
+  "material-icon-theme.activeIconPack": "angular_ngrx",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  }
 }

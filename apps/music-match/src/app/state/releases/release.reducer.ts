@@ -2,6 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { EntityState, createEntityAdapter } from '@ngrx/entity';
 import * as SearchActions from '../search/search.actions';
 import * as ReleaseActions from './release.actions';
+import * as ArtistActions from '../artists/artist.actions';
 import { ReleaseEntity } from '@music-match/state-entities';
 
 export interface ReleasesState extends EntityState<ReleaseEntity> {
@@ -17,7 +18,7 @@ const initialState: ReleasesState = adapter.getInitialState({
 export const releaseReducer = createReducer(
   initialState,
   on(SearchActions.queriedSearch, (state, { searchResults }) =>
-    adapter.upsertMany(
+    adapter.addMany(
       searchResults.releases.map((release) => {
         return {
           ...release,
@@ -41,5 +42,17 @@ export const releaseReducer = createReducer(
       ),
       selectedReleaseId: release.id,
     };
-  })
+  }),
+  on(ArtistActions.loadedArtistWithReleases, (state, { artist }) =>
+    adapter.addMany(
+      artist.releases.map((release) => {
+        return {
+          ...release,
+          artistIds: [artist.id], // release.artists?.map(({ id }) => id),
+          trackIds: [], // release.tracks?.map(({ id }) => id),
+        };
+      }),
+      state
+    )
+  )
 );

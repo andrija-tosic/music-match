@@ -1,7 +1,12 @@
 import { AddToPlaylistFormDialogComponent } from './../../components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
 import { PlaylistFormDialogComponent } from './../../components/playlist-form-dialog/playlist-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { PlaylistDto, TrackDto, User } from '@music-match/entities';
+import {
+  ChangeTrackPositionDto,
+  PlaylistDto,
+  TrackDto,
+  User,
+} from '@music-match/entities';
 import { ActivatedRoute, Router } from '@angular/router';
 import { selectedPlaylist } from '../../state/selectors';
 import {
@@ -19,6 +24,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   addCollaboratorToPlaylist,
   addTracksToPlaylist,
+  changeTrackPosition,
   deletePlaylist,
   loadPlaylistWithTracks,
   removeCollaboratorFromPlaylist,
@@ -116,6 +122,20 @@ export class PlaylistComponent {
       removeCollaboratorFromPlaylist({
         playlistId: playlist.id,
         userId: collaborator.id,
+      })
+    );
+  }
+
+  onTrackPositionChange(
+    fromAndTo: ChangeTrackPositionDto,
+    playlist: PlaylistDto
+  ) {
+    const { fromIndex, toIndex } = fromAndTo;
+    this.store.dispatch(
+      changeTrackPosition({
+        playlistId: playlist.id,
+        fromIndex,
+        toIndex,
       })
     );
   }

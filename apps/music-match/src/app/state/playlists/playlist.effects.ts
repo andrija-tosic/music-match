@@ -78,8 +78,8 @@ export class PlaylistsEffects {
       ofType(PlaylistActions.updateSelectedPlaylist),
       switchMap(({ playlist }) =>
         this.store.select(selectedPlaylist).pipe(
-          first(),
           filter(isNotUndefined),
+          first(),
           switchMap((oldPlaylist) =>
             this.playlistService
               .updatePlaylist(oldPlaylist.id, playlist)
@@ -98,7 +98,6 @@ export class PlaylistsEffects {
     () =>
       this.action$.pipe(
         ofType(PlaylistActions.deletePlaylist),
-        tap(({ id }) => console.log(id)),
         switchMap(({ id }) =>
           this.playlistService
             .deletePlaylist(id)
@@ -136,10 +135,20 @@ export class PlaylistsEffects {
     )
   );
 
+  changeTrackPosition$ = createEffect(() =>
+    this.action$.pipe(
+      ofType(PlaylistActions.changeTrackPosition),
+      switchMap(({ fromIndex, toIndex, playlistId }) =>
+        this.playlistService
+          .changeTrackPosition(playlistId, fromIndex, toIndex)
+          .pipe(map((tracks) => PlaylistActions.changedTrackPosition()))
+      )
+    )
+  );
+
   addCollaboratorToPlaylist$ = createEffect(() =>
     this.action$.pipe(
       ofType(PlaylistActions.addCollaboratorToPlaylist),
-      tap(({ playlistId, userId }) => console.log(playlistId, userId)),
       switchMap(({ playlistId, userId }) =>
         this.playlistService.addCollaborator(playlistId, userId).pipe(
           map((playlist) =>

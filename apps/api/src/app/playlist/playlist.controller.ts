@@ -12,6 +12,7 @@ import {
 import { PlaylistService } from './playlist.service';
 import {
   AddTrackDto,
+  ChangeTrackPositionDto,
   CreatePlaylistDto,
   RemoveTrackDto,
   UpdatePlaylistDto,
@@ -76,6 +77,20 @@ export class PlaylistController {
     @UserFromSession() user
   ) {
     return this.playlistService.removeTrack(+id, trackDto, user);
+  }
+
+  @Patch(':id/tracks/change-position')
+  @UseGuards(SessionGuard)
+  changeTrackPosition(
+    @Param('id') id: string,
+    @Body() trackPositionChange: ChangeTrackPositionDto,
+    @UserFromSession() user: User
+  ) {
+    return this.playlistService.changeTrackPosition(
+      +id,
+      trackPositionChange,
+      user
+    );
   }
 
   @UseGuards(SessionGuard)

@@ -6,6 +6,7 @@ import {
   TrackDto,
   RemoveTrackDto,
   CreatePlaylistDto,
+  ChangeTrackPositionDto,
 } from '@music-match/entities';
 import { createAction, props } from '@ngrx/store';
 
@@ -54,7 +55,7 @@ export const updatedSelectedPlaylist = createAction(
 );
 
 export const deletePlaylist = createAction(
-  '[Playlist] Deleted playlist',
+  '[Playlist] Delete playlist',
   props<{ id: number }>()
 );
 
@@ -94,5 +95,18 @@ export const removeCollaboratorFromPlaylist = createAction(
 );
 
 export const removedCollaboratorFromPlaylist = createAction(
-  '[Playlist] Init removed collaborator from playlist'
+  '[Playlist] Removed collaborator from playlist'
+);
+
+export const changeTrackPosition = createAction(
+  '[Playlist] Init change track position',
+  props<
+    {
+      playlistId: number;
+    } & ChangeTrackPositionDto
+  >()
+);
+
+export const changedTrackPosition = createAction(
+  '[Playlist] Changed track position'
 );

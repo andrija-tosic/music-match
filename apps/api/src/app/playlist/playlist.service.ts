@@ -1,10 +1,13 @@
 import {
+  BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import {
   AddTrackDto,
+  ChangeTrackPositionDto,
   CreatePlaylistDto,
   Playlist,
   PlaylistDto,
@@ -50,9 +53,11 @@ export class PlaylistService {
       },
     });
 
-    const tracksInPlaylist = playlist.playlistTracks.map((pt) => {
-      return { ...pt.track, number: pt.number };
-    });
+    if (!playlist) throw new NotFoundException();
+
+    const tracksInPlaylist = playlist.playlistTracks
+      .sort((pt1, pt2) => pt1.number - pt2.number)
+      .map((pt) => pt.track);
 
     const userFromDb = await this.userRepository.findOne({
       where: { id: user.id },
@@ -81,7 +86,7 @@ export class PlaylistService {
     await this.playlistRepository.update(id, updatePlaylistDto);
     return await this.findOne(id, user);
   }
-  
+
   async remove(id: number) {
     return await this.playlistRepository.delete(id);
   }
@@ -130,6 +135,8 @@ export class PlaylistService {
       relations: { playlistTracks: { track: { release: true } }, owners: true },
     });
 
+    if (!playlist) throw new NotFoundException();
+
     if (!playlist.owners.map((owner) => owner.id).includes(user.id)) {
       throw new UnauthorizedException();
     }
@@ -142,24 +149,96 @@ export class PlaylistService {
       throw new NotFoundException();
     }
 
-    playlist.playlistTracks = playlist.playlistTracks
-      .filter((pt) => pt.number !== trackDto.number)
-      .map((pt) => {
-        if (pt.number > playlistTrackToRemove.number) {
-          pt.number--;
-        }
+    playlist.playlistTracks = playlist.playlistTracks.map((pt) => {
+      if (
+        pt.number > playlistTrackToRemove.number &&
+        pt.number !== trackDto.number
+      ) {
+        pt.number--;
+      }
 
-        return pt;
-      });
+      return pt;
+    });
 
     await this.playlistRepository.save(playlist);
     await this.ptRepository.delete(playlistTrackToRemove.id);
 
-    const tracksToReturn = playlist.playlistTracks.map((pt) => {
-      return { ...pt.track, number: pt.number };
-    });
+    const tracksToReturn = playlist.playlistTracks
+      .filter((pt) => pt.number !== trackDto.number)
+      .map((pt) => {
+        return { ...pt.track, number: pt.number };
+      });
 
     return tracksToReturn;
+  }
+
+  async changeTrackPosition(
+    id: number,
+    trackPositionChange: ChangeTrackPositionDto,
+    user: User
+  ) {
+    const { fromIndex, toIndex } = trackPositionChange;
+
+    const fromPosition = trackPositionChange.fromIndex + 1;
+    const toPosition = trackPositionChange.toIndex + 1;
+
+    if (fromPosition === toPosition) return;
+
+    const playlist = await this.playlistRepository.findOne({
+      where: { id },
+      relations: { playlistTracks: true },
+    });
+
+    if (!playlist) throw new NotFoundException();
+
+    const playlistTracks = playlist.playlistTracks;
+
+    const target = playlistTracks.find((pt) => pt.number === fromPosition);
+
+    console.log('fromPosition', fromPosition);
+    console.log('toPosition', toPosition);
+
+    console.table(playlistTracks.sort((p1, p2) => p1.number - p2.number));
+
+    const delta = fromPosition < toPosition ? -1 : 1;
+
+    const left = Math.min(fromPosition, toPosition);
+    const right = Math.max(fromPosition, toPosition);
+
+    if (fromPosition < 1 || toPosition > playlistTracks.length)
+      throw new BadRequestException();
+
+    const newPlaylistTracks = playlistTracks.map((pt) => {
+      console.log('checking', pt);
+      if (
+        pt.number !== fromPosition &&
+        pt.number >= left &&
+        pt.number <= right
+      ) {
+        console.log('passed', pt);
+        pt.number += delta;
+      }
+
+      return pt;
+    });
+
+    Logger.log(
+      `Moving track ${target.id} from ${fromPosition} to ${toPosition}`,
+      'Playlist'
+    );
+
+    target.number = toPosition;
+
+    console.table(
+      newPlaylistTracks.sort((pt1, pt2) => pt1.number - pt2.number)
+    );
+
+    playlist.playlistTracks = newPlaylistTracks;
+
+    await this.playlistRepository.save(playlist);
+    await this.ptRepository.save(newPlaylistTracks);
+
+    return;
   }
 
   async toggleLike(id: number, user: User) {

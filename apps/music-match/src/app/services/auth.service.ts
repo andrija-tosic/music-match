@@ -74,8 +74,6 @@ export class AuthService {
 
     const user: User = JSON.parse(loggedInUser);
 
-    console.log('[autoLogin] loadUser');
-
     this.store.dispatch(loadUser({ id: user.id }));
     this.store.dispatch(setCurrentUserId({ id: user.id }));
   }

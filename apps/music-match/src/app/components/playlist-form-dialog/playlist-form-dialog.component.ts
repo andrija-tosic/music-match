@@ -19,10 +19,10 @@ import { isNotUndefined } from '../../type-guards';
   styleUrls: ['./playlist-form-dialog.component.css'],
 })
 export class PlaylistFormDialogComponent {
-  form;
+  public form;
 
   constructor(
-    public dialogRef: MatDialogRef<PlaylistFormDialogComponent>,
+    private dialogRef: MatDialogRef<PlaylistFormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public actionType: 'Update' | 'Create',
     private fileService: FileService,
     private store: Store<AppState>
@@ -80,7 +80,7 @@ export class PlaylistFormDialogComponent {
 
         this.imageUrl = newImageUrl;
 
-        this.dispatchPlaylistAction(
+        this.dispatchCreateOrUpdatePlaylist(
           name,
           description,
           this.imageUrl,
@@ -88,7 +88,7 @@ export class PlaylistFormDialogComponent {
         );
       });
     } else {
-      this.dispatchPlaylistAction(
+      this.dispatchCreateOrUpdatePlaylist(
         name,
         description,
         this.imageUrl,
@@ -101,7 +101,7 @@ export class PlaylistFormDialogComponent {
     this.dialogRef.close();
   }
 
-  dispatchPlaylistAction(
+  dispatchCreateOrUpdatePlaylist(
     name: string,
     description: string,
     newImageUrl: string,

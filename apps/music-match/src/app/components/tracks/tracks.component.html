@@ -1,7 +1,7 @@
 <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
   <ng-container>
     <div *ngFor="let track of tracks; let i = index">
-      <div class="example-box" cdkDrag>
+      <div class="example-box" cdkDrag [cdkDragDisabled]="type !== 'playlist'">
         <ng-container>
           <span>
             {{ i + 1 }}
@@ -29,7 +29,11 @@
               }}</mat-icon>
             </button>
 
-            <button mat-icon-button (click)="addTrackToPlaylist(track)">
+            <button
+              mat-icon-button
+              *ngIf="type !== 'playlist'"
+              (click)="addTrackToPlaylist(track)"
+            >
               <mat-icon>add</mat-icon>
             </button>
 

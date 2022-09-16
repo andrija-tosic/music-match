@@ -1,3 +1,4 @@
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { TrackDto } from '@music-match/entities';
 
@@ -9,10 +10,14 @@ import { TrackDto } from '@music-match/entities';
 export class TracksComponent implements OnInit {
   constructor() {}
 
-  @Input() tracks: TrackDto[] | undefined;
-  @Output() onRemoveTrack = new EventEmitter<number>();
-  @Output() onToggleLike = new EventEmitter<number>();
-  @Output() onAddToPlaylist = new EventEmitter<TrackDto>();
+  @Input() tracks: TrackDto[];
+  @Output() trackRemove = new EventEmitter<number>();
+  @Output() likeToggle = new EventEmitter<number>();
+  @Output() addToPlaylist = new EventEmitter<TrackDto>();
+  @Output() trackPositionChange = new EventEmitter<{
+    fromIndex: number;
+    toIndex: number;
+  }>();
 
   @Input() type: 'playlist' | 'release' | 'artist';
 
@@ -23,16 +28,22 @@ export class TracksComponent implements OnInit {
   }
 
   toggleTrackLike(track: TrackDto) {
-    this.onToggleLike.emit(track.id);
+    this.likeToggle.emit(track.id);
   }
 
   removeTrackFromPlaylist(track: TrackDto) {
-    this.onRemoveTrack.emit(track.number);
+    this.trackRemove.emit(track.number);
   }
 
   addTrackToPlaylist(track: TrackDto) {
-    this.onAddToPlaylist.emit(track);
+    this.addToPlaylist.emit(track);
   }
 
-  drop(event: any) {}
+  drop(event: CdkDragDrop<TrackDto[]>) {
+    moveItemInArray(this.tracks, event.previousIndex, event.currentIndex);
+    this.trackPositionChange.emit({
+      fromIndex: event.previousIndex,
+      toIndex: event.currentIndex,
+    });
+  }
 }

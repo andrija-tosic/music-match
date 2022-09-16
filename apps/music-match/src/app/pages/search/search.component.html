@@ -1,13 +1,14 @@
-<input
-  matInput
-  #searchInput
-  class="search-input"
-  matInputAutofocus
-  placeholder="Search"
-  type="text"
-  autofocus
-  (keyup)="this.subject.next($any($event).target.value)"
-/>
+<h1>Search</h1>
+<mat-form-field class="example-full-width" appearance="outline">
+  <input
+    matInput
+    #searchInput
+    class="search-input"
+    placeholder="Search"
+    type="text"
+    (keyup)="this.subject.next($any($event).target.value)"
+  />
+</mat-form-field>
 
 <div>
   <h3 *ngIf="(artistResult$ | async)?.length">Artists</h3>

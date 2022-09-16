@@ -6,9 +6,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
-  OneToMany,
   PrimaryGeneratedColumn,
-  RelationCount,
   Unique,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
@@ -22,7 +20,7 @@ export class User {
   @Column({ unique: true })
   username: string;
 
-  @Column({ name: 'passwordHash' })
+  @Column({ name: 'passwordHash', select: false })
   @Exclude()
   password: string;
 

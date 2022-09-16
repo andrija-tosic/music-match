@@ -6,6 +6,10 @@ import {
   UserCompatibilityDto,
 } from '@music-match/entities';
 
+export type ArtistEntity = Pick<Artist, 'id' | 'imageUrl' | 'name'> & {
+  releaseIds: number[];
+};
+
 export type ReleaseEntity = Pick<
   Release,
   'id' | 'imageUrl' | 'name' | 'releaseDate' | 'type' | 'genres'
@@ -14,7 +18,10 @@ export type ReleaseEntity = Pick<
   trackIds: number[];
 };
 
-export type UserEntity = User & {
+export type UserEntity = Pick<
+  User,
+  'id' | 'name' | 'name' | 'imageUrl' | 'role'
+> & {
   likedPlaylistsIds: number[];
   playlistsIds: number[];
   friendsIds: number[];

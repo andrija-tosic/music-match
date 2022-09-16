@@ -1,4 +1,9 @@
-import { PlaylistEntity, ReleaseEntity } from '@music-match/state-entities';
+import {
+  ArtistEntity,
+  PlaylistEntity,
+  ReleaseEntity,
+  UserEntity,
+} from '@music-match/state-entities';
 import { Artist, Release, User, TrackDto } from '@music-match/entities';
 import { Observable } from 'rxjs';
 import { Component, Input, OnInit } from '@angular/core';
@@ -9,7 +14,12 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./search-result-card.component.css'],
 })
 export class SearchResultCardComponent implements OnInit {
-  @Input() item: Artist | ReleaseEntity | User | PlaylistEntity | undefined;
+  @Input() item:
+    | ArtistEntity
+    | ReleaseEntity
+    | UserEntity
+    | PlaylistEntity
+    | undefined;
   @Input() type: 'artist' | 'release' | 'user' | 'playlist';
 
   constructor() {}

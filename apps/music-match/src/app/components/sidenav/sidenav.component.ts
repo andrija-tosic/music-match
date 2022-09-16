@@ -1,15 +1,21 @@
 import { PlaylistFormDialogComponent } from './../playlist-form-dialog/playlist-form-dialog.component';
 import { AppState } from './../../app.state';
 import {
+  selectCurrentUser,
+  selectCurrentUsersFriends,
   selectCurrentUsersPlaylists,
   selectUsersLikedPlaylists,
 } from '../../state/users/user.selectors';
 import { loadCurrentUserPlaylists } from '../../state/playlists/playlist.actions';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, shareReplay } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { PlaylistEntity } from '@music-match/state-entities';
+import { PlaylistEntity, UserEntity } from '@music-match/state-entities';
+import { ArtistFormDialogComponent } from '../artist-form-dialog/artist-form-dialog.component';
+import { isNotUndefined } from '../../type-guards';
+import { MatSidenav } from '@angular/material/sidenav';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'sidenav',
@@ -17,19 +23,46 @@ import { PlaylistEntity } from '@music-match/state-entities';
   styleUrls: ['./sidenav.component.css'],
 })
 export class SidenavComponent implements OnInit {
-  usersPlaylist$ = new Observable<PlaylistEntity[]>();
-  likedPlaylist$ = new Observable<PlaylistEntity[]>();
+  @ViewChild('sideNav') sidenav: MatSidenav;
 
-  constructor(private store: Store<AppState>, private dialog: MatDialog) {}
+  isHandset$: Observable<boolean> = this.breakpointObserver
+    .observe('(max-width: 800px)')
+    .pipe(
+      map((result) => result.matches),
+      shareReplay()
+    );
+
+  usersPlaylist$: Observable<PlaylistEntity[]>;
+  likedPlaylist$: Observable<PlaylistEntity[]>;
+  friends$: Observable<UserEntity[]>;
+  currentUser$: Observable<UserEntity>;
+
+  constructor(
+    private store: Store<AppState>,
+    private dialog: MatDialog,
+    private breakpointObserver: BreakpointObserver
+  ) {}
 
   ngOnInit(): void {
     this.store.dispatch(loadCurrentUserPlaylists());
     this.usersPlaylist$ = this.store.select(selectCurrentUsersPlaylists);
     this.likedPlaylist$ = this.store.select(selectUsersLikedPlaylists);
+    this.friends$ = this.store
+      .select(selectCurrentUsersFriends)
+      .pipe(filter(isNotUndefined));
+    this.currentUser$ = this.store
+      .select(selectCurrentUser)
+      .pipe(filter(isNotUndefined));
   }
 
   openPlaylistFormDialog(actionType: string) {
     const dialogRef = this.dialog.open(PlaylistFormDialogComponent, {
+      data: actionType,
+    });
+  }
+
+  openArtistFormDialog(actionType: string) {
+    const dialogRef = this.dialog.open(ArtistFormDialogComponent, {
       data: actionType,
     });
   }

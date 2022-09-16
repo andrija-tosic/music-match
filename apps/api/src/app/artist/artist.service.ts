@@ -6,10 +6,15 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class ArtistService {
-  constructor(@InjectRepository(Artist) private readonly artistRepository: Repository<Artist>) {}
+  constructor(
+    @InjectRepository(Artist)
+    private readonly artistRepository: Repository<Artist>
+  ) {}
 
   async create(createArtistDto: CreateArtistDto) {
-    const artistAlreadyExists = await this.artistRepository.findOneBy({ name: createArtistDto.name });
+    const artistAlreadyExists = await this.artistRepository.findOneBy({
+      name: createArtistDto.name,
+    });
 
     if (artistAlreadyExists) {
       throw new ConflictException();
@@ -24,12 +29,18 @@ export class ArtistService {
   }
 
   async findOne(id: number) {
-    return await this.artistRepository.findOneBy({ id });
+    return await this.artistRepository.findOne({
+      where: { id },
+      relations: { releases: true },
+    });
   }
 
   async update(id: number, updateArtistDto: UpdateArtistDto) {
     await this.artistRepository.update(id, updateArtistDto);
-    return await this.artistRepository.findOneBy({ id });
+    return await this.artistRepository.findOne({
+      where: { id },
+      relations: { releases: true },
+    });
   }
 
   async remove(id: number) {

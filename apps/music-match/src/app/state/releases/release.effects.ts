@@ -3,12 +3,14 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, map, tap, mergeMap } from 'rxjs';
 import * as ReleaseActions from './release.actions';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class ReleaseEffects {
   constructor(
     private action$: Actions,
-    private releaseService: ReleaseService
+    private releaseService: ReleaseService,
+    private router: Router
   ) {}
 
   loadRelease$ = createEffect(() =>
@@ -18,6 +20,48 @@ export class ReleaseEffects {
         this.releaseService
           .getRelease(id)
           .pipe(map((release) => ReleaseActions.loadedRelease({ release })))
+      )
+    )
+  );
+
+  createRelease$ = createEffect(() =>
+    this.action$.pipe(
+      ofType(ReleaseActions.createRelease),
+      switchMap(({ release }) =>
+        this.releaseService
+          .createRelease(release)
+          .pipe(map((release) => ReleaseActions.createdRelease({ release })))
+      )
+    )
+  );
+
+  navigateToCreatedRelease$ = createEffect(
+    () =>
+      this.action$.pipe(
+        ofType(ReleaseActions.createdRelease),
+        tap(({ release }) => this.router.navigate(['/release/' + release.id]))
+      ),
+    { dispatch: false }
+  );
+
+  updateRelease$ = createEffect(() =>
+    this.action$.pipe(
+      ofType(ReleaseActions.updateRelease),
+      switchMap(({ release }) =>
+        this.releaseService
+          .updateRelease(release)
+          .pipe(map((release) => ReleaseActions.updatedRelease({ release })))
+      )
+    )
+  );
+
+  deleteRelease$ = createEffect(() =>
+    this.action$.pipe(
+      ofType(ReleaseActions.deleteRelease),
+      switchMap(({ id }) =>
+        this.releaseService
+          .deleteRelease(id)
+          .pipe(map(() => ReleaseActions.deletedRelease()))
       )
     )
   );

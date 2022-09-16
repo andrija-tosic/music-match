@@ -24,7 +24,7 @@ export const searchReducer = createReducer(
       ...adapter.upsertOne(
         {
           query: payload.searchResults.query,
-          artistIds: payload.searchResults.users.map(({ id }) => id),
+          artistIds: payload.searchResults.artists.map(({ id }) => id),
           releaseIds: payload.searchResults.releases.map(({ id }) => id),
           trackIds: payload.searchResults.tracks.map(({ id }) => id),
           userIds: payload.searchResults.users.map(({ id }) => id),

@@ -25,8 +25,7 @@ export const selectCurrentUsersFriends = createSelector(
   selectUsers,
   selectCurrentUser,
   (users, user) => {
-    return user?.following
-      .map(({ id }) => id)
+    return user?.friendsIds
       .map((id) => users.entities[id])
       .filter(isNotUndefined);
   }

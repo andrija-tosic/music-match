@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
 import * as connectRedis from 'connect-redis';
 import { environment } from './environments/environment';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -17,6 +18,9 @@ async function bootstrap() {
       origin: 'http://localhost:4200',
     },
   });
+
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
@@ -30,8 +34,12 @@ async function bootstrap() {
     legacyMode: true,
   });
 
-  redisClient.on('error', (err) => Logger.error('Could not establish a connection with redis. ' + err, 'Redis'));
-  redisClient.on('connect', () => Logger.log('Connected to redis successfully', 'Redis'));
+  redisClient.on('error', (err) =>
+    Logger.error('Could not establish a connection with redis. ' + err, 'Redis')
+  );
+  redisClient.on('connect', () =>
+    Logger.log('Connected to redis successfully', 'Redis')
+  );
 
   await redisClient.connect();
 
@@ -52,7 +60,9 @@ async function bootstrap() {
 
   const port = process.env.PORT || environment.port;
   await app.listen(port);
-  Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
+  Logger.log(
+    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
+  );
 }
 
 bootstrap();

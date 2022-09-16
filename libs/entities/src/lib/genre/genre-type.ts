@@ -1,5 +1,4 @@
 export enum GenreType {
-  None = 'none',
   Rap = 'rap',
   HipHop = 'hip-hop',
   Trap = 'trap',

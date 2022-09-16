@@ -1,19 +1,41 @@
-<mat-card>
-  <mat-card-title-group>
-    <img mat-card-xl-image [src]="artist?.imageUrl" width="200" height="200" />
-    <mat-card-title><h5>Artist</h5></mat-card-title>
+<ng-container *ngIf="artist$ | async as artist">
+  <mat-card>
+    <mat-card-title-group>
+      <img
+        mat-card-xl-image
+        [src]="artist?.imageUrl"
+        width="200"
+        height="200"
+      />
+      <mat-card-title><h5>Artist</h5></mat-card-title>
 
-    <mat-card-title>
-      <h3>{{ artist?.name }}</h3>
-    </mat-card-title>
-  </mat-card-title-group>
-  <mat-card-content>
-    <button (click)="openArtistFormDialog('Update')" mat-button>
-      <mat-icon>edit</mat-icon> Edit artist
-    </button>
+      <mat-card-title>
+        <h3>{{ artist?.name }}</h3>
+      </mat-card-title>
+    </mat-card-title-group>
+    <mat-card-content>
+      <button (click)="openReleaseFormDialog('Create', artist)" mat-button>
+        <mat-icon>add</mat-icon> Add release
+      </button>
 
-    <button color="warn" (click)="deleteArtist()" mat-button>
-      <mat-icon>delete</mat-icon> Delete artist
-    </button>
-  </mat-card-content>
-</mat-card>
+      <button (click)="openArtistFormDialog('Update')" mat-button>
+        <mat-icon>edit</mat-icon> Edit artist
+      </button>
+
+      <button color="warn" (click)="deleteArtist(artist)" mat-button>
+        <mat-icon>delete</mat-icon> Delete artist
+      </button>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="artist.releases.length">
+    <h4>Releases from {{ artist?.name }}</h4>
+    <search-result-card
+      *ngFor="let release of artist?.releases"
+      [item]="release"
+      [type]="'release'"
+    >
+    </search-result-card>
+  </mat-card>
+  <h4 *ngIf="!artist.releases.length">No releases from {{ artist.name }}.</h4>
+</ng-container>

@@ -57,9 +57,10 @@
   </mat-card>
 
   <tracks
-    (onRemoveTrack)="onRemoveTrack($event, playlist)"
-    (onToggleLike)="onToggleLike($event)"
-    (onAddToPlaylist)="onAddTrackToPlaylist($event)"
+    (trackRemove)="onRemoveTrack($event, playlist)"
+    (likeToggle)="onToggleLike($event)"
+    (addToPlaylist)="onAddTrackToPlaylist($event)"
+    (trackPositionChange)="onTrackPositionChange($event, playlist)"
     [tracks]="playlist.tracks"
     [type]="'playlist'"
   ></tracks>

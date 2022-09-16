@@ -1,3 +1,4 @@
+export * from './lib/release/release-type';
 export * from './lib/user/roles';
 
 export * from './lib/user/user.entity';
@@ -14,6 +15,8 @@ export * from './lib/playlist/dto/create-playlist.dto';
 export * from './lib/playlist/dto/update-playlist.dto';
 export * from './lib/playlist/dto/playlist.dto';
 export * from './lib/playlist/dto/playlist-base.dto';
+
+export * from './lib/playlist/dto/change-track-position.dto';
 
 export * from './lib/playlist/dto/add-tracks.dto';
 export * from './lib/playlist/dto/remove-tracks.dto';

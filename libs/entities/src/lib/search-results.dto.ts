@@ -3,10 +3,11 @@ import { Artist } from './artist/artist.entity';
 import { PlaylistBaseDto } from './playlist/dto/playlist-base.dto';
 import { TrackDto } from './track/dto/track.dto';
 import { User } from './user/user.entity';
+import { UserEntity } from '@music-match/state-entities';
 
 export type SearchResultsDto = {
   query: string;
-  artists: Artist[];
+  artists: Pick<Artist, 'id' | 'name' | 'imageUrl'>[];
   releases: Omit<Release, 'tracks' | 'artists'>[];
   tracks: TrackDto[];
   users: User[];

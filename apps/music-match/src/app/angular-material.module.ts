@@ -25,6 +25,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 const materialModules: any = [
   MatCardModule,
@@ -52,6 +54,8 @@ const materialModules: any = [
   MatGridListModule,
   MatSidenavModule,
   MatIconModule,
+  MatToolbarModule,
+  MatAutocompleteModule,
 ];
 
 @NgModule({

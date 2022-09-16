@@ -11,7 +11,6 @@ export class UserEffects {
   loadUser$ = createEffect(() =>
     this.action$.pipe(
       ofType(UserActions.loadUser),
-      tap(() => console.log('[Effect] UserActions.loadUser')),
       switchMap(({ id }) =>
         this.userService
           .getUser(id)

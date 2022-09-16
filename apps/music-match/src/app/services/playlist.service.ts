@@ -10,6 +10,7 @@ import {
   TrackDto,
   RemoveTrackDto,
   CreatePlaylistDto,
+  ChangeTrackPositionDto,
 } from '@music-match/entities';
 import { switchMap } from 'rxjs';
 
@@ -75,6 +76,16 @@ export class PlaylistService {
       `${environment.api}/playlists/${id}/tracks`,
       {
         body: tracksDto,
+      }
+    );
+  }
+
+  changeTrackPosition(playlistId: number, fromIndex: number, toIndex: number) {
+    return this.http.patch<void>(
+      `${environment.api}/playlists/${playlistId}/tracks/change-position`,
+      <ChangeTrackPositionDto>{
+        fromIndex,
+        toIndex,
       }
     );
   }

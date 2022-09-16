@@ -1,4 +1,3 @@
-import { LibraryComponent } from './pages/library/library.component';
 import { SearchComponent } from './pages/search/search.component';
 import { PlaylistComponent } from './pages/playlist/playlist.component';
 import { RegisterComponent } from './pages/register/register.component';
@@ -12,6 +11,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { ArtistComponent } from './pages/artist/artist.component';
 import { ReleaseComponent } from './pages/release/release.component';
 import { UserComponent } from './pages/user/user.component';
+import { ArtistFormDialogComponent } from './components/artist-form-dialog/artist-form-dialog.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -26,7 +26,6 @@ const routes: Routes = [
       { path: 'artist/:id', component: ArtistComponent },
       { path: 'user/:id', component: UserComponent },
       { path: 'search', component: SearchComponent },
-      { path: 'library', component: LibraryComponent },
     ],
   },
   { path: 'login', component: LoginComponent },

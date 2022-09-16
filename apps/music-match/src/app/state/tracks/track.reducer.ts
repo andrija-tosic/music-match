@@ -21,27 +21,13 @@ export const trackReducer = createReducer(
   on(SearchActions.queriedSearch, (state, searchResults) =>
     adapter.upsertMany(searchResults.searchResults.tracks, state)
   ),
-  on(PlaylistActions.loadedPlaylistWithTracks, (state, { playlist }) =>
-    adapter.upsertMany(playlist.tracks, state)
-  ),
+  on(PlaylistActions.loadedPlaylistWithTracks, (state, { playlist }) => {
+    return playlist ? adapter.upsertMany(playlist.tracks, state) : state;
+  }),
   on(ReleaseActions.loadedRelease, (state, { release }) =>
     adapter.upsertMany(release.tracks, state)
   ),
   on(TrackActions.toggledTrackLike, (state, { track }) =>
     adapter.updateOne({ id: track.id, changes: { liked: track.liked } }, state)
   )
-  // on(
-  //   PlaylistActions.addedTracksToPlaylist,
-  //   PlaylistActions.removedTracksFromPlaylist,
-  //   (state, { tracks }) => {
-  //     const updates: Update<TrackDto>[] = tracks.map((track) => {
-  //       return {
-  //         id: track.id,
-  //         changes: track,
-  //       };
-  //     });
-
-  //     return adapter.updateMany(updates, state);
-  //   }
-  // )
 );

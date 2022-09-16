@@ -16,19 +16,21 @@ const initialState: PlaylistsState = adapter.getInitialState({
 export const playlistReducer = createReducer(
   initialState,
   on(Actions.loadedPlaylistWithTracks, (state, { playlist }) => {
-    return {
-      ...adapter.upsertOne(
-        {
-          ...playlist,
+    return playlist
+      ? {
+          ...adapter.upsertOne(
+            {
+              ...playlist,
 
-          ownerIds: playlist.owners.map(({ id }) => id),
-          trackIds: playlist.tracks.map(({ id }) => id),
-        },
-        state
-      ),
+              ownerIds: playlist.owners.map(({ id }) => id),
+              trackIds: playlist.tracks.map(({ id }) => id),
+            },
+            state
+          ),
 
-      selectedPlaylistId: playlist.id,
-    };
+          selectedPlaylistId: playlist.id,
+        }
+      : state;
   }),
   on(
     Actions.loadedUserPlaylists,
@@ -55,10 +57,22 @@ export const playlistReducer = createReducer(
     };
   }),
   on(
+    Actions.addTracksToPlaylist,
+    Actions.removeTracksFromPlaylist,
+    (state, { id }) => {
+      return {
+        ...state,
+        selectedPlaylistId: id,
+      };
+    }
+  ),
+  on(
     Actions.addedTracksToPlaylist,
     Actions.removedTracksFromPlaylist,
     (state, { tracks }) => {
       const playlist = state.entities[state.selectedPlaylistId]!;
+
+      console.log(tracks);
 
       return adapter.updateOne(
         {

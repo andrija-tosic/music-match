@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   Artist,
   CreateReleaseDto,
+  Genre,
   Release,
   UpdateReleaseDto,
   User,
@@ -15,7 +16,9 @@ export class ReleaseService {
     @InjectRepository(Release)
     private readonly releaseRepository: Repository<Release>,
     @InjectRepository(Artist)
-    private readonly artistRepository: Repository<Artist>
+    private readonly artistRepository: Repository<Artist>,
+    @InjectRepository(Genre)
+    private readonly genreRepository: Repository<Genre>
   ) {}
 
   async create(createReleaseDto: CreateReleaseDto) {
@@ -23,6 +26,13 @@ export class ReleaseService {
     release.artists = await this.artistRepository.findBy({
       id: In(createReleaseDto.artistIds),
     });
+
+    const genres = await this.genreRepository.findBy({
+      type: In(createReleaseDto.genres.map(({ type }) => type)),
+    });
+
+    release.genres = genres;
+
     return await this.releaseRepository.save(release);
   }
 

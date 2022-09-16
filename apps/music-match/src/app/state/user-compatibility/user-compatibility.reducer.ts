@@ -30,7 +30,7 @@ export const userCompatibilityReducer = createReducer(
 
           genreResults: userCompatibility.genreResults.map((genre) => {
             return {
-              genre: genre.type,
+              genre: genre.type.toString(),
               occurences: genre.occurences,
             };
           }),

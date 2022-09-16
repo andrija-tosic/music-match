@@ -1,7 +1,8 @@
 import { IsNotEmpty, IsNotEmptyObject } from 'class-validator';
 import { ReleaseType } from '../release-type';
-import { Genre } from '../../genre/genre.entity';
 import { Track } from '../../track/track.entity';
+import { GenreType } from '../../genre/genre-type';
+import { CreateGenreDto } from '../../genre/dto/create-genre.dto';
 
 export class CreateReleaseDto {
   @IsNotEmpty()
@@ -19,8 +20,8 @@ export class CreateReleaseDto {
   artistIds: number[];
 
   @IsNotEmptyObject()
-  tracks: Track[];
+  tracks: Pick<Track, 'name' | 'duration' | 'number'>[];
 
   @IsNotEmptyObject()
-  genres: Genre[];
+  genres: CreateGenreDto[];
 }

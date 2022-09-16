@@ -5,7 +5,7 @@ import { PlaylistBaseDto } from './playlist-base.dto';
 
 export type PlaylistDto = PlaylistBaseDto &
   Pick<Playlist, 'id' | 'description' | 'imageUrl'> & {
-    owners: Pick<User, 'id' | 'name' | 'imageUrl'>[];
+    owners: Pick<User, 'id' | 'name' | 'imageUrl' | 'role'>[];
     tracks: TrackDto[];
     liked: boolean;
   };

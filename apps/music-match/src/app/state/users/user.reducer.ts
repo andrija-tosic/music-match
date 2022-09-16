@@ -19,9 +19,6 @@ const initialState: UsersState = adapter.getInitialState({
 
 export const userReducer = createReducer(
   initialState,
-  on(SearchActions.queriedSearch, (state, searchResults) =>
-    adapter.upsertMany(searchResults.searchResults.users as UserEntity[], state)
-  ),
   on(UserActions.setCurrentUserId, (state, { id }) => {
     return {
       ...state,
@@ -29,35 +26,36 @@ export const userReducer = createReducer(
     };
   }),
   on(UserActions.loadedUser, (state, { user }) => {
-    console.log('[Reducer] UserActions.loadedUser');
-
-    return adapter.upsertMany(
-      [
-        {
-          ...user,
-          playlistsIds: user.playlists.map(({ id }) => id),
-          likedPlaylistsIds: user.likedPlaylists.map(({ id }) => id),
-          friendsIds: user.following.map(({ id }) => id),
-        },
-        ...user.following.map((friend) => {
-          return {
-            ...friend,
-            likedPlaylistsIds: [],
-            playlistsIds: [],
-            friendsIds: [],
-          };
-        }),
-        ...user.followers.map((follower) => {
-          return {
-            ...follower,
-            likedPlaylistsIds: [],
-            playlistsIds: [],
-            friendsIds: [],
-          };
-        }),
-      ],
-      state
-    );
+    return {
+      ...adapter.addMany(
+        [
+          {
+            ...user,
+            playlistsIds: user.playlists.map(({ id }) => id),
+            likedPlaylistsIds: user.likedPlaylists.map(({ id }) => id),
+            friendsIds: user.following.map(({ id }) => id),
+          },
+          ...user.following.map((friend) => {
+            return {
+              ...friend,
+              likedPlaylistsIds: [],
+              playlistsIds: [],
+              friendsIds: [],
+            };
+          }),
+          ...user.followers.map((follower) => {
+            return {
+              ...follower,
+              likedPlaylistsIds: [],
+              playlistsIds: [],
+              friendsIds: [],
+            };
+          }),
+        ],
+        state
+      ),
+      selectedUserId: user.id,
+    };
   }),
   on(
     PlaylistActions.loadedUserPlaylists,
@@ -98,16 +96,19 @@ export const userReducer = createReducer(
     );
   }),
   on(PlaylistActions.loadedPlaylistWithTracks, (state, { playlist }) => {
-    const updates: Update<UserEntity>[] = playlist.owners.map((user) => {
+    if (!playlist) return state;
+
+    const users: Update<UserEntity>[] = playlist.owners.map((user) => {
       return {
         id: user.id,
         changes: {
           name: user.name,
           imageUrl: user.imageUrl,
+          role: user.role,
         },
       };
     });
 
-    return adapter.updateMany(updates, state);
+    return adapter.updateMany(users, state);
   })
 );

@@ -1,50 +1,57 @@
-<mat-card>
-  <mat-card-title-group>
-    <mat-card-title *ngFor="let artist of (this.release$ | async)?.artists">
-      <h6>
-        <img mat-card-sm-image [src]="artist.imageUrl" height="40" width="40" />
-        {{ artist.name }}
-      </h6>
-    </mat-card-title>
+<ng-container *ngIf="this.release$ | async as release">
+  <mat-card>
+    <mat-card-title-group>
+      <mat-card-title *ngFor="let artist of (this.release$ | async)?.artists">
+        <h6>
+          <img
+            mat-card-sm-image
+            [src]="artist.imageUrl"
+            height="40"
+            width="40"
+          />
+          {{ artist.name }}
+        </h6>
+      </mat-card-title>
 
-    <img
-      mat-card-xl-image
-      [src]="(this.release$ | async)?.imageUrl"
-      height="200"
-      width="200"
-    />
+      <img
+        mat-card-xl-image
+        [src]="release.imageUrl"
+        height="200"
+        width="200"
+      />
 
-    <mat-card-title>
-      <h5>{{ (this.release$ | async)?.type | titlecase }}</h5>
-    </mat-card-title>
+      <mat-card-title>
+        <h5>{{ release.type.toString() | titlecase }}</h5>
+      </mat-card-title>
 
-    <mat-card-title>
-      <h3>{{ (this.release$ | async)?.name }}</h3>
-    </mat-card-title>
+      <mat-card-title>
+        <h3>{{ release.name }}</h3>
+      </mat-card-title>
 
-    <mat-card-title>
-      <h6>{{ (this.release$ | async)?.releaseDate | date }}</h6>
-    </mat-card-title>
-  </mat-card-title-group>
-  <mat-card-content>
-    <span>{{ getGenreTypes() | async | titlecase }}</span>
-  </mat-card-content>
+      <mat-card-title>
+        <h6>{{ release.releaseDate | date }}</h6>
+      </mat-card-title>
+    </mat-card-title-group>
+    <mat-card-content>
+      <span>{{ getGenreTypes() | async | titlecase }}</span>
+    </mat-card-content>
 
-  <mat-card-content>
-    <button (click)="openReleaseFormDialog('Update')" mat-button>
-      <mat-icon>edit</mat-icon> Edit {{ (this.release$ | async)?.type }}
-    </button>
+    <mat-card-content>
+      <!-- <button (click)="openReleaseFormDialog('Update')" mat-button>
+        <mat-icon>edit</mat-icon> Edit {{ release.type }}
+      </button> -->
 
-    <button color="warn" (click)="deleteRelease()" mat-button>
-      <mat-icon>delete</mat-icon> Delete {{ (this.release$ | async)?.type }}
-    </button>
-  </mat-card-content>
-</mat-card>
+      <button color="warn" (click)="dispatchDeleteRelease(release)" mat-button>
+        <mat-icon>delete</mat-icon> Delete {{ release.type }}
+      </button>
+    </mat-card-content>
+  </mat-card>
 
-<tracks
-  (onToggleLike)="onToggleTrackLike($event)"
-  (onAddToPlaylist)="onAddTrackToPlaylist($event)"
-  [type]="'release'"
-  [tracks]="(this.release$ | async)?.tracks"
->
-</tracks>
+  <tracks
+    (likeToggle)="onToggleTrackLike($event)"
+    (addToPlaylist)="onAddTrackToPlaylist($event)"
+    [type]="'release'"
+    [tracks]="release.tracks"
+  >
+  </tracks>
+</ng-container>

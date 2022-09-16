@@ -1,19 +1,18 @@
-import { Playlist } from './../../../../../libs/entities/src/lib/playlist/playlist.entity';
-import {
-  ConflictException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
 import {
   Artist,
   CreateUserDto,
   Genre,
+  Playlist,
   UpdateUserDto,
   User,
 } from '@music-match/entities';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { hashPassword } from '../utils/bcrypt';
 
 @Injectable()
@@ -51,6 +50,7 @@ export class UserService {
       where: { id },
       relations: {
         playlists: true,
+        likedTracks: true,
         likedPlaylists: true,
         following: true,
         followers: true,
@@ -190,7 +190,7 @@ export class UserService {
       })
       .sort((a, b) => a.occurences - b.occurences)
       .reverse();
-    console.log([...artistResults], [...genreResults]);
+    // console.log([...artistResults], [...genreResults]);
 
     return { artistResults, genreResults };
   }
