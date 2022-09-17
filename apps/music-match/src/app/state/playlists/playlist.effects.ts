@@ -1,13 +1,13 @@
-import { selectedPlaylist } from '../selectors';
-import { Store } from '@ngrx/store';
 import { Injectable } from '@angular/core';
-import { createEffect, Actions, ofType } from '@ngrx/effects';
-import { filter, first, map, switchMap, tap } from 'rxjs';
-import { PlaylistService } from '../../services/playlist.service';
-import * as PlaylistActions from './playlist.actions';
-import { AppState } from '../../app.state';
-import { isNotUndefined } from '../../type-guards';
 import { Router } from '@angular/router';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { filter, first, map, switchMap, tap } from 'rxjs';
+import { AppState } from '../../app.state';
+import { PlaylistService } from '../../services/playlist.service';
+import { isNotUndefined } from '../../type-guards';
+import { selectedPlaylist } from '../selectors';
+import * as PlaylistActions from './playlist.actions';
 
 @Injectable()
 export class PlaylistsEffects {
@@ -17,22 +17,6 @@ export class PlaylistsEffects {
     private store: Store<AppState>,
     private router: Router
   ) {}
-
-  loadCurrentUserPlaylist$ = createEffect(() =>
-    this.action$.pipe(
-      ofType(PlaylistActions.loadCurrentUserPlaylists),
-      switchMap(() =>
-        this.playlistService.getCurrentUserPlaylists().pipe(
-          map(({ playlists, likedPlaylists }) =>
-            PlaylistActions.loadedUserPlaylists({
-              usersPlaylists: playlists,
-              usersLikedPlaylists: likedPlaylists,
-            })
-          )
-        )
-      )
-    )
-  );
 
   loadPlaylistWithTracks$ = createEffect(() =>
     this.action$.pipe(
@@ -168,6 +152,17 @@ export class PlaylistsEffects {
         this.playlistService
           .removeCollaborator(playlistId, userId)
           .pipe(map(() => PlaylistActions.removedCollaboratorFromPlaylist()))
+      )
+    )
+  );
+
+  toggleLike$ = createEffect(() =>
+    this.action$.pipe(
+      ofType(PlaylistActions.togglePlaylistLike),
+      switchMap(({ id }) =>
+        this.playlistService
+          .toggleLike(id)
+          .pipe(map(() => PlaylistActions.toggledPlaylistLike()))
       )
     )
   );

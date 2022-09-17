@@ -1,0 +1,5 @@
+.horizontal-scroll-div {
+  height: 12em;
+  overflow-x: auto;
+  white-space: nowrap;
+}

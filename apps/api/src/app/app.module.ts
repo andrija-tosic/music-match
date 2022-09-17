@@ -21,6 +21,7 @@ import { FileModule } from './file/file.module';
 import { TrackModule } from './track/track.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { SearchModule } from './search/search.module';
+import { RecommendationsModule } from './recommendations/recommendations.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { SearchModule } from './search/search.module';
     FileModule,
     PlaylistModule,
     SearchModule,
+    RecommendationsModule,
   ],
   providers: [
     {

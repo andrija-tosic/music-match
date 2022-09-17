@@ -1,6 +1,13 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { Artist, CreateArtistDto } from '@music-match/entities';
-import { UpdateArtistDto } from '@music-match/entities';
+import {
+  Artist,
+  CreateArtistDto,
+  UpdateArtistDto,
+} from '@music-match/entities';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -29,10 +36,13 @@ export class ArtistService {
   }
 
   async findOne(id: number) {
-    return await this.artistRepository.findOne({
+    const artist = await this.artistRepository.findOne({
       where: { id },
       relations: { releases: true },
     });
+
+    if (!artist) throw new NotFoundException();
+    return artist;
   }
 
   async update(id: number, updateArtistDto: UpdateArtistDto) {

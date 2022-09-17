@@ -1,42 +1,22 @@
-import { AuthService } from './auth.service';
-import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   AddTrackDto,
-  Playlist,
-  PlaylistDto,
-  UpdatePlaylistDto,
-  TrackDto,
-  RemoveTrackDto,
-  CreatePlaylistDto,
   ChangeTrackPositionDto,
+  CreatePlaylistDto,
+  PlaylistDto,
+  RemoveTrackDto,
+  TrackDto,
+  UpdatePlaylistDto,
 } from '@music-match/entities';
-import { switchMap } from 'rxjs';
+import { environment } from './../../environments/environment';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlaylistService {
   constructor(private http: HttpClient, private authService: AuthService) {}
-
-  getUserPlaylists(id: number) {
-    return this.http.get<{
-      playlists: Playlist[];
-      likedPlaylists: Playlist[];
-    }>(`${environment.api}/users/${id}/playlists`);
-  }
-
-  getCurrentUserPlaylists() {
-    return this.authService.getUser().pipe(
-      switchMap((user) => {
-        return this.http.get<{
-          playlists: Playlist[];
-          likedPlaylists: Playlist[];
-        }>(`${environment.api}/users/${user.id}/playlists`);
-      })
-    );
-  }
 
   getPlaylist(id: number) {
     return this.http.get<PlaylistDto>(`${environment.api}/playlists/${id}`);

@@ -2,7 +2,6 @@ import {
   Artist,
   CreateUserDto,
   Genre,
-  Playlist,
   UpdateUserDto,
   User,
 } from '@music-match/entities';
@@ -18,9 +17,7 @@ import { hashPassword } from '../utils/bcrypt';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(Playlist)
-    private readonly playlistRepository: Repository<Playlist>
+    @InjectRepository(User) private readonly userRepository: Repository<User>
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -52,8 +49,8 @@ export class UserService {
         playlists: true,
         likedTracks: true,
         likedPlaylists: true,
-        following: true,
-        followers: true,
+        following: { playlists: true, likedPlaylists: true, following: true },
+        followers: { playlists: true, likedPlaylists: true, following: true },
       },
     });
 

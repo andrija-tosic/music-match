@@ -2,6 +2,7 @@
   <mat-card>
     <mat-card-title-group>
       <img
+        style="border-radius: 50%"
         mat-card-xl-image
         [src]="artist?.imageUrl"
         width="200"
@@ -13,7 +14,7 @@
         <h3>{{ artist?.name }}</h3>
       </mat-card-title>
     </mat-card-title-group>
-    <mat-card-content>
+    <mat-card-content *ngIf="(currentUser$ | async)?.role === 'admin'">
       <button (click)="openReleaseFormDialog('Create', artist)" mat-button>
         <mat-icon>add</mat-icon> Add release
       </button>

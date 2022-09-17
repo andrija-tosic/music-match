@@ -1,6 +1,12 @@
-<button mat-button [routerLink]="getRouterLinkBasedOnType(this.type)">
-  <mat-card>
-    <img mat-card-sm-image [src]="item?.imageUrl" />
-    <h3>{{ item?.name }}</h3>
-  </mat-card>
-</button>
+<div style="max-height: 12em; max-width: 12em">
+  <button
+    style="width: 100%; height: 100%"
+    mat-button
+    [routerLink]="getRouterLinkBasedOnType(this.type)"
+  >
+    <mat-card>
+      <img mat-card-sm-image [src]="item?.imageUrl" />
+      <h3>{{ item?.name }}</h3>
+    </mat-card>
+  </button>
+</div>

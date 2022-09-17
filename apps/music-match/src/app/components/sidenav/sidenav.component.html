@@ -7,7 +7,11 @@
 
   <div style="width: 100%"></div>
 
-  <ng-container *ngIf="currentUser$ | async as currentUser">
+  <button
+    mat-button
+    *ngIf="currentUser$ | async as currentUser"
+    [routerLink]="'/user/' + currentUser.id"
+  >
     <img
       style="border-radius: 50%"
       [src]="currentUser.imageUrl"
@@ -16,7 +20,7 @@
     />
 
     <span>{{ currentUser.name }}</span>
-  </ng-container>
+  </button>
 </mat-toolbar>
 
 <mat-sidenav-container>
@@ -33,7 +37,11 @@
       <button (click)="openPlaylistFormDialog('Create')" mat-button>
         <mat-icon>playlist_add</mat-icon> New playlist
       </button>
-      <button (click)="openArtistFormDialog('Create')" mat-button>
+      <button
+        *ngIf="(currentUser$ | async)?.role === 'admin'"
+        (click)="openArtistFormDialog('Create')"
+        mat-button
+      >
         <mat-icon>person_add</mat-icon>New artist
       </button>
       <h4><mat-icon>music_note</mat-icon> Your playlists</h4>
@@ -51,7 +59,7 @@
         {{ playlist.name }}
       </mat-list-item>
 
-      <h4>Favorite playlists</h4>
+      <h4><mat-icon>favorite</mat-icon>Favorite playlists</h4>
       <mat-list-item
         *ngFor="let playlist of likedPlaylist$ | async"
         [routerLink]="'/playlist/' + playlist.id"

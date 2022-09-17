@@ -1,8 +1,8 @@
 import {
+  Artist,
   PlaylistDto,
   Release,
   User,
-  Artist,
   UserCompatibilityDto,
 } from '@music-match/entities';
 
@@ -57,4 +57,12 @@ export type UsersCompatibilityEntity = Pick<
     genre: string;
     occurences: number;
   }[];
+};
+
+export type RecommendationsEntity = {
+  artistsBasedOnGenres: ArtistEntity[];
+  releasesBasedOnGenres: ReleaseEntity[];
+  artistsFromFriends: ArtistEntity[];
+  releasesFromFriends: ReleaseEntity[];
+  newUsersBasedOnGenres: UserEntity[];
 };

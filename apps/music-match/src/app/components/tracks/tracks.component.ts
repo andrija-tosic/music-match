@@ -11,6 +11,8 @@ export class TracksComponent implements OnInit {
   constructor() {}
 
   @Input() tracks: TrackDto[];
+  @Input() editable: boolean = false;
+
   @Output() trackRemove = new EventEmitter<number>();
   @Output() likeToggle = new EventEmitter<number>();
   @Output() addToPlaylist = new EventEmitter<TrackDto>();

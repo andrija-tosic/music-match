@@ -5,7 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -15,11 +15,11 @@ import { Store } from '@ngrx/store';
 import { GenreType } from 'libs/entities/src/lib/genre/genre-type';
 import {
   BehaviorSubject,
-  take,
   filter,
-  Observable,
   map,
+  Observable,
   startWith,
+  take,
 } from 'rxjs';
 import { AppState } from '../../app.state';
 import { FileService } from '../../services/file.service';
@@ -201,7 +201,7 @@ export class ReleaseFormDialogComponent implements OnInit {
 
     const releaseToDispatch: CreateReleaseDto = {
       name,
-      imageUrl: this.imageUrl,
+      imageUrl: '',
       releaseDate,
       type: ReleaseType[releaseType as keyof typeof ReleaseType],
       tracks,
@@ -219,7 +219,7 @@ export class ReleaseFormDialogComponent implements OnInit {
       this.fileService.uploadImage(this.imageFile).subscribe((newImageUrl) => {
         this.uploading$.next(false);
 
-        this.imageUrl = newImageUrl;
+        releaseToDispatch.imageUrl = newImageUrl;
 
         this.dispatchCreateOrUpdateRelease(
           releaseToDispatch,

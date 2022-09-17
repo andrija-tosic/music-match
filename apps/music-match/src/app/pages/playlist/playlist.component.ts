@@ -1,26 +1,16 @@
-import { AddToPlaylistFormDialogComponent } from './../../components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
-import { PlaylistFormDialogComponent } from './../../components/playlist-form-dialog/playlist-form-dialog.component';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   ChangeTrackPositionDto,
   PlaylistDto,
   TrackDto,
   User,
 } from '@music-match/entities';
-import { ActivatedRoute, Router } from '@angular/router';
-import { selectedPlaylist } from '../../state/selectors';
-import {
-  filter,
-  Observable,
-  tap,
-  switchMap,
-  take,
-  mergeMap,
-  combineLatest,
-} from 'rxjs';
-import { AppState } from './../../app.state';
+import { PlaylistEntity, UserEntity } from '@music-match/state-entities';
 import { Store } from '@ngrx/store';
-import { Component, OnInit } from '@angular/core';
+import { filter, Observable, switchMap } from 'rxjs';
+import { AddCollaboratorFormDialogComponent } from '../../components/add-collaborator-form-dialog/add-collaborator-form-dialog.component';
 import {
   addCollaboratorToPlaylist,
   addTracksToPlaylist,
@@ -29,12 +19,15 @@ import {
   loadPlaylistWithTracks,
   removeCollaboratorFromPlaylist,
   removeTracksFromPlaylist,
+  togglePlaylistLike,
 } from '../../state/playlists/playlist.actions';
-import { isNotUndefined } from '../../type-guards';
+import { selectedPlaylist } from '../../state/selectors';
 import { toggleTrackLike } from '../../state/tracks/track.actions';
-import { PlaylistEntity, UserEntity } from '@music-match/state-entities';
-import { AddCollaboratorFormDialogComponent } from '../../components/add-collaborator-form-dialog/add-collaborator-form-dialog.component';
 import { selectCurrentUser } from '../../state/users/user.selectors';
+import { isNotUndefined } from '../../type-guards';
+import { AppState } from './../../app.state';
+import { AddToPlaylistFormDialogComponent } from './../../components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
+import { PlaylistFormDialogComponent } from './../../components/playlist-form-dialog/playlist-form-dialog.component';
 
 @Component({
   selector: 'playlist',
@@ -62,6 +55,13 @@ export class PlaylistComponent {
     this.currentUser$ = this.store
       .select(selectCurrentUser)
       .pipe(filter(isNotUndefined));
+  }
+
+  isCurrentUserPlaylistOwner(
+    playlist: PlaylistDto,
+    currentUser: UserEntity
+  ): boolean {
+    return playlist.owners.map(({ id }) => id).includes(currentUser.id);
   }
 
   onRemoveTrack(trackNumber: number, playlist: PlaylistDto) {
@@ -158,5 +158,7 @@ export class PlaylistComponent {
     this.router.navigate(['/home']);
   }
 
-  toggleLike() {}
+  toggleLike(playlist: PlaylistDto) {
+    this.store.dispatch(togglePlaylistLike(playlist));
+  }
 }

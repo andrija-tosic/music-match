@@ -1,17 +1,24 @@
 <ng-container *ngIf="this.release$ | async as release">
   <mat-card>
     <mat-card-title-group>
-      <mat-card-title *ngFor="let artist of (this.release$ | async)?.artists">
-        <h6>
-          <img
-            mat-card-sm-image
-            [src]="artist.imageUrl"
-            height="40"
-            width="40"
-          />
-          {{ artist.name }}
-        </h6>
-      </mat-card-title>
+      <button
+        *ngFor="let artist of (this.release$ | async)?.artists"
+        mat-button
+        [routerLink]="'/artist/' + artist.id"
+      >
+        <mat-card-title>
+          <h6>
+            <img
+              style="border-radius: 50%"
+              mat-card-sm-image
+              [src]="artist.imageUrl"
+              height="40"
+              width="40"
+            />
+            {{ artist.name }}
+          </h6>
+        </mat-card-title>
+      </button>
 
       <img
         mat-card-xl-image
@@ -36,7 +43,7 @@
       <span>{{ getGenreTypes() | async | titlecase }}</span>
     </mat-card-content>
 
-    <mat-card-content>
+    <mat-card-content *ngIf="(currentUser$ | async)?.role === 'admin'">
       <!-- <button (click)="openReleaseFormDialog('Update')" mat-button>
         <mat-icon>edit</mat-icon> Edit {{ release.type }}
       </button> -->

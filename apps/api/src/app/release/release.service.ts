@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 import {
   Artist,
   CreateReleaseDto,
@@ -7,6 +6,7 @@ import {
   UpdateReleaseDto,
   User,
 } from '@music-match/entities';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
@@ -44,7 +44,7 @@ export class ReleaseService {
     const releaseWithTracks = await this.releaseRepository.findOne({
       where: { id },
       relations: {
-        tracks: { likedByUsers: true },
+        tracks: { likedByUsers: true, release: { artists: true } },
         artists: true,
         genres: true,
       },

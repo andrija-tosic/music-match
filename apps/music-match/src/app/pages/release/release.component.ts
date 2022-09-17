@@ -1,20 +1,21 @@
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AddToPlaylistFormDialogComponent } from './../../components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
-import { toggleTrackLike } from '../../state/tracks/track.actions';
-import { selectedRelease } from './../../state/selectors';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ReleaseDto, TrackDto } from '@music-match/entities';
+import { PlaylistEntity, UserEntity } from '@music-match/state-entities';
+import { Store } from '@ngrx/store';
+import { filter, map, Observable } from 'rxjs';
+import { AppState } from '../../app.state';
+import { addTracksToPlaylist } from '../../state/playlists/playlist.actions';
 import {
   deleteRelease,
   loadRelease,
 } from '../../state/releases/release.actions';
-import { filter, map, Observable, tap, switchMap } from 'rxjs';
-import { Store } from '@ngrx/store';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
-import { AppState } from '../../app.state';
-import { ReleaseDto, TrackDto } from '@music-match/entities';
+import { toggleTrackLike } from '../../state/tracks/track.actions';
+import { selectCurrentUser } from '../../state/users/user.selectors';
 import { isNotUndefined } from '../../type-guards';
-import { addTracksToPlaylist } from '../../state/playlists/playlist.actions';
-import { PlaylistEntity } from '@music-match/state-entities';
+import { AddToPlaylistFormDialogComponent } from './../../components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
+import { selectedRelease } from './../../state/selectors';
 
 @Component({
   selector: 'release',
@@ -30,6 +31,7 @@ export class ReleaseComponent implements OnInit {
   ) {}
 
   release$: Observable<ReleaseDto>;
+  currentUser$: Observable<UserEntity>;
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -39,6 +41,10 @@ export class ReleaseComponent implements OnInit {
 
       this.release$ = this.store
         .select(selectedRelease)
+        .pipe(filter(isNotUndefined));
+
+      this.currentUser$ = this.store
+        .select(selectCurrentUser)
         .pipe(filter(isNotUndefined));
     });
   }

@@ -1,20 +1,20 @@
-import { AppState } from './../app.state';
-import { selectArtists } from './artists/artist.selector';
-import { selectReleases } from './releases/release.selectors';
-import { selectUsers } from './users/user.selectors';
-import { selectTracks } from './tracks/track.selectors';
-import { createSelector } from '@ngrx/store';
-import { selectPlaylists } from './playlists/playlist.selectors';
-import { isNotUndefined } from '../type-guards';
-import { selectUserCompatibilityById } from './user-compatibility/user-compatibility.selectors';
 import { PlaylistDto } from '@music-match/entities';
 import { ArtistEntity } from '@music-match/state-entities';
+import { createSelector } from '@ngrx/store';
+import { isNotUndefined } from '../type-guards';
+import { selectArtists } from './artists/artist.selector';
+import { selectPlaylists } from './playlists/playlist.selectors';
+import { selectReleases } from './releases/release.selectors';
+import { selectTracks } from './tracks/track.selectors';
+import { selectUserCompatibilityById } from './user-compatibility/user-compatibility.selectors';
+import { selectCurrentUser, selectUsers } from './users/user.selectors';
 
 export const selectedPlaylist = createSelector(
   selectPlaylists,
   selectTracks,
   selectUsers,
-  (playlists, tracks, users) => {
+  selectCurrentUser,
+  (playlists, tracks, users, currentUser) => {
     const playlist = playlists.entities[playlists.selectedPlaylistId];
 
     return playlist
@@ -26,6 +26,8 @@ export const selectedPlaylist = createSelector(
           owners: playlist.ownerIds
             ?.map((id) => users.entities[id])
             .filter(isNotUndefined),
+
+          liked: currentUser?.likedPlaylistsIds.includes(playlist.id),
         }
       : undefined;
   }

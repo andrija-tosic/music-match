@@ -1,20 +1,20 @@
-import { Artist } from '@music-match/entities';
-import { Component, Input, OnInit } from '@angular/core';
-import { filter, Observable } from 'rxjs';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../app.state';
-import { isNotUndefined } from '../../type-guards';
+import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserEntity } from '@music-match/state-entities';
+import { Store } from '@ngrx/store';
+import { filter, Observable } from 'rxjs';
+import { AppState } from '../../app.state';
+import { ArtistFormDialogComponent } from '../../components/artist-form-dialog/artist-form-dialog.component';
+import { ReleaseFormDialogComponent } from '../../components/release-form-dialog/release-form-dialog.component';
+import { ArtistViewModel } from '../../models/artist.view.model';
 import {
   deleteArtist,
   loadArtistWithReleases,
 } from '../../state/artists/artist.actions';
 import { selectedArtist } from '../../state/selectors';
-import { ArtistEntity, ReleaseEntity } from '@music-match/state-entities';
-import { MatDialog } from '@angular/material/dialog';
-import { ArtistFormDialogComponent } from '../../components/artist-form-dialog/artist-form-dialog.component';
-import { ReleaseFormDialogComponent } from '../../components/release-form-dialog/release-form-dialog.component';
-import { ArtistViewModel } from '../../models/artist.view.model';
+import { selectCurrentUser } from '../../state/users/user.selectors';
+import { isNotUndefined } from '../../type-guards';
 
 @Component({
   selector: 'artist',
@@ -23,6 +23,7 @@ import { ArtistViewModel } from '../../models/artist.view.model';
 })
 export class ArtistComponent {
   artist$: Observable<ArtistViewModel>;
+  currentUser$: Observable<UserEntity>;
 
   constructor(
     private store: Store<AppState>,
@@ -36,6 +37,10 @@ export class ArtistComponent {
 
     this.artist$ = this.store
       .select(selectedArtist)
+      .pipe(filter(isNotUndefined));
+
+    this.currentUser$ = this.store
+      .select(selectCurrentUser)
       .pipe(filter(isNotUndefined));
   }
 

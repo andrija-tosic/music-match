@@ -1,1 +1,58 @@
-<p>home works!</p>
+<mat-card>
+  <ng-container *ngIf="recommendations$ | async as recommendations">
+    <h2 *ngIf="recommendations.artistsBasedOnGenres.length">
+      Recommended artists
+    </h2>
+    <div class="horizontal-scroll-div">
+      <search-result-card
+        *ngFor="let artist of recommendations.artistsBasedOnGenres"
+        [item]="$any(artist)"
+        [type]="'artist'"
+      ></search-result-card>
+    </div>
+
+    <h2 *ngIf="recommendations.releasesBasedOnGenres.length">
+      Recommended albums
+    </h2>
+    <div class="horizontal-scroll-div">
+      <search-result-card
+        *ngFor="let release of recommendations.releasesBasedOnGenres"
+        [item]="$any(release)"
+        [type]="'release'"
+      ></search-result-card>
+    </div>
+
+    <h2 *ngIf="recommendations.artistsFromFriends.length">
+      Who your friends are listening to
+    </h2>
+    <div class="horizontal-scroll-div">
+      <search-result-card
+        *ngFor="let artist of recommendations.artistsFromFriends"
+        [item]="$any(artist)"
+        [type]="'artist'"
+      ></search-result-card>
+    </div>
+
+    <h2 *ngIf="recommendations.releasesFromFriends.length">
+      Albums your friends are listening to
+    </h2>
+    <div class="horizontal-scroll-div">
+      <search-result-card
+        *ngFor="let release of recommendations.releasesFromFriends"
+        [item]="$any(release)"
+        [type]="'release'"
+      ></search-result-card>
+    </div>
+
+    <h2 *ngIf="recommendations.newUsersBasedOnGenres.length">
+      These users have good music taste... just like yours
+    </h2>
+    <div class="horizontal-scroll-div">
+      <search-result-card
+        *ngFor="let user of recommendations.newUsersBasedOnGenres"
+        [item]="$any(user)"
+        [type]="'user'"
+      ></search-result-card>
+    </div>
+  </ng-container>
+</mat-card>

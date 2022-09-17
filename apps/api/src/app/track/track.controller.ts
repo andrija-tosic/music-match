@@ -1,20 +1,25 @@
+import { CreateTrackDto, Roles, UpdateTrackDto } from '@music-match/entities';
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { TrackService } from './track.service';
-import { CreateTrackDto, UpdateTrackDto } from '@music-match/entities';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { SessionGuard } from '../auth/guards/session.guard';
+import { Role } from '../decorators/role.decorator';
 import { UserFromSession } from '../decorators/user.decorator';
+import { TrackService } from './track.service';
 
 @Controller('tracks')
+@UseGuards(SessionGuard)
+@UseGuards(RolesGuard)
+@Role(Roles.Admin)
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 

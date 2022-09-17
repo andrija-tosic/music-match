@@ -1,7 +1,7 @@
-import { AppState } from '../../app.state';
 import { createSelector } from '@ngrx/store';
-import { selectPlaylists } from '../playlists/playlist.selectors';
+import { AppState } from '../../app.state';
 import { isNotUndefined } from '../../type-guards';
+import { selectPlaylists } from '../playlists/playlist.selectors';
 
 export const selectUsers = createSelector(
   (state: AppState) => state.users,
@@ -32,23 +32,23 @@ export const selectCurrentUsersFriends = createSelector(
 );
 
 export const selectCurrentUsersPlaylists = createSelector(
-  selectUsers,
+  selectCurrentUser,
   selectPlaylists,
-  (users, playlists) =>
-    users.entities[users.currentUserId]
-      ? users.entities[users.currentUserId]!.playlistsIds.map(
-          (id) => playlists.entities[id]
-        ).filter(isNotUndefined)
+  (user, playlists) =>
+    user
+      ? user.playlistsIds
+          .map((id) => playlists.entities[id])
+          .filter(isNotUndefined)
       : []
 );
 
-export const selectUsersLikedPlaylists = createSelector(
-  selectUsers,
+export const selectCurrentUsersLikedPlaylists = createSelector(
+  selectCurrentUser,
   selectPlaylists,
-  (users, playlists) =>
-    users.entities[users.currentUserId]
-      ? users.entities[users.currentUserId]!.likedPlaylistsIds.map(
-          (id) => playlists.entities[id]
-        ).filter(isNotUndefined)
+  (user, playlists) =>
+    user
+      ? user.likedPlaylistsIds
+          .map((id) => playlists.entities[id])
+          .filter(isNotUndefined)
       : []
 );

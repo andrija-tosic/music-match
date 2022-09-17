@@ -1,13 +1,19 @@
 <ng-container *ngIf="this.user$ | async as user">
   <mat-card>
     <mat-card-title-group>
-      <img mat-card-xl-image [src]="user?.imageUrl" height="200" width="200" />
+      <img
+        style="border-radius: 50%"
+        mat-card-xl-image
+        [src]="user?.imageUrl"
+        height="200"
+        width="200"
+      />
       <mat-card-title>
         <h2>{{ user?.name }}</h2>
       </mat-card-title>
     </mat-card-title-group>
 
-    <mat-card-content>
+    <mat-card-content *ngIf="(currentUser$ | async)?.id !== user.id">
       <h4>You both like listening to:</h4>
 
       <button
@@ -59,7 +65,7 @@
   <h4 *ngIf="!user.playlists.length">No playlists yet from {{ user.name }}.</h4>
 
   <mat-card *ngIf="user.likedPlaylists.length">
-    <h4>{{ user.name }}'s playlists</h4>
+    <h4>{{ user.name }}'s liked playlists</h4>
     <search-result-card
       *ngFor="let playlist of user.likedPlaylists"
       [item]="playlist"
@@ -67,7 +73,7 @@
     >
     </search-result-card>
   </mat-card>
-  <h4 *ngIf="!user.likedPlaylists.length">
-    No liked playlists yet from {{ user.name }}.
+  <h4 *ngIf="!user.likedPlaylists?.length">
+    No favorite playlists yet from {{ user.name }}.
   </h4>
 </ng-container>

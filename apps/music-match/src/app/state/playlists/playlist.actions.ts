@@ -1,23 +1,14 @@
 import {
-  PlaylistDto,
-  PlaylistBaseDto,
-  UpdatePlaylistDto,
   AddTrackDto,
-  TrackDto,
-  RemoveTrackDto,
-  CreatePlaylistDto,
   ChangeTrackPositionDto,
+  CreatePlaylistDto,
+  PlaylistBaseDto,
+  PlaylistDto,
+  RemoveTrackDto,
+  TrackDto,
+  UpdatePlaylistDto,
 } from '@music-match/entities';
 import { createAction, props } from '@ngrx/store';
-
-export const loadUserPlaylists = createAction(
-  '[Playlist] Init load user playlists',
-  props<{ id: number }>()
-);
-
-export const loadCurrentUserPlaylists = createAction(
-  '[Playlist] Init load current user playlists'
-);
 
 export const loadedUserPlaylists = createAction(
   '[Playlist] Loaded user playlists',
@@ -109,4 +100,13 @@ export const changeTrackPosition = createAction(
 
 export const changedTrackPosition = createAction(
   '[Playlist] Changed track position'
+);
+
+export const togglePlaylistLike = createAction(
+  '[Playlist] Init toggle like on playlist',
+  props<{ id: number }>()
+);
+
+export const toggledPlaylistLike = createAction(
+  '[Playlist] Toggled like on playlist'
 );

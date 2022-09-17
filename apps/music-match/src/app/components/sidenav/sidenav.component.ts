@@ -1,21 +1,20 @@
-import { PlaylistFormDialogComponent } from './../playlist-form-dialog/playlist-form-dialog.component';
-import { AppState } from './../../app.state';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSidenav } from '@angular/material/sidenav';
+import { PlaylistEntity, UserEntity } from '@music-match/state-entities';
+import { Store } from '@ngrx/store';
+import { filter, map, Observable, shareReplay } from 'rxjs';
 import {
   selectCurrentUser,
   selectCurrentUsersFriends,
+  selectCurrentUsersLikedPlaylists,
   selectCurrentUsersPlaylists,
-  selectUsersLikedPlaylists,
 } from '../../state/users/user.selectors';
-import { loadCurrentUserPlaylists } from '../../state/playlists/playlist.actions';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { BehaviorSubject, filter, map, Observable, shareReplay } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
-import { PlaylistEntity, UserEntity } from '@music-match/state-entities';
-import { ArtistFormDialogComponent } from '../artist-form-dialog/artist-form-dialog.component';
 import { isNotUndefined } from '../../type-guards';
-import { MatSidenav } from '@angular/material/sidenav';
-import { BreakpointObserver } from '@angular/cdk/layout';
+import { ArtistFormDialogComponent } from '../artist-form-dialog/artist-form-dialog.component';
+import { AppState } from './../../app.state';
+import { PlaylistFormDialogComponent } from './../playlist-form-dialog/playlist-form-dialog.component';
 
 @Component({
   selector: 'sidenav',
@@ -44,12 +43,13 @@ export class SidenavComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.store.dispatch(loadCurrentUserPlaylists());
     this.usersPlaylist$ = this.store.select(selectCurrentUsersPlaylists);
-    this.likedPlaylist$ = this.store.select(selectUsersLikedPlaylists);
+    this.likedPlaylist$ = this.store.select(selectCurrentUsersLikedPlaylists);
+
     this.friends$ = this.store
       .select(selectCurrentUsersFriends)
       .pipe(filter(isNotUndefined));
+
     this.currentUser$ = this.store
       .select(selectCurrentUser)
       .pipe(filter(isNotUndefined));

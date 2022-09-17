@@ -7,7 +7,7 @@ import {
   selectUserById,
 } from '../../state/users/user.selectors';
 import { loadUser, toggleUserFollowing } from '../../state/users/user.actions';
-import { combineLatest, filter, map, Observable, take, tap } from 'rxjs';
+import { combineLatest, filter, first, map, Observable, take, tap } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { User } from '@music-match/entities';
@@ -34,12 +34,12 @@ export class UserComponent {
 
   constructor(private route: ActivatedRoute, private store: Store<AppState>) {
     this.route.params.subscribe((params) => {
-      const id = params['id'];
+      const id = Number(params['id']);
       this.store.dispatch(loadUser({ id }));
 
       this.store
         .select(selectCurrentUser)
-        .pipe(filter(isNotUndefined), take(1))
+        .pipe(filter(isNotUndefined), first())
         .subscribe((user) => {
           if (user.id !== id) {
             this.store.dispatch(loadUserCompatibility({ id }));

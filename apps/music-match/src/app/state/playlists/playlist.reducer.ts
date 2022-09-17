@@ -1,7 +1,9 @@
-import * as Actions from './playlist.actions';
-import { createReducer, on } from '@ngrx/store';
-import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { PlaylistEntity } from '@music-match/state-entities';
+import { createEntityAdapter, EntityState } from '@ngrx/entity';
+import { createReducer, on } from '@ngrx/store';
+
+import * as UserActions from '../users/user.actions';
+import * as Actions from './playlist.actions';
 
 export interface PlaylistsState extends EntityState<PlaylistEntity> {
   selectedPlaylistId: number;
@@ -32,17 +34,28 @@ export const playlistReducer = createReducer(
         }
       : state;
   }),
-  on(
-    Actions.loadedUserPlaylists,
-    (state, { usersPlaylists, usersLikedPlaylists }) => {
-      const newLikedPlaylists = <PlaylistEntity[]>usersLikedPlaylists; //.map(p =>  {return{...p, description: '', liked: true }}) ;
-      const newUsersPlaylists = <PlaylistEntity[]>usersPlaylists; //.map(p => { return { ...p, description: '', liked: false}});
-
-      return adapter.upsertMany(
-        newLikedPlaylists.concat(newUsersPlaylists),
-        state
-      );
-    }
+  on(UserActions.loadedUser, (state, { user }) =>
+    adapter.addMany(
+      [
+        ...user.playlists.map((playlist) => {
+          return {
+            ...playlist,
+            liked: false,
+            ownerIds: playlist.owners?.map(({ id }) => id),
+            trackIds: [],
+          };
+        }),
+        ...user.likedPlaylists.map((playlist) => {
+          return {
+            ...playlist,
+            liked: true,
+            ownerIds: playlist.owners?.map(({ id }) => id),
+            trackIds: [],
+          };
+        }),
+      ],
+      state
+    )
   ),
   on(Actions.updatedSelectedPlaylist, (state, { playlist }) => {
     return {
@@ -85,20 +98,16 @@ export const playlistReducer = createReducer(
       );
     }
   ),
-  on(Actions.createdPlaylist, (state, { playlist }) => {
-    return {
-      ...adapter.addOne(
-        {
-          ...playlist,
-          ownerIds: playlist.owners.map(({ id }) => id),
-          trackIds: [],
-        },
-        state
-      ),
-
-      selectedPlaylistId: playlist.id,
-    };
-  }),
+  on(Actions.createdPlaylist, (state, { playlist }) =>
+    adapter.addOne(
+      {
+        ...playlist,
+        ownerIds: playlist.owners.map(({ id }) => id),
+        trackIds: [],
+      },
+      { ...state, selectedPlaylistId: playlist.id }
+    )
+  ),
   on(Actions.deletePlaylist, (state, { id }) => adapter.removeOne(id, state)),
 
   on(Actions.addedCollaboratorToPlaylist, (state, { playlist }) =>

@@ -52,6 +52,8 @@ import { artistReducer } from './state/artists/artist.reducer';
 import { SearchEffects } from './state/search/search.effects';
 import { UserMusicMatchEffects } from './state/user-compatibility/user-compatibility.effects';
 import { userReducer } from './state/users/user.reducer';
+import { recommendationReducer } from './state/recommendations/recommendation.reducer';
+import { RecommendationsEffects } from './state/recommendations/recommendation.effects';
 
 @NgModule({
   declarations: [
@@ -87,6 +89,7 @@ import { userReducer } from './state/users/user.reducer';
         playlists: playlistReducer,
         searchResults: searchReducer,
         userCompatibilities: userCompatibilityReducer,
+        recommendations: recommendationReducer,
       },
       {
         metaReducers: !environment.production ? [] : [],
@@ -104,6 +107,7 @@ import { userReducer } from './state/users/user.reducer';
       PlaylistsEffects,
       SearchEffects,
       UserMusicMatchEffects,
+      RecommendationsEffects,
     ]),
     !environment.production
       ? StoreDevtoolsModule.instrument({

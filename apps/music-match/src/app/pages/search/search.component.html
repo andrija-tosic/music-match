@@ -1,47 +1,49 @@
-<h1>Search</h1>
-<mat-form-field class="example-full-width" appearance="outline">
-  <input
-    matInput
-    #searchInput
-    class="search-input"
-    placeholder="Search"
-    type="text"
-    (keyup)="this.subject.next($any($event).target.value)"
-  />
-</mat-form-field>
+<mat-card>
+  <h1>Search</h1>
+  <mat-form-field class="example-full-width" appearance="outline">
+    <input
+      matInput
+      #searchInput
+      class="search-input"
+      placeholder="Search"
+      type="text"
+      (keyup)="this.subject.next($any($event).target.value)"
+    />
+  </mat-form-field>
 
-<div>
-  <h3 *ngIf="(artistResult$ | async)?.length">Artists</h3>
-  <search-result-card
-    *ngFor="let artist of artistResult$ | async"
-    [item]="artist"
-    [type]="'artist'"
-  ></search-result-card>
+  <div>
+    <h3 *ngIf="(artistResult$ | async)?.length">Artists</h3>
+    <search-result-card
+      *ngFor="let artist of artistResult$ | async"
+      [item]="artist"
+      [type]="'artist'"
+    ></search-result-card>
 
-  <h3 *ngIf="(releaseResult$ | async)?.length">Releases</h3>
-  <search-result-card
-    *ngFor="let release of releaseResult$ | async"
-    [item]="release"
-    [type]="'release'"
-  ></search-result-card>
+    <h3 *ngIf="(releaseResult$ | async)?.length">Releases</h3>
+    <search-result-card
+      *ngFor="let release of releaseResult$ | async"
+      [item]="release"
+      [type]="'release'"
+    ></search-result-card>
 
-  <h3 *ngIf="(trackResult$ | async)?.length">Tracks</h3>
-  <track-result-card
-    *ngFor="let track of trackResult$ | async"
-    [track]="track"
-  ></track-result-card>
+    <h3 *ngIf="(trackResult$ | async)?.length">Tracks</h3>
+    <track-result-card
+      *ngFor="let track of trackResult$ | async"
+      [track]="track"
+    ></track-result-card>
 
-  <h3 *ngIf="(userResult$ | async)?.length">Users</h3>
-  <search-result-card
-    *ngFor="let user of userResult$ | async"
-    [item]="user"
-    [type]="'user'"
-  ></search-result-card>
+    <h3 *ngIf="(userResult$ | async)?.length">Users</h3>
+    <search-result-card
+      *ngFor="let user of userResult$ | async"
+      [item]="user"
+      [type]="'user'"
+    ></search-result-card>
 
-  <h3 *ngIf="(playlistResult$ | async)?.length">Playlists</h3>
-  <search-result-card
-    *ngFor="let playlist of playlistResult$ | async"
-    [item]="playlist"
-    [type]="'playlist'"
-  ></search-result-card>
-</div>
+    <h3 *ngIf="(playlistResult$ | async)?.length">Playlists</h3>
+    <search-result-card
+      *ngFor="let playlist of playlistResult$ | async"
+      [item]="playlist"
+      [type]="'playlist'"
+    ></search-result-card>
+  </div>
+</mat-card>

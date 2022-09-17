@@ -1,6 +1,4 @@
-import { Playlist } from '../playlist/playlist.entity';
-import { Track } from '../track/track.entity';
-import { Roles } from './roles';
+import { Exclude } from 'class-transformer';
 import {
   Column,
   Entity,
@@ -9,7 +7,9 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
+import { Playlist } from '../playlist/playlist.entity';
+import { Track } from '../track/track.entity';
+import { Roles } from './roles';
 
 @Entity()
 @Unique(['username'])
@@ -20,7 +20,7 @@ export class User {
   @Column({ unique: true })
   username: string;
 
-  @Column({ name: 'passwordHash', select: false })
+  @Column({ name: 'passwordHash' })
   @Exclude()
   password: string;
 

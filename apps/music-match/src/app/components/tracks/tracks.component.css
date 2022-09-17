@@ -1,3 +1,10 @@
+.example-box {
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 4px;
@@ -19,4 +26,19 @@
 
 .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.drag-icon:hover {
+  cursor: grab;
+}
+
+.cell {
+  flex: 1 1 0px;
+  text-align: center;
+}
+
+.edit-icons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
