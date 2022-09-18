@@ -1,16 +1,16 @@
-import { ApiError } from './../../types';
+import { ApiError } from '../../../types';
 import { Roles } from '@music-match/entities';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { constants, snackbarError } from '../../constants';
-import { AuthService } from '../../services/auth.service';
+import { snackbarError } from '../../../constants';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss'],
+  styleUrls: ['../auth.scss'],
 })
 export class RegisterComponent implements OnInit {
   form;

@@ -9,11 +9,11 @@ import * as redisStore from 'cache-manager-redis-store';
 import { config } from '../config';
 import {
   Artist,
+  Genre,
   Playlist,
   PlaylistTrack,
   Release,
   Track,
-  Genre,
   User,
 } from '@music-match/entities';
 import { ArtistModule } from './artist/artist.module';
@@ -22,6 +22,7 @@ import { TrackModule } from './track/track.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { SearchModule } from './search/search.module';
 import { RecommendationsModule } from './recommendations/recommendations.module';
+import { environment } from '../environments/environment';
 
 @Module({
   imports: [
@@ -33,7 +34,7 @@ import { RecommendationsModule } from './recommendations/recommendations.module'
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
-        host: 'localhost',
+        host: environment.typeormHost,
         port: 5000,
         username: 'postgres',
         password: configService.getOrThrow('POSTGRES_PASSWORD'),

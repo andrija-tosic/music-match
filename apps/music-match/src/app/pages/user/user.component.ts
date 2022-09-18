@@ -1,26 +1,19 @@
-import {
-  UserEntity,
-  UsersCompatibilityEntity,
-} from '@music-match/state-entities';
-import {
-  selectCurrentUser,
-  selectUserById,
-} from '../../state/users/user.selectors';
-import { loadUser, toggleUserFollowing } from '../../state/users/user.actions';
-import { combineLatest, filter, first, map, Observable, take, tap } from 'rxjs';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { User } from '@music-match/entities';
-import { AppState } from '../../app.state';
+import { UserEntity } from '@music-match/state-entities';
 import { Store } from '@ngrx/store';
-import { isNotUndefined } from '../../type-guards';
+import { filter, first, Observable } from 'rxjs';
+import { AppState } from '../../app.state';
+import { UserViewModel } from '../../models/user.view.model';
 import {
   selectedUser,
   selectUserCompatibilityReport,
   UserCompatibilityReport,
 } from '../../state/selectors';
 import { loadUserCompatibility } from '../../state/user-compatibility/user-compatibility.actions';
-import { UserViewModel } from '../../models/user.view.model';
+import { loadUser, toggleUserFollowing } from '../../state/users/user.actions';
+import { selectCurrentUser } from '../../state/users/user.selectors';
+import { isNotUndefined } from '../../type-guards';
 
 @Component({
   selector: 'user',
@@ -58,18 +51,11 @@ export class UserComponent {
     });
   }
 
-  isCurrentUsersFriend(): Observable<boolean> {
-    return combineLatest([this.user$, this.currentUser$]).pipe(
-      take(1),
-      map(([user, currentUser]) => currentUser.friendsIds.includes(user.id))
-    );
+  isCurrentUsersFriend(user: UserEntity, currentUser: UserEntity): boolean {
+    return currentUser.friendsIds.includes(user.id);
   }
 
-  addFriend(user: UserEntity) {
-    this.store.dispatch(toggleUserFollowing({ id: user.id }));
-  }
-
-  removeFriend(user: UserEntity) {
+  toggleUserFollowing(user: UserEntity) {
     this.store.dispatch(toggleUserFollowing({ id: user.id }));
   }
 }

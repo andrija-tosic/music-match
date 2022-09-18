@@ -1,17 +1,15 @@
 import {
   Controller,
-  Get,
-  Post,
-  Param,
   Delete,
-  UseInterceptors,
-  UploadedFile,
-  Logger,
-  Body,
+  Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from './file.service';
+import { Express } from 'express';
+import 'multer';
 
 @Controller('files')
 export class FileController {

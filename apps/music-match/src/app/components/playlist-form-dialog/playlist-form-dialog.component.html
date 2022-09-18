@@ -1,80 +1,57 @@
-<div class="dialog">
+<form (ngSubmit)="onConfirm()" [formGroup]="form">
+  <input
+    #fileInput
+    (change)="onFileChanged($event)"
+    hidden="true"
+    onclick="this.value=null"
+    type="file"
+  />
+
   <h1 mat-dialog-title>{{ actionType }} playlist</h1>
-  <div class="wrapper">
-    <div class="slika-actions">
-      <div class="dugme">
-        <input
-          hidden="true"
-          #fileInput
-          onclick="this.value=null"
-          type="file"
-          (change)="onFileChanged($event)"
-        />
-      </div>
-      <div class="dugme">
-        <form [formGroup]="form">
-          <mat-card-content>
-            <mat-form-field appearance="outline">
-              <input matInput formControlName="name" type="text" />
-              <mat-label>Name</mat-label>
-            </mat-form-field>
-            <br />
-            <mat-form-field appearance="outline">
-              <input matInput formControlName="description" type="text" />
-              <mat-label>Description</mat-label>
-            </mat-form-field>
-          </mat-card-content>
-        </form>
 
-        <button
-          [disabled]="!this.imageUrl || (this.uploading$ | async)"
-          (click)="removeImage()"
-          mat-raised-button
-        >
-          <mat-icon class="material-icons-outlined">delete</mat-icon> Remove
-          image
-        </button>
-      </div>
-    </div>
+  <div class="dialog">
+    <img
+      (click)="fileInput.click()"
+      [src]="this.imageUrl"
+      src-fallback="/assets/music-fallback.jpg"
+    />
 
-    <div
-      style="
-        width: 16em;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      "
+    <button
+      (click)="removeImage()"
+      [disabled]="!this.imageUrl || (this.uploading$ | async)"
+      mat-stroked-button
+      type="button"
     >
+      <mat-icon class="material-icons-outlined">hide_image</mat-icon>
+      Remove image
+    </button>
+
+    <mat-form-field appearance="outline">
+      <input formControlName="name" matInput type="text" />
+      <mat-error>Name is required.</mat-error>
+      <mat-label>Name</mat-label>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <input formControlName="description" matInput type="text" />
+      <mat-label>Description</mat-label>
+    </mat-form-field>
+
+    <div mat-dialog-actions>
       <button
         [disabled]="this.uploading$ | async"
-        (click)="fileInput.click()"
+        color="primary"
         mat-raised-button
+        type="submit"
       >
-        <img
-          class="user-img"
-          mat-card-sm-image
-          [src]="this.imageUrl"
-          src-fallback="/assets/music-fallback.jpg"
-        />
+        Save
+      </button>
+      <button
+        (click)="onDismiss()"
+        [disabled]="this.uploading$ | async"
+        mat-stroked-button
+      >
+        Cancel
       </button>
     </div>
   </div>
-
-  <div mat-dialog-actions class="buttons">
-    <button
-      [disabled]="this.uploading$ | async"
-      mat-raised-button
-      color="primary"
-      (click)="onConfirm()"
-    >
-      Save
-    </button>
-    <button
-      [disabled]="this.uploading$ | async"
-      mat-stroked-button
-      (click)="onDismiss()"
-    >
-      Cancel
-    </button>
-  </div>
-</div>
+</form>

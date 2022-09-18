@@ -1,6 +1,7 @@
 import { CreateArtistDto, Roles, UpdateArtistDto } from '@music-match/entities';
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -8,6 +9,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { SessionGuard } from '../auth/guards/session.guard';
@@ -15,6 +17,7 @@ import { Role } from '../decorators/role.decorator';
 import { ArtistService } from './artist.service';
 
 @Controller('artists')
+@UseInterceptors(ClassSerializerInterceptor)
 export class ArtistController {
   constructor(private readonly artistService: ArtistService) {}
 

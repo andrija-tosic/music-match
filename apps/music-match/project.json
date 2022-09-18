@@ -5,9 +5,7 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/music-match",
         "index": "apps/music-match/src/index.html",
@@ -30,8 +28,8 @@
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "500kb",
-              "maximumError": "1mb"
+              "maximumWarning": "1MB",
+              "maximumError": "2MB"
             },
             {
               "type": "anyComponentStyle",
@@ -87,9 +85,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/apps/music-match"
-      ],
+      "outputs": ["coverage/apps/music-match"],
       "options": {
         "jestConfig": "apps/music-match/jest.config.ts",
         "passWithNoTests": true

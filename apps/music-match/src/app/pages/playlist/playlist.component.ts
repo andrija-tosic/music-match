@@ -32,7 +32,7 @@ import { PlaylistFormDialogComponent } from './../../components/playlist-form-di
 @Component({
   selector: 'playlist',
   templateUrl: './playlist.component.html',
-  styleUrls: ['./playlist.component.css'],
+  styleUrls: ['./playlist.component.scss'],
 })
 export class PlaylistComponent {
   playlist$: Observable<PlaylistDto>;
@@ -61,7 +61,7 @@ export class PlaylistComponent {
     playlist: PlaylistDto,
     currentUser: UserEntity
   ): boolean {
-    return playlist.owners.map(({ id }) => id).includes(currentUser.id);
+    return playlist.owners?.map(({ id }) => id).includes(currentUser.id);
   }
 
   onRemoveTrack(trackNumber: number, playlist: PlaylistDto) {

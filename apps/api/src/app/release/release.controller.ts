@@ -2,9 +2,11 @@ import {
   CreateReleaseDto,
   Roles,
   UpdateReleaseDto,
+  User,
 } from '@music-match/entities';
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -12,6 +14,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Role } from '../decorators/role.decorator';
@@ -20,6 +23,7 @@ import { SessionGuard } from './../auth/guards/session.guard';
 import { ReleaseService } from './release.service';
 
 @Controller('releases')
+@UseInterceptors(ClassSerializerInterceptor)
 export class ReleaseController {
   constructor(private readonly releaseService: ReleaseService) {}
 
@@ -41,7 +45,7 @@ export class ReleaseController {
 
   @UseGuards(SessionGuard)
   @Get(':id')
-  findOne(@Param('id') id: string, @UserFromSession() user) {
+  findOne(@Param('id') id: string, @UserFromSession() user: User) {
     return this.releaseService.findOne(+id, user);
   }
 
@@ -49,8 +53,12 @@ export class ReleaseController {
   @UseGuards(SessionGuard)
   @UseGuards(RolesGuard)
   @Role(Roles.Admin)
-  update(@Param('id') id: string, @Body() updateReleaseDto: UpdateReleaseDto) {
-    return this.releaseService.update(+id, updateReleaseDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateReleaseDto: UpdateReleaseDto,
+    @UserFromSession() user: User
+  ) {
+    return this.releaseService.update(+id, updateReleaseDto, user);
   }
 
   @Delete(':id')

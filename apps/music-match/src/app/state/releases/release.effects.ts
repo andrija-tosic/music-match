@@ -47,9 +47,9 @@ export class ReleaseEffects {
   updateRelease$ = createEffect(() =>
     this.action$.pipe(
       ofType(ReleaseActions.updateRelease),
-      switchMap(({ release }) =>
+      switchMap(({ id, release }) =>
         this.releaseService
-          .updateRelease(release)
+          .updateRelease(id, release)
           .pipe(map((release) => ReleaseActions.updatedRelease({ release })))
       )
     )

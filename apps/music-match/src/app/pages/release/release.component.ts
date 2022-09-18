@@ -6,6 +6,7 @@ import { PlaylistEntity, UserEntity } from '@music-match/state-entities';
 import { Store } from '@ngrx/store';
 import { filter, map, Observable } from 'rxjs';
 import { AppState } from '../../app.state';
+import { ReleaseFormDialogComponent } from '../../components/release-form-dialog/release-form-dialog.component';
 import { addTracksToPlaylist } from '../../state/playlists/playlist.actions';
 import {
   deleteRelease,
@@ -100,7 +101,11 @@ export class ReleaseComponent implements OnInit {
       });
   }
 
-  openReleaseFormDialog(type: 'Create' | 'Update') {}
+  openReleaseFormDialog(type: 'Create' | 'Update', release: ReleaseDto) {
+    this.dialog.open(ReleaseFormDialogComponent, {
+      data: { actionType: type, release },
+    });
+  }
 
   dispatchDeleteRelease(release: ReleaseDto) {
     this.store.dispatch(deleteRelease(release));

@@ -29,5 +29,8 @@ export const trackReducer = createReducer(
   ),
   on(TrackActions.toggledTrackLike, (state, { track }) =>
     adapter.updateOne({ id: track.id, changes: { liked: track.liked } }, state)
+  ),
+  on(ReleaseActions.updatedRelease, (state, { release }) =>
+    adapter.upsertMany(release.tracks, state)
   )
 );

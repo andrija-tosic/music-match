@@ -1,6 +1,8 @@
-import { IsNotEmptyObject } from 'class-validator';
+import { IsNotEmpty, IsNumber, Min } from 'class-validator';
 
 export class RemoveTrackDto {
-  @IsNotEmptyObject()
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
   number: number;
 }

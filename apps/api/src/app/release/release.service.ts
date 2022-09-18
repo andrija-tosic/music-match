@@ -63,16 +63,32 @@ export class ReleaseService {
     };
   }
 
-  async update(id: number, updateReleaseDto: UpdateReleaseDto) {
+  async update(id: number, updateReleaseDto: UpdateReleaseDto, user: User) {
     const release = this.releaseRepository.create(updateReleaseDto);
 
     release.id = id;
     release.artists = await this.artistRepository.findBy({
       id: In(updateReleaseDto.artistIds),
     });
-    console.log(release);
+
+    const existingGenres = await this.genreRepository.findBy({
+      type: In(release.genres.map(({ type }) => type)),
+    });
+
+    const existingGenresMap = new Map<string, Genre>();
+
+    existingGenres.forEach((genre) => existingGenresMap.set(genre.type, genre));
+
+    const newGenres = release.genres.filter((genre) => {
+      if (!existingGenresMap.has(genre.type)) return genre;
+    });
+
+    const newGenresFromDb = await this.genreRepository.create(newGenres);
+
+    release.genres = [...existingGenres, ...newGenresFromDb];
+
     await this.releaseRepository.save(release);
-    return await this.releaseRepository.findOneBy({ id });
+    return await this.findOne(id, user);
   }
 
   async remove(id: number) {

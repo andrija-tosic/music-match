@@ -1,7 +1,7 @@
-import { UserService } from './../../services/user.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, map, tap } from 'rxjs';
+import { map, switchMap } from 'rxjs';
+import { UserService } from './../../services/user.service';
 import * as UserActions from './user.actions';
 
 @Injectable()
@@ -15,6 +15,17 @@ export class UserEffects {
         this.userService
           .getUser(id)
           .pipe(map((user) => UserActions.loadedUser({ user })))
+      )
+    )
+  );
+
+  toggleUserFollowing$ = createEffect(() =>
+    this.action$.pipe(
+      ofType(UserActions.toggleUserFollowing),
+      switchMap(({ id }) =>
+        this.userService
+          .toggleUserFollowing(id)
+          .pipe(map(() => UserActions.toggledUserFollowing()))
       )
     )
   );

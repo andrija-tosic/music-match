@@ -1,38 +1,18 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateTrackDto {
   @IsNotEmpty()
   name: string;
 
   @IsNotEmpty()
+  @IsNumber()
   number: number;
 
   @IsNotEmpty()
+  @IsNumber()
   duration: number;
 
   @IsNotEmpty()
-  danceability: number;
-  @IsNotEmpty()
-  energy: number;
-  @IsNotEmpty()
-  key: number;
-  @IsNotEmpty()
-  loudness: number;
-  @IsNotEmpty()
-  mode: number;
-  @IsNotEmpty()
-  speechiness: number;
-  @IsNotEmpty()
-  acousticness: number;
-  @IsNotEmpty()
-  instrumentalness: number;
-  @IsNotEmpty()
-  liveness: number;
-  @IsNotEmpty()
-  valence: number;
-  @IsNotEmpty()
-  tempo: number;
-
-  @IsNotEmpty()
+  @IsNumber()
   releaseId: number;
 }

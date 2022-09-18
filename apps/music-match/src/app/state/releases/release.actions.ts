@@ -28,12 +28,12 @@ export const createdRelease = createAction(
 
 export const updateRelease = createAction(
   '[Release] Init update Release',
-  props<{ release: UpdateReleaseDto }>()
+  props<{ id: number; release: UpdateReleaseDto }>()
 );
 
 export const updatedRelease = createAction(
   '[Release] Updated release',
-  props<{ release: Release }>()
+  props<{ release: ReleaseDto }>()
 );
 
 export const deleteRelease = createAction(

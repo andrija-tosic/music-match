@@ -1,5 +1,4 @@
-import { Release } from './../release/release.entity';
-import { PlaylistTrack } from './../playlist-track/playlist-track.entity';
+import { User } from '@music-match/entities';
 import {
   Column,
   Entity,
@@ -8,7 +7,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from '@music-match/entities';
+import { PlaylistTrack } from './../playlist-track/playlist-track.entity';
+import { Release } from './../release/release.entity';
 
 @Entity()
 export class Track {
@@ -24,40 +24,10 @@ export class Track {
   @Column()
   duration: number;
 
-  // @Column()
-  // danceability: number;
-
-  // @Column()
-  // energy: number;
-
-  // @Column()
-  // key: number;
-
-  // @Column()
-  // loudness: number;
-
-  // @Column()
-  // mode: number;
-
-  // @Column()
-  // speechiness: number;
-
-  // @Column()
-  // acousticness: number;
-
-  // @Column()
-  // instrumentalness: number;
-
-  // @Column()
-  // liveness: number;
-
-  // @Column()
-  // valence: number;
-
-  // @Column()
-  // tempo: number;
-
-  @ManyToOne(() => Release, { onDelete: 'CASCADE', cascade: true })
+  @ManyToOne(() => Release, {
+    onDelete: 'CASCADE',
+    cascade: ['insert', 'update'],
+  })
   release: Release;
 
   @OneToMany(() => PlaylistTrack, (pt) => pt.track)

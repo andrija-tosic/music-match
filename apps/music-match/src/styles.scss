@@ -5,15 +5,83 @@ html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
 }
+
 * {
   font-family: Inter, 'Helvetica Neue', Roboto, sans-serif;
 }
 
-img {
+.toolbar {
+  padding: 2em;
+}
+
+img,
+input[type='image'] {
   object-fit: cover;
   border-radius: 7%;
   box-shadow: 0px 0px 15px 2px rgb(0 0 0 / 8%);
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1em;
+  align-items: center;
+  max-height: 80vh;
+
+  img {
+    width: 10em;
+    height: 10em;
+  }
+}
+
+.upper-part {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-left: 2em;
+  margin-right: 2em;
+}
+
+.image-on-right {
+  margin-top: 2em;
+
+  img {
+    height: 15em;
+    width: 15em;
+  }
+}
+
+.header-next-to-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1em;
+}
+
+.sidebar-item {
+  margin-left: 1em;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-card {
+  margin-bottom: 5em;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1em;
+  margin-right: 1em;
+  align-items: center;
+  border-radius: 0.5em;
+  box-shadow: 0px 0px 20px 2px rgb(0 0 0 / 15%);
 }

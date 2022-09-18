@@ -17,18 +17,21 @@ import { UserFromSession } from '../decorators/user.decorator';
 import { TrackService } from './track.service';
 
 @Controller('tracks')
-@UseGuards(SessionGuard)
-@UseGuards(RolesGuard)
-@Role(Roles.Admin)
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 
   @Post()
+  @UseGuards(SessionGuard)
+  @UseGuards(RolesGuard)
+  @Role(Roles.Admin)
   create(@Body() createTrackDto: CreateTrackDto) {
     return this.trackService.create(createTrackDto);
   }
 
   @Get()
+  @UseGuards(SessionGuard)
+  @UseGuards(RolesGuard)
+  @Role(Roles.Admin)
   findAll() {
     return this.trackService.findAll();
   }
@@ -39,11 +42,17 @@ export class TrackController {
   }
 
   @Patch(':id')
+  @UseGuards(SessionGuard)
+  @UseGuards(RolesGuard)
+  @Role(Roles.Admin)
   update(@Param('id') id: string, @Body() updateTrackDto: UpdateTrackDto) {
     return this.trackService.update(+id, updateTrackDto);
   }
 
   @Delete(':id')
+  @UseGuards(SessionGuard)
+  @UseGuards(RolesGuard)
+  @Role(Roles.Admin)
   remove(@Param('id') id: string) {
     return this.trackService.remove(+id);
   }

@@ -85,8 +85,6 @@ export const playlistReducer = createReducer(
     (state, { tracks }) => {
       const playlist = state.entities[state.selectedPlaylistId]!;
 
-      console.log(tracks);
-
       return adapter.updateOne(
         {
           id: playlist.id,

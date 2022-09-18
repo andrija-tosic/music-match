@@ -1,33 +1,32 @@
 <ng-container *ngIf="artist$ | async as artist">
-  <mat-card>
-    <mat-card-title-group>
+  <div class="upper-part">
+    <div class="info-on-left">
+      <h3>Artist</h3>
+
+      <h1>{{ artist?.name }}</h1>
+      <div *ngIf="(currentUser$ | async)?.role === 'admin'">
+        <button (click)="openReleaseFormDialog('Create', artist)" mat-button>
+          <mat-icon>add</mat-icon> Add release
+        </button>
+
+        <button (click)="openArtistFormDialog('Update')" mat-button>
+          <mat-icon>edit</mat-icon> Edit artist
+        </button>
+
+        <button (click)="deleteArtist(artist)" color="warn" mat-button>
+          <mat-icon>delete</mat-icon> Delete artist
+        </button>
+      </div>
+    </div>
+
+    <div class="image-on-right">
       <img
-        style="border-radius: 50%"
-        mat-card-xl-image
         [src]="artist?.imageUrl"
-        width="200"
-        height="200"
+        src-fallback="assets/music-fallback.jpg"
+        style="border-radius: 50%"
       />
-      <mat-card-title><h5>Artist</h5></mat-card-title>
-
-      <mat-card-title>
-        <h3>{{ artist?.name }}</h3>
-      </mat-card-title>
-    </mat-card-title-group>
-    <mat-card-content *ngIf="(currentUser$ | async)?.role === 'admin'">
-      <button (click)="openReleaseFormDialog('Create', artist)" mat-button>
-        <mat-icon>add</mat-icon> Add release
-      </button>
-
-      <button (click)="openArtistFormDialog('Update')" mat-button>
-        <mat-icon>edit</mat-icon> Edit artist
-      </button>
-
-      <button color="warn" (click)="deleteArtist(artist)" mat-button>
-        <mat-icon>delete</mat-icon> Delete artist
-      </button>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </div>
 
   <mat-card *ngIf="artist.releases.length">
     <h4>Releases from {{ artist?.name }}</h4>

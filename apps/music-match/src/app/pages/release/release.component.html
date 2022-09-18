@@ -1,64 +1,55 @@
 <ng-container *ngIf="this.release$ | async as release">
-  <mat-card>
-    <mat-card-title-group>
-      <button
-        *ngFor="let artist of (this.release$ | async)?.artists"
-        mat-button
-        [routerLink]="'/artist/' + artist.id"
-      >
-        <mat-card-title>
-          <h6>
+  <div class="upper-part">
+    <div class="info-on-left">
+      <div *ngFor="let artist of (this.release$ | async)?.artists">
+        <a [routerLink]="'/artist/' + artist.id">
+          <h4 class="header-next-to-icon">
             <img
-              style="border-radius: 50%"
-              mat-card-sm-image
               [src]="artist.imageUrl"
-              height="40"
-              width="40"
+              height="50"
+              src-fallback="assets/music-fallback.jpg"
+              style="border-radius: 50%"
+              width="50"
             />
             {{ artist.name }}
-          </h6>
-        </mat-card-title>
-      </button>
+          </h4></a
+        >
+      </div>
 
-      <img
-        mat-card-xl-image
-        [src]="release.imageUrl"
-        height="200"
-        width="200"
-      />
+      <h3>{{ release.type.toString() | titlecase }}</h3>
 
-      <mat-card-title>
-        <h5>{{ release.type.toString() | titlecase }}</h5>
-      </mat-card-title>
+      <h1>{{ release.name }}</h1>
 
-      <mat-card-title>
-        <h3>{{ release.name }}</h3>
-      </mat-card-title>
-
-      <mat-card-title>
-        <h6>{{ release.releaseDate | date }}</h6>
-      </mat-card-title>
-    </mat-card-title-group>
-    <mat-card-content>
+      <h5>{{ release.releaseDate | date }}</h5>
       <span>{{ getGenreTypes() | async | titlecase }}</span>
-    </mat-card-content>
 
-    <mat-card-content *ngIf="(currentUser$ | async)?.role === 'admin'">
-      <!-- <button (click)="openReleaseFormDialog('Update')" mat-button>
-        <mat-icon>edit</mat-icon> Edit {{ release.type }}
-      </button> -->
+      <div *ngIf="(currentUser$ | async)?.role === 'admin'">
+        <button (click)="openReleaseFormDialog('Update', release)" mat-button>
+          <mat-icon>edit</mat-icon>
+          Edit {{ release.type | titlecase }}
+        </button>
 
-      <button color="warn" (click)="dispatchDeleteRelease(release)" mat-button>
-        <mat-icon>delete</mat-icon> Delete {{ release.type }}
-      </button>
-    </mat-card-content>
-  </mat-card>
+        <button
+          (click)="dispatchDeleteRelease(release)"
+          color="warn"
+          mat-button
+        >
+          <mat-icon>delete</mat-icon>
+          Delete {{ release.type | titlecase }}
+        </button>
+      </div>
+    </div>
+
+    <div class="image-on-right">
+      <img [src]="release.imageUrl" src-fallback="/assets/music-fallback.jpg" />
+    </div>
+  </div>
 
   <tracks
-    (likeToggle)="onToggleTrackLike($event)"
     (addToPlaylist)="onAddTrackToPlaylist($event)"
-    [type]="'release'"
+    (likeToggle)="onToggleTrackLike($event)"
     [tracks]="release.tracks"
+    [type]="'release'"
   >
   </tracks>
 </ng-container>

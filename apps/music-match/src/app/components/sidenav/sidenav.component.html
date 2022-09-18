@@ -1,94 +1,131 @@
-<mat-toolbar color="primary" class="mat-elevation-z5">
-  <h3>
-    <button #btnSideNavToggle mat-icon-button (click)="this.sidenav.toggle()">
-      <mat-icon>menu</mat-icon></button
-    >Music Match
-  </h3>
+<mat-toolbar class="toolbar mat-elevation-z5" color="primary">
+  <button #btnSideNavToggle (click)="this.sidenav.toggle()" mat-icon-button>
+    <mat-icon>menu</mat-icon>
+  </button>
+  <h3>Music Match</h3>
 
   <div style="width: 100%"></div>
 
-  <button
-    mat-button
-    *ngIf="currentUser$ | async as currentUser"
-    [routerLink]="'/user/' + currentUser.id"
-  >
-    <img
-      style="border-radius: 50%"
-      [src]="currentUser.imageUrl"
-      width="40"
-      height="40"
-    />
+  <div>
+    <button
+      *ngIf="currentUser$ | async as currentUser"
+      [routerLink]="'/user/' + currentUser.id"
+      mat-button
+    >
+      <img
+        [src]="currentUser.imageUrl"
+        height="40"
+        style="border-radius: 50%"
+        width="40"
+      />
 
-    <span>{{ currentUser.name }}</span>
-  </button>
+      <span>{{ currentUser.name }}</span>
+    </button>
+    <button (click)="onLogout()" mat-button>
+      <mat-icon>logout</mat-icon>
+      Logout
+    </button>
+  </div>
 </mat-toolbar>
 
 <mat-sidenav-container>
   <mat-sidenav #sideNav [mode]="(isHandset$ | async) ? 'over' : 'side'" opened>
     <mat-nav-list>
-      <mat-list-item [routerLink]="'/home'" [routerLinkActive]="['is-active']"
-        ><mat-icon>home</mat-icon> Home
+      <mat-list-item [routerLinkActive]="['is-active']" [routerLink]="'/home'">
+        <h4 class="header-next-to-icon">
+          <mat-icon>home</mat-icon>
+          Home
+        </h4>
       </mat-list-item>
-      <mat-list-item [routerLink]="'/search'" [routerLinkActive]="['is-active']"
-        ><mat-icon>search</mat-icon> Search
+      <mat-list-item
+        [routerLinkActive]="['is-active']"
+        [routerLink]="'/search'"
+      >
+        <h4 class="header-next-to-icon">
+          <mat-icon>search</mat-icon>
+          Search
+        </h4>
       </mat-list-item>
 
       <mat-divider></mat-divider>
       <button (click)="openPlaylistFormDialog('Create')" mat-button>
-        <mat-icon>playlist_add</mat-icon> New playlist
+        <mat-icon>playlist_add</mat-icon>
+        New playlist
       </button>
       <button
-        *ngIf="(currentUser$ | async)?.role === 'admin'"
         (click)="openArtistFormDialog('Create')"
+        *ngIf="(currentUser$ | async)?.role === 'admin'"
         mat-button
       >
-        <mat-icon>person_add</mat-icon>New artist
+        <mat-icon>person_add</mat-icon>
+        New artist
       </button>
-      <h4><mat-icon>music_note</mat-icon> Your playlists</h4>
+
+      <mat-divider></mat-divider>
+
+      <h4 class="header-next-to-icon sidebar-item">
+        <mat-icon>music_note</mat-icon>
+        Your playlists
+      </h4>
       <mat-list-item
         *ngFor="let playlist of usersPlaylist$ | async"
-        [routerLink]="'/playlist/' + playlist.id"
         [routerLinkActive]="['is-active']"
+        [routerLink]="'/playlist/' + playlist.id"
       >
-        <img
-          [src]="playlist.imageUrl"
-          src-fallback="/assets/music-fallback.jpg"
-          width="40"
-          height="40"
-        />
-        {{ playlist.name }}
+        <span class="header-next-to-icon">
+          <img
+            [src]="playlist.imageUrl"
+            height="40"
+            src-fallback="/assets/music-fallback.jpg"
+            width="40"
+          />
+          {{ playlist.name }}
+        </span>
       </mat-list-item>
 
-      <h4><mat-icon>favorite</mat-icon>Favorite playlists</h4>
+      <h4 class="header-next-to-icon sidebar-item">
+        <mat-icon>favorite</mat-icon>
+        Favorite playlists
+      </h4>
       <mat-list-item
         *ngFor="let playlist of likedPlaylist$ | async"
-        [routerLink]="'/playlist/' + playlist.id"
         [routerLinkActive]="['is-active']"
+        [routerLink]="'/playlist/' + playlist.id"
       >
-        <img
-          [src]="playlist.imageUrl"
-          src-fallback="/assets/music-fallback.jpg"
-          width="40"
-          height="40"
-        />
-        {{ playlist.name }}
+        <span class="header-next-to-icon">
+          <img
+            [src]="playlist.imageUrl"
+            height="40"
+            src-fallback="/assets/music-fallback.jpg"
+            width="40"
+          />
+          {{ playlist.name }}</span
+        >
       </mat-list-item>
 
-      <h4><mat-icon>group</mat-icon> Friends</h4>
+      <h4 class="header-next-to-icon sidebar-item">
+        <mat-icon>group</mat-icon>
+        Friends
+      </h4>
       <mat-list-item
         *ngFor="let user of friends$ | async"
-        [routerLink]="'/user/' + user.id"
         [routerLinkActive]="['is-active']"
+        [routerLink]="'/user/' + user.id"
       >
-        <img
-          [src]="user.imageUrl"
-          src-fallback="/assets/music-fallback.jpg"
-          width="40"
-          height="40"
-        />
-        {{ user.name }}
+        <span class="header-next-to-icon">
+          <img
+            [src]="user.imageUrl"
+            height="40"
+            src-fallback="/assets/music-fallback.jpg"
+            style="border-radius: 50%"
+            width="40"
+          />
+          {{ user.name }}</span
+        >
       </mat-list-item>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content><router-outlet></router-outlet></mat-sidenav-content>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
 </mat-sidenav-container>

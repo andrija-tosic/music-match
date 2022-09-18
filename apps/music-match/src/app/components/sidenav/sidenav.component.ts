@@ -2,9 +2,11 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenav } from '@angular/material/sidenav';
+import { Router } from '@angular/router';
 import { PlaylistEntity, UserEntity } from '@music-match/state-entities';
 import { Store } from '@ngrx/store';
 import { filter, map, Observable, shareReplay } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 import {
   selectCurrentUser,
   selectCurrentUsersFriends,
@@ -39,7 +41,9 @@ export class SidenavComponent implements OnInit {
   constructor(
     private store: Store<AppState>,
     private dialog: MatDialog,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -65,5 +69,9 @@ export class SidenavComponent implements OnInit {
     const dialogRef = this.dialog.open(ArtistFormDialogComponent, {
       data: actionType,
     });
+  }
+
+  onLogout() {
+    this.authService.logout().subscribe(() => this.router.navigate(['/login']));
   }
 }

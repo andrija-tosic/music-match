@@ -1,9 +1,9 @@
+import { ReleaseEntity } from '@music-match/state-entities';
+import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { EntityState, createEntityAdapter } from '@ngrx/entity';
+import * as ArtistActions from '../artists/artist.actions';
 import * as SearchActions from '../search/search.actions';
 import * as ReleaseActions from './release.actions';
-import * as ArtistActions from '../artists/artist.actions';
-import { ReleaseEntity } from '@music-match/state-entities';
 
 export interface ReleasesState extends EntityState<ReleaseEntity> {
   selectedReleaseId: number;
@@ -54,5 +54,18 @@ export const releaseReducer = createReducer(
       }),
       state
     )
-  )
+  ),
+  on(ReleaseActions.updatedRelease, (state, { release }) => {
+    return {
+      ...adapter.upsertOne(
+        {
+          ...release,
+          trackIds: release.tracks.map(({ id }) => id),
+          artistIds: release.artists.map(({ id }) => id),
+        },
+        state
+      ),
+      selectedReleaseId: release.id,
+    };
+  })
 );

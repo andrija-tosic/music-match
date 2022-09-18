@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { constants } from '../../constants';
+import { AuthService } from '../../../services/auth.service';
+import { constants } from '../../../constants';
 
 @Component({
   selector: 'login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+  styleUrls: ['../auth.scss'],
 })
 export class LoginComponent implements OnInit {
   form;

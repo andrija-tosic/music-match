@@ -33,8 +33,8 @@ export class TracksComponent implements OnInit {
     this.likeToggle.emit(track.id);
   }
 
-  removeTrackFromPlaylist(track: TrackDto) {
-    this.trackRemove.emit(track.number);
+  removeTrackFromPlaylist(number: number) {
+    this.trackRemove.emit(number);
   }
 
   addTrackToPlaylist(track: TrackDto) {

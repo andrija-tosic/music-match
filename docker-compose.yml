@@ -1,5 +1,35 @@
 version: '3'
+
+networks:
+  music-match-network:
+    driver: bridge
+
 services:
+  #  nest:
+  #    build:
+  #      dockerfile: api.Dockerfile
+  #    env_file:
+  #      - ./apps/api/.env
+  #    ports:
+  #      - '3000:3000'
+  #    depends_on:
+  #      - redis
+  #      - postgres
+  #    networks:
+  #      - music-match-network
+
+  #  nginx:
+  #    build:
+  #      dockerfile: nginx.Dockerfile
+  #    env_file:
+  #      - ./apps/api/.env
+  #    ports:
+  #      - '80:80'
+  ##    depends_on:
+  ##      - nest
+  #    networks:
+  #      -  music-match-network
+
   postgres:
     env_file: ./docker-env.env
     image: postgres
@@ -8,12 +38,19 @@ services:
       - '5000:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - music-match-network
 
   redis:
     image: redis
     restart: always
     ports:
       - '6379:6379'
+    command: redis-server --include /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - music-match-network
 
 volumes:
   pgdata:

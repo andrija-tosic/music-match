@@ -1,79 +1,83 @@
 <ng-container *ngIf="this.user$ | async as user">
-  <mat-card>
-    <mat-card-title-group>
-      <img
-        style="border-radius: 50%"
-        mat-card-xl-image
-        [src]="user?.imageUrl"
-        height="200"
-        width="200"
-      />
-      <mat-card-title>
-        <h2>{{ user?.name }}</h2>
-      </mat-card-title>
-    </mat-card-title-group>
+  <ng-container *ngIf="this.currentUser$ | async as currentUser">
+    <mat-card>
+      <mat-card-title-group>
+        <img
+          [src]="user?.imageUrl"
+          height="200"
+          mat-card-xl-image
+          style="border-radius: 50%"
+          width="200"
+        />
+        <mat-card-title>
+          <h2>{{ user?.name }}</h2>
+        </mat-card-title>
+      </mat-card-title-group>
 
-    <mat-card-content *ngIf="(currentUser$ | async)?.id !== user.id">
-      <h4>You both like listening to:</h4>
+      <mat-card-content *ngIf="currentUser.id !== user.id">
+        <h4>You both like listening to:</h4>
 
-      <button
-        *ngFor="let artist of (this.userCompatibility$ | async)?.artists"
-        mat-button
-        [routerLink]="'/artist/' + artist.id"
+        <button
+          *ngFor="let artist of (this.userCompatibility$ | async)?.artists"
+          [routerLink]="'/artist/' + artist.id"
+          mat-button
+        >
+          <mat-card>
+            <img [src]="artist.imageUrl" mat-card-sm-image />
+            {{ artist.name }}
+          </mat-card>
+        </button>
+
+        <h4>
+          And you enjoy listening to
+
+          <span *ngFor="let genre of (this.userCompatibility$ | async)?.genres">
+            {{ genre | titlecase }}
+          </span>
+        </h4>
+
+        <button
+          (click)="toggleUserFollowing(user)"
+          *ngIf="!isCurrentUsersFriend(user, currentUser)"
+          mat-button
+        >
+          <mat-icon>person_add</mat-icon>Add friend
+        </button>
+
+        <button
+          (click)="toggleUserFollowing(user)"
+          *ngIf="isCurrentUsersFriend(user, currentUser)"
+          mat-button
+        >
+          <mat-icon>person_remove</mat-icon>Remove friend
+        </button>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="user.playlists.length">
+      <h4>{{ user.name }}'s playlists</h4>
+      <search-result-card
+        *ngFor="let playlist of user.playlists"
+        [item]="playlist"
+        [type]="'playlist'"
       >
-        <mat-card>
-          <img mat-card-sm-image [src]="artist.imageUrl" />
-          {{ artist.name }}
-        </mat-card>
-      </button>
+      </search-result-card>
+    </mat-card>
+    <h4 *ngIf="!user.playlists.length">
+      No playlists yet from {{ user.name }}.
+    </h4>
 
-      <h4>
-        And you enjoy listening to
-
-        <span *ngFor="let genre of (this.userCompatibility$ | async)?.genres">
-          {{ genre | titlecase }}
-        </span>
-      </h4>
-
-      <button
-        mat-button
-        (click)="addFriend(user)"
-        *ngIf="!isCurrentUsersFriend()"
+    <mat-card *ngIf="user.likedPlaylists.length">
+      <h4>{{ user.name }}'s favorite playlists</h4>
+      <search-result-card
+        *ngFor="let playlist of user.likedPlaylists"
+        [item]="playlist"
+        [type]="'playlist'"
       >
-        <mat-icon>person_add</mat-icon>Add friend
-      </button>
-
-      <button
-        mat-button
-        (click)="removeFriend(user)"
-        *ngIf="isCurrentUsersFriend()"
-      >
-        <mat-icon>person_remove</mat-icon>Remove friend
-      </button>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card *ngIf="user.playlists.length">
-    <h4>{{ user.name }}'s playlists</h4>
-    <search-result-card
-      *ngFor="let playlist of user.playlists"
-      [item]="playlist"
-      [type]="'playlist'"
-    >
-    </search-result-card>
-  </mat-card>
-  <h4 *ngIf="!user.playlists.length">No playlists yet from {{ user.name }}.</h4>
-
-  <mat-card *ngIf="user.likedPlaylists.length">
-    <h4>{{ user.name }}'s liked playlists</h4>
-    <search-result-card
-      *ngFor="let playlist of user.likedPlaylists"
-      [item]="playlist"
-      [type]="'playlist'"
-    >
-    </search-result-card>
-  </mat-card>
-  <h4 *ngIf="!user.likedPlaylists?.length">
-    No favorite playlists yet from {{ user.name }}.
-  </h4>
+      </search-result-card>
+    </mat-card>
+    <h4 *ngIf="!user.likedPlaylists?.length">
+      No favorite playlists yet from {{ user.name }}.
+    </h4>
+  </ng-container>
 </ng-container>

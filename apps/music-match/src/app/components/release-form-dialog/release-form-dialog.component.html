@@ -1,138 +1,150 @@
-<mat-dialog-content>
-  <h1 mat-dialog-title>{{ artistAndActionType.actionType }} release</h1>
-  <input
-    hidden="true"
-    #fileInput
-    onclick="this.value=null"
-    type="file"
-    (change)="onFileChanged($event)"
-  />
+<h1 mat-dialog-title>{{ releaseDialogData.actionType }} release</h1>
 
-  <button
-    [disabled]="this.uploading$ | async"
-    (click)="fileInput.click()"
-    mat-raised-button
-  >
+<form (ngSubmit)="onConfirm()" [formGroup]="form">
+  <div class="dialog">
+    <input
+      #fileInput
+      (change)="onFileChanged($event)"
+      hidden="true"
+      onclick="this.value=null"
+      type="file"
+    />
+
     <img
-      class="user-img"
-      mat-card-sm-image
+      (click)="fileInput.click()"
       [src]="this.imageUrl"
       src-fallback="/assets/music-fallback.jpg"
     />
-  </button>
 
-  <form [formGroup]="form">
-    <mat-card-content>
-      <mat-form-field appearance="outline">
-        <input matInput formControlName="name" type="text" />
-        <mat-label>Name</mat-label>
-      </mat-form-field>
-      <br />
-      <mat-form-field appearance="outline">
-        <input matInput formControlName="releaseDate" type="date" />
-        <mat-label>Release date</mat-label>
-      </mat-form-field>
-      <br />
-      <mat-form-field appearance="outline">
-        <mat-label>Type</mat-label>
-        <mat-select formControlName="releaseType">
-          <mat-option
-            *ngFor="let releaseType of releaseTypes"
-            [value]="releaseType.toString()"
-          >
-            {{ releaseType.toString() | titlecase }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <br />
+    <button
+      (click)="removeImage()"
+      [disabled]="!this.imageUrl || (this.uploading$ | async)"
+      mat-stroked-button
+      type="button"
+    >
+      <mat-icon class="material-icons-outlined">hide_image</mat-icon>
+      Remove image
+    </button>
 
-      <mat-form-field class="example-chip-list" appearance="fill">
-        <mat-label>Genres</mat-label>
-        <mat-chip-list #chipList aria-label="Fruit selection">
-          <mat-chip
-            *ngFor="let genre of genreTypesInMatChips"
-            (removed)="removeGenreChip(genre)"
-          >
-            {{ genre }}
-            <button matChipRemove>
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip>
-          <input
-            placeholder="New genre..."
-            #genreInput
-            formControlName="genreTypes"
-            [matAutocomplete]="auto"
-            [matChipInputFor]="chipList"
-            (matChipInputTokenEnd)="addGenreChip($event)"
-          />
-        </mat-chip-list>
-        <mat-autocomplete
-          #auto="matAutocomplete"
-          (optionSelected)="genreChipSelected($event)"
+    <mat-form-field appearance="outline">
+      <input formControlName="name" matInput type="text" />
+      <mat-label>Name</mat-label>
+      <mat-error>Name is required.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <input formControlName="releaseDate" matInput type="date" />
+      <mat-label>Release date</mat-label>
+      <mat-error>Date is required.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="releaseType">
+        <mat-option
+          *ngFor="let releaseType of releaseTypes"
+          [value]="releaseType.toString()"
         >
-          <mat-option
-            *ngFor="let genre of filteredGenres | async"
-            [value]="genre"
-          >
-            {{ genre }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-    </mat-card-content>
+          {{ releaseType.toString() | titlecase }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Genres</mat-label>
+      <mat-chip-list #chipList>
+        <mat-chip
+          (removed)="removeGenreChip(genre)"
+          *ngFor="let genre of genreTypesInMatChips"
+        >
+          {{ genre }}
+          <button matChipRemove type="button">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+        <input
+          #genreInput
+          (matChipInputTokenEnd)="addGenreChip($event)"
+          [matAutocomplete]="auto"
+          [matChipInputFor]="chipList"
+          formControlName="genreTypes"
+          placeholder="New genre..."
+        />
+      </mat-chip-list>
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="genreChipSelected($event)"
+      >
+        <mat-option
+          *ngFor="let genre of filteredGenres$ | async"
+          [value]="genre"
+        >
+          {{ genre }}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error>Genre is required.</mat-error>
+    </mat-form-field>
 
     <ng-container formArrayName="tracks">
-      <ng-container *ngFor="let trackForm of tracks.controls; let i = index">
-        <ng-container [formGroupName]="i">
-          <span>{{ i + 1 }}</span>
+      <ng-container
+        *ngFor="let trackForm of tracksInForm.controls; let i = index"
+      >
+        <div [formGroupName]="i">
+          <h3>Number {{ i + 1 }}</h3>
           <mat-form-field appearance="outline">
-            <input matInput formControlName="name" type="text" />
+            <input formControlName="name" matInput type="text" />
             <mat-label>Name</mat-label>
+            <mat-error>Name is required.</mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <input matInput formControlName="duration" type="number" min="1" />
+            <input formControlName="duration" matInput min="1" type="number" />
             <mat-label>Duration</mat-label>
+            <mat-error>Duration is required.</mat-error>
           </mat-form-field>
-        </ng-container>
-        <button mat-button (click)="onRemoveTrack(i)">
-          <mat-icon>remove</mat-icon>Remove track
-        </button>
+          <div style="display: flex; justify-content: flex-end">
+            <button
+              (click)="onRemoveTrack(i)"
+              color="warn"
+              mat-button
+              type="button"
+            >
+              <mat-icon>remove</mat-icon>
+              Remove
+            </button>
+          </div>
+        </div>
       </ng-container>
     </ng-container>
 
-    <button mat-button (click)="onAddTrack()">
-      <mat-icon>add</mat-icon> Add track
-    </button>
-  </form>
+    <div style="display: flex; justify-content: flex-end; width: 100%">
+      <button (click)="onAddTrack()" mat-button type="button">
+        <mat-icon>add</mat-icon>
+        Add track
+      </button>
+    </div>
 
-  <button
-    [disabled]="!this.imageUrl || (this.uploading$ | async)"
-    (click)="removeImage()"
-    mat-raised-button
-  >
-    <mat-icon class="material-icons-outlined">delete</mat-icon> Remove image
-  </button>
+    <div mat-dialog-actions>
+      <button
+        [disabled]="this.uploading$ | async"
+        color="primary"
+        mat-raised-button
+        type="submit"
+      >
+        Save
+      </button>
 
-  <div mat-dialog-actions class="buttons">
-    <button
-      [disabled]="this.uploading$ | async"
-      mat-raised-button
-      color="primary"
-      (click)="onConfirm()"
-    >
-      Save
-    </button>
+      <!-- {{ this.form.getRawValue() | json }}
+      <br />
+      {{ 'selected Genres:' + this.genreTypesInMatChips }} -->
 
-    <!-- {{ this.form.getRawValue() | json }} -->
-
-    {{ 'selected Genres:' + this.genreTypesInMatChips }}
-
-    <button
-      [disabled]="this.uploading$ | async"
-      mat-stroked-button
-      (click)="onDismiss()"
-    >
-      Cancel
-    </button>
+      <button
+        (click)="onDismiss()"
+        [disabled]="this.uploading$ | async"
+        mat-stroked-button
+        type="button"
+      >
+        Cancel
+      </button>
+    </div>
   </div>
-</mat-dialog-content>
+</form>

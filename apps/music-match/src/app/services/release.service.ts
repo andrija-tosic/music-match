@@ -23,8 +23,11 @@ export class ReleaseService {
     return this.http.post<Release>(`${environment.api}/releases`, release);
   }
 
-  updateRelease(release: UpdateReleaseDto) {
-    return this.http.patch<Release>(`${environment.api}/releases`, release);
+  updateRelease(id: number, release: UpdateReleaseDto) {
+    return this.http.patch<ReleaseDto>(
+      `${environment.api}/releases/${id}`,
+      release
+    );
   }
 
   deleteRelease(id: number) {

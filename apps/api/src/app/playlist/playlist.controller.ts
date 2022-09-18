@@ -1,16 +1,4 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Put,
-} from '@nestjs/common';
-import { PlaylistService } from './playlist.service';
-import {
   AddTrackDto,
   ChangeTrackPositionDto,
   CreatePlaylistDto,
@@ -18,10 +6,25 @@ import {
   UpdatePlaylistDto,
   User,
 } from '@music-match/entities';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { SessionGuard } from '../auth/guards/session.guard';
 import { UserFromSession } from '../decorators/user.decorator';
+import { PlaylistService } from './playlist.service';
 
 @Controller('playlists')
+@UseInterceptors(ClassSerializerInterceptor)
 export class PlaylistController {
   constructor(private readonly playlistService: PlaylistService) {}
 

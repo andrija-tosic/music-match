@@ -1,4 +1,4 @@
-import { Artist, Genre, Release } from '@music-match/entities';
+import { Artist, Genre, PlaylistTrack, Release } from '@music-match/entities';
 import { TrackModule } from './../track/track.module';
 import { ArtistModule } from './../artist/artist.module';
 import { Module } from '@nestjs/common';

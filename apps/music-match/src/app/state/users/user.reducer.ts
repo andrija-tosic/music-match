@@ -138,5 +138,26 @@ export const userReducer = createReducer(
       },
       state
     );
+  }),
+  on(UserActions.toggleUserFollowing, (state, { id }) => {
+    const user = state.entities[state.currentUserId]!;
+
+    let newUserFriendsIds;
+
+    if (user.friendsIds.includes(id)) {
+      newUserFriendsIds = user.friendsIds.filter((friendId) => friendId !== id);
+    } else {
+      newUserFriendsIds = [...user.friendsIds, id];
+    }
+
+    return adapter.updateOne(
+      {
+        id: state.currentUserId,
+        changes: {
+          friendsIds: newUserFriendsIds,
+        },
+      },
+      state
+    );
   })
 );

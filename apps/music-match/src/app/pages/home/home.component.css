@@ -1,5 +1,8 @@
 .horizontal-scroll-div {
+  display: flex;
+  flex-direction: row;
   height: 12em;
   overflow-x: auto;
+  overflow-y: hidden;
   white-space: nowrap;
 }

@@ -1,11 +1,4 @@
 import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import {
   AddTrackDto,
   ChangeTrackPositionDto,
   CreatePlaylistDto,
@@ -17,8 +10,14 @@ import {
   UpdatePlaylistDto,
   User,
 } from '@music-match/entities';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PlaylistService {
@@ -96,7 +95,10 @@ export class PlaylistService {
       where: {
         id,
       },
-      relations: { playlistTracks: { track: { release: true } }, owners: true },
+      relations: {
+        playlistTracks: { track: { release: { artists: true } } },
+        owners: true,
+      },
     });
 
     if (!playlist.owners.map((owner) => owner.id).includes(user.id)) {
@@ -121,10 +123,9 @@ export class PlaylistService {
     await this.ptRepository.save(playlistTrackToAdd);
 
     const tracksToReturn = playlist.playlistTracks
-      .map((pt) => {
-        return { ...pt.track, number: pt.number };
-      })
-      .concat([{ ...trackToAdd, number: playlistTrackToAdd.number }]);
+      .map((pt) => pt.track)
+      .concat([trackToAdd])
+      .sort((pt1, pt2) => pt1.number - pt2.number);
 
     return tracksToReturn;
   }
@@ -132,8 +133,13 @@ export class PlaylistService {
   async removeTrack(id: number, trackDto: RemoveTrackDto, user: User) {
     const playlist = await this.playlistRepository.findOne({
       where: { id },
-      relations: { playlistTracks: { track: { release: true } }, owners: true },
+      relations: {
+        playlistTracks: { track: { release: { artists: true } } },
+        owners: true,
+      },
     });
+
+    // console.table(playlist.playlistTracks);
 
     if (!playlist) throw new NotFoundException();
 
@@ -149,25 +155,23 @@ export class PlaylistService {
       throw new NotFoundException();
     }
 
-    playlist.playlistTracks = playlist.playlistTracks.map((pt) => {
-      if (
-        pt.number > playlistTrackToRemove.number &&
-        pt.number !== trackDto.number
-      ) {
-        pt.number--;
+    playlist.playlistTracks = playlist.playlistTracks.filter((pt) => {
+      if (pt.number !== trackDto.number) {
+        if (pt.number > trackDto.number) {
+          pt.number--;
+        }
+        return pt;
       }
-
-      return pt;
     });
 
-    await this.playlistRepository.save(playlist);
     await this.ptRepository.delete(playlistTrackToRemove.id);
+    await this.ptRepository.save(playlist.playlistTracks);
 
     const tracksToReturn = playlist.playlistTracks
-      .filter((pt) => pt.number !== trackDto.number)
-      .map((pt) => {
-        return { ...pt.track, number: pt.number };
-      });
+      .map((pt) => pt.track)
+      .sort((pt1, pt2) => pt1.number - pt2.number);
+
+    // console.table(playlist.playlistTracks);
 
     return tracksToReturn;
   }
@@ -177,8 +181,6 @@ export class PlaylistService {
     trackPositionChange: ChangeTrackPositionDto,
     user: User
   ) {
-    const { fromIndex, toIndex } = trackPositionChange;
-
     const fromPosition = trackPositionChange.fromIndex + 1;
     const toPosition = trackPositionChange.toIndex + 1;
 
@@ -195,10 +197,7 @@ export class PlaylistService {
 
     const target = playlistTracks.find((pt) => pt.number === fromPosition);
 
-    console.log('fromPosition', fromPosition);
-    console.log('toPosition', toPosition);
-
-    console.table(playlistTracks.sort((p1, p2) => p1.number - p2.number));
+    // console.table(playlistTracks.sort((p1, p2) => p1.number - p2.number));
 
     const delta = fromPosition < toPosition ? -1 : 1;
 
@@ -209,29 +208,22 @@ export class PlaylistService {
       throw new BadRequestException();
 
     const newPlaylistTracks = playlistTracks.map((pt) => {
-      console.log('checking', pt);
       if (
         pt.number !== fromPosition &&
         pt.number >= left &&
         pt.number <= right
       ) {
-        console.log('passed', pt);
         pt.number += delta;
       }
 
       return pt;
     });
 
-    Logger.log(
-      `Moving track ${target.id} from ${fromPosition} to ${toPosition}`,
-      'Playlist'
-    );
-
     target.number = toPosition;
 
-    console.table(
-      newPlaylistTracks.sort((pt1, pt2) => pt1.number - pt2.number)
-    );
+    // console.table(
+    //   newPlaylistTracks.sort((pt1, pt2) => pt1.number - pt2.number)
+    // );
 
     playlist.playlistTracks = newPlaylistTracks;
 

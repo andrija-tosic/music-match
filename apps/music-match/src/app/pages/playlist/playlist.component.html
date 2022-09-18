@@ -1,80 +1,79 @@
 <ng-container *ngIf="currentUser$ | async as currentUser">
   <ng-container *ngIf="playlist$ | async as playlist">
-    <mat-card>
-      <mat-card-title-group>
+    <div class="upper-part">
+      <div class="info-on-left">
+        <h3>Playlist</h3>
+
+        <h1>{{ playlist.name }}</h1>
+        <h4 style="margin-bottom: 4em">{{ playlist.description }}</h4>
+
+        <h4 *ngIf="playlist.owners.length > 1">Collaborators</h4>
         <ng-container *ngFor="let user of playlist.owners">
-          <div *ngIf="user.id !== currentUser.id">
-            <button mat-button [routerLink]="'/user/' + user.id">
-              <mat-card-title>
-                <h6>
-                  <img [src]="user.imageUrl" width="30" height="30" />
-                  {{ user.name }}
-                </h6>
-              </mat-card-title>
+          <div *ngIf="user.id !== currentUser.id" class="header-next-to-icon">
+            <button [routerLink]="'/user/' + user.id" mat-button>
+              <span>
+                <img [src]="user.imageUrl" height="30" width="30" />
+                {{ user.name }}
+              </span>
             </button>
 
-            <button mat-button (click)="onRemoveCollaborator(playlist, user)">
-              <mat-icon>group_remove</mat-icon>Remove
+            <button (click)="onRemoveCollaborator(playlist, user)" mat-button>
+              <mat-icon>group_remove</mat-icon>
+              Remove
             </button>
           </div>
         </ng-container>
 
-        <img
-          mat-card-xl-image
-          [src]="playlist.imageUrl"
-          src-fallback="/assets/music-fallback.jpg"
-          width="200"
-          height="200"
-        />
-        <mat-card-title><h5>Playlist</h5></mat-card-title>
+        <mat-divider></mat-divider>
 
-        <mat-card-title>
-          <h3>{{ playlist.name }}</h3>
-        </mat-card-title>
-        <mat-card-title
-          ><h6>{{ playlist.description }}</h6>
-        </mat-card-title>
-      </mat-card-title-group>
-      <mat-card-content>
-        <button color="accent" (click)="toggleLike(playlist)" mat-button>
-          <mat-icon *ngIf="playlist.liked"> favorite </mat-icon>
-          <mat-icon *ngIf="!playlist.liked"> favorite_outline </mat-icon>
+        <button (click)="toggleLike(playlist)" color="accent" mat-button>
+          <mat-icon *ngIf="playlist.liked"> favorite</mat-icon>
+          <mat-icon *ngIf="!playlist.liked"> favorite_outline</mat-icon>
           Favorite
         </button>
 
         <button
-          *ngIf="isCurrentUserPlaylistOwner(playlist, currentUser)"
-          mat-button
           (click)="onAddCollaboratorToPlaylist(playlist)"
-        >
-          <mat-icon>group_add</mat-icon> Add collaborator
-        </button>
-
-        <button
           *ngIf="isCurrentUserPlaylistOwner(playlist, currentUser)"
-          (click)="openPlaylistFormDialog('Update')"
           mat-button
         >
-          <mat-icon>edit</mat-icon> Edit playlist
+          <mat-icon>group_add</mat-icon>
+          Add collaborator
         </button>
 
         <button
+          (click)="openPlaylistFormDialog('Update')"
+          *ngIf="isCurrentUserPlaylistOwner(playlist, currentUser)"
+          mat-button
+        >
+          <mat-icon>edit</mat-icon>
+          Edit playlist
+        </button>
+
+        <button
+          (click)="deletePlaylist(playlist)"
           *ngIf="isCurrentUserPlaylistOwner(playlist, currentUser)"
           color="warn"
-          (click)="deletePlaylist(playlist)"
           mat-button
         >
-          <mat-icon>delete</mat-icon> Delete playlist
+          <mat-icon>delete</mat-icon>
+          Delete playlist
         </button>
-      </mat-card-content>
-    </mat-card>
+      </div>
 
+      <div class="image-on-right">
+        <img
+          [src]="playlist.imageUrl"
+          src-fallback="/assets/music-fallback.jpg"
+        />
+      </div>
+    </div>
     <tracks
-      [editable]="isCurrentUserPlaylistOwner(playlist, currentUser)"
-      (trackRemove)="onRemoveTrack($event, playlist)"
-      (likeToggle)="onToggleLike($event)"
       (addToPlaylist)="onAddTrackToPlaylist($event)"
+      (likeToggle)="onToggleLike($event)"
       (trackPositionChange)="onTrackPositionChange($event, playlist)"
+      (trackRemove)="onRemoveTrack($event, playlist)"
+      [editable]="isCurrentUserPlaylistOwner(playlist, currentUser)"
       [tracks]="playlist.tracks"
       [type]="'playlist'"
     ></tracks>

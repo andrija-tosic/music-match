@@ -9,7 +9,12 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { CreateReleaseDto, ReleaseType } from '@music-match/entities';
+import {
+  CreateReleaseDto,
+  ReleaseDto,
+  ReleaseType,
+  UpdateReleaseDto,
+} from '@music-match/entities';
 import { ArtistEntity } from '@music-match/state-entities';
 import { Store } from '@ngrx/store';
 import { GenreType } from 'libs/entities/src/lib/genre/genre-type';
@@ -42,32 +47,38 @@ export class ReleaseFormDialogComponent implements OnInit {
 
   public form;
 
-  releaseTypes = Object.keys(ReleaseType).filter((key) => isNaN(Number(key)));
+  releaseTypes = Object.keys(ReleaseType);
 
-  allGenreTypes = Object.keys(GenreType).filter((key) => isNaN(Number(key)));
+  allGenreTypes = Object.keys(GenreType);
 
   genreTypesInMatChips: string[] = [];
 
   uploading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   @ViewChild('genreInput') genreInput: ElementRef<HTMLInputElement>;
-  filteredGenres: Observable<string[]>;
+  filteredGenres$: Observable<string[]>;
 
   constructor(
     private fileService: FileService,
     private store: Store<AppState>,
     private dialogRef: MatDialogRef<ArtistFormDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public artistAndActionType: {
+    public releaseDialogData: {
       actionType: 'Update' | 'Create';
+      release: ReleaseDto | undefined;
       artist: ArtistEntity;
     }
   ) {
     this.form = new FormGroup({
-      name: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
+      name: new FormControl(
+        this.releaseDialogData.release
+          ? this.releaseDialogData.release.name
+          : '',
+        {
+          nonNullable: true,
+          validators: [Validators.required],
+        }
+      ),
       releaseDate: new FormControl('', {
         nonNullable: true,
         validators: [Validators.required],
@@ -85,7 +96,7 @@ export class ReleaseFormDialogComponent implements OnInit {
       }),
     });
 
-    if (this.artistAndActionType.actionType === 'Update') {
+    if (this.releaseDialogData.actionType === 'Update') {
       this.store
         .select(selectedRelease)
         .pipe(take(1), filter(isNotUndefined))
@@ -97,28 +108,75 @@ export class ReleaseFormDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.form.controls['releaseDate'].setValue(
-      new Date().toISOString().substring(0, 10)
-    );
+    if (
+      this.releaseDialogData.actionType === 'Update' &&
+      this.releaseDialogData.release
+    ) {
+      console.log(this.releaseDialogData.release);
 
-    this.form.controls['releaseType'].setValue(this.releaseTypes[0].toString());
+      this.form.controls['releaseDate'].setValue(
+        this.releaseDialogData.release.releaseDate.substring(0, 10)
+      );
 
-    this.filteredGenres = this.form.controls['genreTypes'].valueChanges.pipe(
+      this.form.controls['releaseType'].setValue(
+        Object.keys(ReleaseType)[
+          Object.values(ReleaseType).indexOf(
+            this.releaseDialogData.release.type
+          )
+        ]
+      );
+
+      this.imageUrl = this.releaseDialogData.release.imageUrl;
+
+      this.genreTypesInMatChips = this.releaseDialogData.release.genres.map(
+        ({ type }) =>
+          Object.keys(GenreType)[Object.values(GenreType).indexOf(type)]
+      );
+
+      this.tracksInForm.clear();
+
+      this.releaseDialogData.release.tracks.forEach((track, index) => {
+        this.tracksInForm.push(
+          new FormGroup({
+            id: new FormControl(track.id, { nonNullable: true }),
+            number: new FormControl(index + 1, { nonNullable: true }),
+            name: new FormControl(track.name, {
+              nonNullable: true,
+              validators: [Validators.required],
+            }),
+            duration: new FormControl(track.duration, {
+              nonNullable: true,
+              validators: [Validators.required],
+            }),
+          })
+        );
+      });
+    } else {
+      this.form.controls['releaseDate'].setValue(
+        new Date().toISOString().substring(0, 10)
+      );
+      this.form.controls['releaseType'].setValue(
+        this.releaseTypes[0].toString()
+      );
+    }
+
+    this.filteredGenres$ = this.form.controls['genreTypes'].valueChanges.pipe(
       startWith(null),
-      map((genre: string | null) =>
-        genre ? this._filter(genre) : this.allGenreTypes.slice()
+      map((typedInGenre: string | null) =>
+        typedInGenre
+          ? this._filter(typedInGenre)
+          : this.allGenreTypes.filter(
+              (genre) =>
+                !this.genreTypesInMatChips
+                  .map((genreInMatChips) => genreInMatChips.toLowerCase())
+                  .includes(genre.toLowerCase())
+            )
       )
     );
   }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-
-    console.log(
-      this.allGenreTypes.filter((genre) =>
-        genre.toLowerCase().includes(filterValue)
-      )
-    );
 
     return this.allGenreTypes.filter((genre) =>
       genre.toLowerCase().includes(filterValue)
@@ -151,22 +209,23 @@ export class ReleaseFormDialogComponent implements OnInit {
     this.form.controls['genreTypes'].setValue(null);
   }
 
-  get tracks() {
+  get tracksInForm() {
     return this.form?.controls['tracks'] as FormArray;
   }
 
   onAddTrack() {
-    this.tracks.push(this.createTrackInForm());
+    this.tracksInForm.push(this.createTrackInForm());
   }
 
   onRemoveTrack(i: number) {
-    this.tracks.removeAt(i);
+    this.tracksInForm.removeAt(i);
   }
 
   createTrackInForm() {
-    const number: number = this.tracks ? this.tracks.length + 1 : 1;
+    const number: number = this.tracksInForm ? this.tracksInForm.length + 1 : 1;
 
     return new FormGroup({
+      id: new FormControl(-1, { nonNullable: true }),
       number: new FormControl(number, { nonNullable: true }),
       name: new FormControl('', {
         nonNullable: true,
@@ -194,26 +253,47 @@ export class ReleaseFormDialogComponent implements OnInit {
   }
 
   onConfirm(): void {
+    this.form.markAsTouched();
+
     this.uploading$.next(true);
     this.dialogRef.disableClose = true;
 
     const { name, releaseDate, releaseType, tracks } = this.form.getRawValue();
 
-    const releaseToDispatch: CreateReleaseDto = {
-      name,
-      imageUrl: '',
-      releaseDate,
-      type: ReleaseType[releaseType as keyof typeof ReleaseType],
-      tracks,
-      artistIds: [this.artistAndActionType.artist.id],
-      genres: this.genreTypesInMatChips.map((genre) => {
-        return {
-          type: GenreType[genre as keyof typeof GenreType],
-        };
-      }),
-    };
+    let releaseToDispatch: CreateReleaseDto | UpdateReleaseDto = {};
 
-    console.log('payload:', releaseToDispatch);
+    if (this.releaseDialogData.actionType === 'Create') {
+      releaseToDispatch = {
+        name,
+        imageUrl: '',
+        releaseDate,
+        type: ReleaseType[releaseType as keyof typeof ReleaseType],
+        tracks,
+        artistIds: [this.releaseDialogData.artist.id],
+        genres: this.genreTypesInMatChips.map((genre) => {
+          return {
+            type: GenreType[genre as keyof typeof GenreType],
+          };
+        }),
+      };
+    } else if (this.releaseDialogData.actionType === 'Update') {
+      releaseToDispatch = {
+        name,
+        imageUrl: this.releaseDialogData.release!.imageUrl,
+        releaseDate,
+        type: ReleaseType[releaseType as keyof typeof ReleaseType],
+        tracks,
+        artistIds: this.releaseDialogData.release!.artists.map(({ id }) => id),
+        genres: this.genreTypesInMatChips.map((genre) => {
+          return {
+            type: GenreType[genre as keyof typeof GenreType],
+          };
+        }),
+      };
+    }
+    console.log(this.genreTypesInMatChips);
+
+    console.log('payload:', releaseToDispatch, releaseType);
 
     if (this.imageFile && this.imageUrl !== '') {
       this.fileService.uploadImage(this.imageFile).subscribe((newImageUrl) => {
@@ -223,13 +303,13 @@ export class ReleaseFormDialogComponent implements OnInit {
 
         this.dispatchCreateOrUpdateRelease(
           releaseToDispatch,
-          this.artistAndActionType.actionType
+          this.releaseDialogData.actionType
         );
       });
     } else {
       this.dispatchCreateOrUpdateRelease(
         releaseToDispatch,
-        this.artistAndActionType.actionType
+        this.releaseDialogData.actionType
       );
     }
 
@@ -239,13 +319,17 @@ export class ReleaseFormDialogComponent implements OnInit {
   }
 
   dispatchCreateOrUpdateRelease(
-    release: CreateReleaseDto,
+    releaseDto: CreateReleaseDto | UpdateReleaseDto,
     actionType: 'Create' | 'Update'
   ) {
     if (actionType === 'Create') {
+      const release = releaseDto as CreateReleaseDto;
       this.store.dispatch(createRelease({ release }));
     } else if (actionType === 'Update') {
-      this.store.dispatch(updateRelease({ release }));
+      const release = releaseDto as UpdateReleaseDto;
+      this.store.dispatch(
+        updateRelease({ id: this.releaseDialogData.release!.id, release })
+      );
     }
   }
 

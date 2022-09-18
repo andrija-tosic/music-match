@@ -1,0 +1,67 @@
+<div class="page-container">
+  <div class="headers">
+    <div>
+      <div class="header">
+        <h1>
+          <b
+            >Welcome to
+            <span d style="display: inline-block">Music Match</span></b
+          >
+        </h1>
+      </div>
+      <div class="header">
+        <h2>Discover your and your friends' music taste</h2>
+      </div>
+    </div>
+  </div>
+  <div class="form-flex-container">
+    <div class="login-form">
+      <img
+        alt="Logo"
+        src="assets/music-fallback.jpg"
+        style="height: 5em; width: 5em"
+      />
+      <h1>Music Match</h1>
+
+      <form (ngSubmit)="onSubmit()" [formGroup]="form">
+        <mat-form-field appearance="outline">
+          <input formControlName="username" matInput type="text" />
+          <mat-label>Username</mat-label>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <input
+            (keydown.enter)="onSubmit()"
+            formControlName="password"
+            matInput
+            placeholder="********"
+            type="password"
+          />
+          <mat-label>Password</mat-label>
+          <mat-error>Password is invalid.</mat-error>
+        </mat-form-field>
+      </form>
+
+      <button
+        (click)="onSubmit()"
+        class="login-button"
+        color="primary"
+        mat-raised-button
+      >
+        Login
+      </button>
+
+      <div class="logo-container">
+        <h3>Don't have an account?</h3>
+      </div>
+      <button
+        class="login-button"
+        color="primary"
+        mat-stroked-button
+        routerLink="/register"
+        type="button"
+      >
+        Register
+      </button>
+    </div>
+  </div>
+</div>

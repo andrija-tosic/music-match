@@ -1,5 +1,5 @@
 <mat-card>
-  <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+  <div (cdkDropListDropped)="drop($event)" cdkDropList class="example-list">
     <ng-container>
       <div class="example-box">
         <div class="cell">
@@ -18,13 +18,13 @@
         <div class="cell">
           <h4>Duration</h4>
         </div>
-        <div style="width: 5%"></div>
+        <div class="edit-icons"></div>
       </div>
       <div *ngFor="let track of tracks; let i = index">
         <div
-          class="example-box"
-          cdkDrag
           [cdkDragDisabled]="type !== 'playlist' || !editable"
+          cdkDrag
+          class="example-box"
         >
           <ng-container>
             <div class="cell">
@@ -35,8 +35,8 @@
             </div>
             <div class="cell">
               <a
-                [routerLink]="'/artist/' + artist?.id"
                 *ngFor="let artist of track?.release?.artists"
+                [routerLink]="'/artist/' + artist?.id"
               >
                 {{ artist.name }}
               </a>
@@ -51,31 +51,31 @@
             </div>
 
             <div class="edit-icons">
-              <button mat-icon-button (click)="toggleTrackLike(track)">
+              <button (click)="toggleTrackLike(track)" mat-icon-button>
                 <mat-icon color="warn">{{
                   track?.liked ? 'favorite' : 'favorite_outline'
                 }}</mat-icon>
               </button>
 
               <button
-                mat-icon-button
-                *ngIf="type !== 'playlist' && editable"
                 (click)="addTrackToPlaylist(track)"
+                *ngIf="type !== 'playlist'"
+                mat-icon-button
               >
-                <mat-icon>add</mat-icon>
+                <mat-icon>playlist_add</mat-icon>
               </button>
 
               <button
-                mat-icon-button
-                color="warn"
+                (click)="removeTrackFromPlaylist(i + 1)"
                 *ngIf="this.type === 'playlist' && editable"
-                (click)="removeTrackFromPlaylist(track)"
+                color="warn"
+                mat-icon-button
               >
                 <mat-icon class="material-icons-outlined">delete</mat-icon>
               </button>
               <mat-icon
-                class="drag-icon"
                 *ngIf="this.type === 'playlist' && editable"
+                class="drag-icon"
                 >drag_indicator</mat-icon
               >
             </div>

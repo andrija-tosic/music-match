@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
@@ -18,6 +18,7 @@ async function bootstrap() {
       origin: 'http://localhost:4200',
     },
   });
+  app.useGlobalPipes(new ValidationPipe());
 
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
@@ -30,7 +31,7 @@ async function bootstrap() {
 
   const RedisStore = connectRedis(session);
   const redisClient = createClient({
-    url: 'redis://localhost:6379',
+    url: `redis://${environment.redisHost}:6379`,
     legacyMode: true,
   });
 

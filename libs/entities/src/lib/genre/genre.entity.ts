@@ -1,4 +1,3 @@
-import { GenreType } from './genre-type';
 import { Release } from '@music-match/entities';
 import {
   Column,
@@ -7,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
+import { GenreType } from './genre-type';
 
 @Entity()
 @Unique(['type'])
@@ -17,6 +17,8 @@ export class Genre {
   @Column({ type: 'enum', enum: GenreType })
   type: GenreType;
 
-  @ManyToMany(() => Release, (release) => release.genres)
+  @ManyToMany(() => Release, (release) => release.genres, {
+    cascade: ['insert', 'update'],
+  })
   releases: Release[];
 }

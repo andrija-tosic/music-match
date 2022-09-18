@@ -5,17 +5,17 @@ import {
   Logger,
 } from '@nestjs/common';
 import { BlobServiceClient, BlockBlobClient } from '@azure/storage-blob';
-import { Multer } from 'multer';
 import * as crypto from 'node:crypto';
 import * as path from 'node:path';
 
 @Injectable()
 export class FileService {
-  constructor(private readonly configService: ConfigService) {}
   azureConnectionString = this.configService.getOrThrow(
-    'AZURE_STOREGE_ACCOUNT_CONNECTION_STRING'
+    'AZURE_STORAGE_ACCOUNT_CONNECTION_STRING'
   );
   containerName = 'music-match';
+
+  constructor(private readonly configService: ConfigService) {}
 
   getBlobClient(fileName: string): BlockBlobClient {
     const blobClientService = BlobServiceClient.fromConnectionString(

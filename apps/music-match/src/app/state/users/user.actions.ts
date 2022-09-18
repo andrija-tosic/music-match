@@ -17,6 +17,10 @@ export const setCurrentUserId = createAction(
 );
 
 export const toggleUserFollowing = createAction(
-  '[User] Toggle user following',
+  '[User] Init toggle user following',
   props<{ id: number }>()
+);
+
+export const toggledUserFollowing = createAction(
+  '[User] Toggled user following'
 );

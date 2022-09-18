@@ -1,13 +1,12 @@
-import { Store } from '@ngrx/store';
-import { User, CreateUserDto } from '@music-match/entities';
-import { LoginUserDto } from '@music-match/entities';
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { CreateUserDto, LoginUserDto, User } from '@music-match/entities';
+import { Store } from '@ngrx/store';
+import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { constants } from '../constants';
-import { catchError, map, Observable, of, tap, BehaviorSubject } from 'rxjs';
 import { AppState } from '../app.state';
-import { setCurrentUserId, loadUser } from '../state/users/user.actions';
+import { constants } from '../constants';
+import { loadUser, setCurrentUserId } from '../state/users/user.actions';
 
 @Injectable({
   providedIn: 'root',
@@ -60,7 +59,9 @@ export class AuthService {
   }
 
   public logout() {
-    return this.http.get(`${environment.api}/auth/logout`);
+    return this.http
+      .get(`${environment.api}/auth/logout`)
+      .pipe(tap(() => localStorage.removeItem('user')));
   }
 
   public getUser() {
