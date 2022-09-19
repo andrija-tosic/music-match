@@ -22,11 +22,7 @@ export class AuthService {
   isAuthenticated(): Observable<boolean> {
     return this.getUser().pipe(
       map((user: User) => {
-        if (user) {
-          return true;
-        }
-
-        return false;
+        return !!user;
       }),
       catchError((error) => {
         console.error(error);

@@ -2,10 +2,9 @@ import { ApiError } from '../../../types';
 import { Roles } from '@music-match/entities';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { snackbarError } from '../../../constants';
 import { AuthService } from '../../../services/auth.service';
+import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({
   selector: 'register',
@@ -17,7 +16,7 @@ export class RegisterComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private _snackBar: MatSnackBar
+    private _snackBar: SnackbarService
   ) {
     this.form = new FormGroup({
       name: new FormControl('', {
@@ -52,7 +51,7 @@ export class RegisterComponent implements OnInit {
       },
       error: (res: ApiError) => {
         console.log(res.error);
-        snackbarError(this._snackBar, res);
+        this._snackBar.showApiError(res);
       },
     });
   }

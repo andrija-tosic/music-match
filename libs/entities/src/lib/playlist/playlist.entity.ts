@@ -2,6 +2,7 @@ import { PlaylistTrack } from './../playlist-track/playlist-track.entity';
 import {
   Column,
   Entity,
+  Index,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -13,6 +14,7 @@ export class Playlist {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index()
   @Column()
   name: string;
 

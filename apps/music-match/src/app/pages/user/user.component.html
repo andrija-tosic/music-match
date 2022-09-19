@@ -15,7 +15,7 @@
       </mat-card-title-group>
 
       <mat-card-content *ngIf="currentUser.id !== user.id">
-        <h4>You both like listening to:</h4>
+        <h2>You both like listening to:</h2>
 
         <button
           *ngFor="let artist of (this.userCompatibility$ | async)?.artists"
@@ -28,13 +28,20 @@
           </mat-card>
         </button>
 
-        <h4>
+        <h3>
           And you enjoy listening to
 
-          <span *ngFor="let genre of (this.userCompatibility$ | async)?.genres">
+          <span
+            *ngFor="
+              let genre of (this.userCompatibility$ | async)?.genres as genres;
+              let i = index
+            "
+          >
             {{ genre | titlecase }}
-          </span>
-        </h4>
+            <span *ngIf="i < genres.length - 2">, </span>
+            <span *ngIf="i === genres.length - 2"> and </span> </span
+          >.
+        </h3>
 
         <button
           (click)="toggleUserFollowing(user)"
@@ -47,6 +54,7 @@
         <button
           (click)="toggleUserFollowing(user)"
           *ngIf="isCurrentUsersFriend(user, currentUser)"
+          color="warn"
           mat-button
         >
           <mat-icon>person_remove</mat-icon>Remove friend

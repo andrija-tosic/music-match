@@ -1,16 +1,20 @@
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Store } from '@ngrx/store';
-import { BehaviorSubject, filter, take } from 'rxjs';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ActionsSubject, Store } from '@ngrx/store';
+import { BehaviorSubject, filter, first, take } from 'rxjs';
 import { AppState } from '../../app.state';
 import { FileService } from '../../services/file.service';
+import * as PlaylistActions from '../../state/playlists/playlist.actions';
 import {
   createPlaylist,
   updateSelectedPlaylist,
 } from '../../state/playlists/playlist.actions';
 import { selectedPlaylist } from '../../state/selectors';
 import { isNotUndefined } from '../../type-guards';
+import { SnackbarService } from '../../services/snackbar.service';
+import { ofType } from '@ngrx/effects';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'playlist-form-dialog',
@@ -19,12 +23,18 @@ import { isNotUndefined } from '../../type-guards';
 })
 export class PlaylistFormDialogComponent {
   public form;
+  imageUrl: string = '';
+  imageFile: any = undefined;
+  uploading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(
     private dialogRef: MatDialogRef<PlaylistFormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public actionType: 'Update' | 'Create',
     private fileService: FileService,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private snackbar: SnackbarService,
+    private action$: ActionsSubject,
+    private router: Router
   ) {
     this.form = new FormGroup({
       name: new FormControl('', {
@@ -39,7 +49,7 @@ export class PlaylistFormDialogComponent {
     if (this.actionType === 'Update') {
       this.store
         .select(selectedPlaylist)
-        .pipe(take(1), filter(isNotUndefined))
+        .pipe(filter(isNotUndefined), take(1))
         .subscribe((playlist) => {
           this.imageUrl = playlist.imageUrl;
           this.form.get('name')!.patchValue(playlist.name);
@@ -48,11 +58,6 @@ export class PlaylistFormDialogComponent {
     }
   }
 
-  imageUrl: string = '';
-  imageFile: any = undefined;
-
-  uploading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
   removeImage() {
     this.imageUrl = '';
   }
@@ -60,11 +65,14 @@ export class PlaylistFormDialogComponent {
   onFileChanged(event: any) {
     this.imageFile = event.target.files[0];
 
-    const reader = new FileReader();
-    reader.readAsDataURL(this.imageFile);
-    reader.onload = (e: any) => {
-      this.imageUrl = e.target.result;
-    };
+    this.fileService.readFile(this.imageFile).subscribe({
+      next: (url) => {
+        this.imageUrl = url;
+      },
+      error: (msg) => {
+        this.snackbar.showError(msg);
+      },
+    });
   }
 
   onConfirm(): void {
@@ -97,7 +105,17 @@ export class PlaylistFormDialogComponent {
 
     this.uploading$.next(false);
     this.dialogRef.disableClose = false;
-    this.dialogRef.close();
+
+    if (this.actionType === 'Create') {
+      this.action$
+        .pipe(ofType(PlaylistActions.createdPlaylist), first())
+        .subscribe(({ playlist }) => {
+          this.router.navigate(['playlist/' + playlist.id]);
+          this.dialogRef.close();
+        });
+    } else {
+      this.dialogRef.close();
+    }
   }
 
   dispatchCreateOrUpdatePlaylist(

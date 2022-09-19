@@ -1,25 +1,24 @@
-import { UserService } from './../user/user.service';
+import { UserService } from '../user/user.service';
 import { RolesGuard } from './guards/roles.guard';
-import { Role } from './../decorators/role.decorator';
+import { Role } from '../decorators/role.decorator';
 import { UserFromSession } from '../decorators/user.decorator';
 import { SessionGuard } from './guards/session.guard';
 import { AuthService } from './auth.service';
 import { CreateUserDto, Roles, User } from '@music-match/entities';
 import {
-  Controller,
-  Post,
-  UseGuards,
   Body,
-  Inject,
   ClassSerializerInterceptor,
-  UseInterceptors,
-  UnauthorizedException,
+  Controller,
   Get,
-  HttpStatus,
   HttpCode,
+  HttpStatus,
+  Inject,
+  Post,
   Req,
   Res,
-  Logger,
+  UnauthorizedException,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { SessionLoginGuard } from './guards/session-login.guard';
 import { Request, Response } from 'express';
@@ -60,11 +59,6 @@ export class AuthController {
   @Get('session')
   @UseGuards(SessionGuard)
   async getUserSession(@UserFromSession() user: User) {
-    // Logger.log('a');
-    // Logger.log(user, 'user');
-
-    // return user;
-
     return await this.userService.getAbout(user.id);
   }
 
@@ -73,8 +67,6 @@ export class AuthController {
   @UseGuards(RolesGuard)
   @Role(Roles.Admin)
   async getAdminSession(@UserFromSession() admin: User) {
-    // return admin;
-
     return await this.userService.getAbout(admin.id);
   }
 }

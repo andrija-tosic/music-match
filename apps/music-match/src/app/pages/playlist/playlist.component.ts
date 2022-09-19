@@ -9,7 +9,7 @@ import {
 } from '@music-match/entities';
 import { PlaylistEntity, UserEntity } from '@music-match/state-entities';
 import { Store } from '@ngrx/store';
-import { filter, Observable, switchMap } from 'rxjs';
+import { filter, Observable } from 'rxjs';
 import { AddCollaboratorFormDialogComponent } from '../../components/add-collaborator-form-dialog/add-collaborator-form-dialog.component';
 import {
   addCollaboratorToPlaylist,
@@ -25,9 +25,9 @@ import { selectedPlaylist } from '../../state/selectors';
 import { toggleTrackLike } from '../../state/tracks/track.actions';
 import { selectCurrentUser } from '../../state/users/user.selectors';
 import { isNotUndefined } from '../../type-guards';
-import { AppState } from './../../app.state';
-import { AddToPlaylistFormDialogComponent } from './../../components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
-import { PlaylistFormDialogComponent } from './../../components/playlist-form-dialog/playlist-form-dialog.component';
+import { AppState } from '../../app.state';
+import { AddToPlaylistFormDialogComponent } from '../../components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
+import { PlaylistFormDialogComponent } from '../../components/playlist-form-dialog/playlist-form-dialog.component';
 
 @Component({
   selector: 'playlist',
@@ -92,6 +92,7 @@ export class PlaylistComponent {
               tracksDto: { trackId: track.id },
             })
           );
+
           this.router.navigate(['/playlist/' + playlist.id]);
         }
       });
@@ -137,12 +138,6 @@ export class PlaylistComponent {
         fromIndex,
         toIndex,
       })
-    );
-  }
-
-  playlistOwnersName$() {
-    return this.playlist$.pipe(
-      switchMap((playlist) => playlist.owners.map((owner) => owner.name))
     );
   }
 

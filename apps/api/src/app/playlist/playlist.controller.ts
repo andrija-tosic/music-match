@@ -13,6 +13,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -44,53 +45,53 @@ export class PlaylistController {
 
   @Get(':id')
   @UseGuards(SessionGuard)
-  findOne(@Param('id') id: string, @UserFromSession() user) {
-    return this.playlistService.findOne(+id, user);
+  findOne(@Param('id', ParseIntPipe) id: number, @UserFromSession() user) {
+    return this.playlistService.findOne(id, user);
   }
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updatePlaylistDto: UpdatePlaylistDto,
     @UserFromSession() user
   ) {
-    return this.playlistService.update(+id, updatePlaylistDto, user);
+    return this.playlistService.update(id, updatePlaylistDto, user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.playlistService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.playlistService.remove(id);
   }
 
   @UseGuards(SessionGuard)
   @Post(':id/tracks')
   addTracks(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() trackDto: AddTrackDto,
     @UserFromSession() user
   ) {
-    return this.playlistService.addTrack(+id, trackDto, user);
+    return this.playlistService.addTrack(id, trackDto, user);
   }
 
   @UseGuards(SessionGuard)
   @Delete(':id/tracks')
   removeTracks(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() trackDto: RemoveTrackDto,
     @UserFromSession() user
   ) {
-    return this.playlistService.removeTrack(+id, trackDto, user);
+    return this.playlistService.removeTrack(id, trackDto, user);
   }
 
   @Patch(':id/tracks/change-position')
   @UseGuards(SessionGuard)
   changeTrackPosition(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() trackPositionChange: ChangeTrackPositionDto,
     @UserFromSession() user: User
   ) {
     return this.playlistService.changeTrackPosition(
-      +id,
+      id,
       trackPositionChange,
       user
     );
@@ -98,27 +99,27 @@ export class PlaylistController {
 
   @UseGuards(SessionGuard)
   @Put(':id/toggle-like')
-  toggleLike(@Param('id') id: string, @UserFromSession() user) {
-    return this.playlistService.toggleLike(+id, user);
+  toggleLike(@Param('id', ParseIntPipe) id: number, @UserFromSession() user) {
+    return this.playlistService.toggleLike(id, user);
   }
 
   @UseGuards(SessionGuard)
   @Post(':id/owners/:ownerId')
   addOwner(
-    @Param('id') id: string,
-    @Param('ownerId') ownerId: string,
+    @Param('id', ParseIntPipe) id: number,
+    @Param('ownerId', ParseIntPipe) ownerId: number,
     @UserFromSession() user
   ) {
-    return this.playlistService.addOwner(+id, +ownerId, user);
+    return this.playlistService.addOwner(id, ownerId, user);
   }
 
   @UseGuards(SessionGuard)
   @Delete(':id/owners/:ownerId')
   removeOwner(
-    @Param('id') id: string,
-    @Param('ownerId') ownerId: string,
+    @Param('id', ParseIntPipe) id: number,
+    @Param('ownerId', ParseIntPipe) ownerId: number,
     @UserFromSession() user
   ) {
-    return this.playlistService.removeOwner(+id, +ownerId, user);
+    return this.playlistService.removeOwner(id, ownerId, user);
   }
 }

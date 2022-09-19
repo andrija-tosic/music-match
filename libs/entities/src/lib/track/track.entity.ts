@@ -2,6 +2,7 @@ import { User } from '@music-match/entities';
 import {
   Column,
   Entity,
+  Index,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -15,6 +16,7 @@ export class Track {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index()
   @Column()
   name: string;
 

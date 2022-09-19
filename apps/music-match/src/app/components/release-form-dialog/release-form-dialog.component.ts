@@ -8,7 +8,7 @@ import {
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
   CreateReleaseDto,
   ReleaseDto,
@@ -16,18 +16,19 @@ import {
   UpdateReleaseDto,
 } from '@music-match/entities';
 import { ArtistEntity } from '@music-match/state-entities';
-import { Store } from '@ngrx/store';
+import { ActionsSubject, Store } from '@ngrx/store';
 import { GenreType } from 'libs/entities/src/lib/genre/genre-type';
 import {
   BehaviorSubject,
   filter,
+  first,
   map,
   Observable,
   startWith,
-  take,
 } from 'rxjs';
 import { AppState } from '../../app.state';
 import { FileService } from '../../services/file.service';
+import * as ReleaseActions from '../../state/releases/release.actions';
 import {
   createRelease,
   updateRelease,
@@ -35,6 +36,9 @@ import {
 import { selectedRelease } from '../../state/selectors';
 import { isNotUndefined } from '../../type-guards';
 import { ArtistFormDialogComponent } from '../artist-form-dialog/artist-form-dialog.component';
+import { SnackbarService } from '../../services/snackbar.service';
+import { ofType } from '@ngrx/effects';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'music-match-release-form-dialog',
@@ -48,7 +52,6 @@ export class ReleaseFormDialogComponent implements OnInit {
   public form;
 
   releaseTypes = Object.keys(ReleaseType);
-
   allGenreTypes = Object.keys(GenreType);
 
   genreTypesInMatChips: string[] = [];
@@ -67,7 +70,10 @@ export class ReleaseFormDialogComponent implements OnInit {
       actionType: 'Update' | 'Create';
       release: ReleaseDto | undefined;
       artist: ArtistEntity;
-    }
+    },
+    private snackbar: SnackbarService,
+    private action$: ActionsSubject,
+    private router: Router
   ) {
     this.form = new FormGroup({
       name: new FormControl(
@@ -99,12 +105,16 @@ export class ReleaseFormDialogComponent implements OnInit {
     if (this.releaseDialogData.actionType === 'Update') {
       this.store
         .select(selectedRelease)
-        .pipe(take(1), filter(isNotUndefined))
+        .pipe(filter(isNotUndefined), first())
         .subscribe((release) => {
           this.imageUrl = release.imageUrl;
           this.form.get('name')!.patchValue(release.name);
         });
     }
+  }
+
+  get tracksInForm() {
+    return this.form?.controls['tracks'] as FormArray;
   }
 
   ngOnInit(): void {
@@ -175,14 +185,6 @@ export class ReleaseFormDialogComponent implements OnInit {
     );
   }
 
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-
-    return this.allGenreTypes.filter((genre) =>
-      genre.toLowerCase().includes(filterValue)
-    );
-  }
-
   addGenreChip(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
@@ -207,10 +209,6 @@ export class ReleaseFormDialogComponent implements OnInit {
     this.genreTypesInMatChips.push(event.option.viewValue);
     this.genreInput.nativeElement.value = '';
     this.form.controls['genreTypes'].setValue(null);
-  }
-
-  get tracksInForm() {
-    return this.form?.controls['tracks'] as FormArray;
   }
 
   onAddTrack() {
@@ -245,11 +243,14 @@ export class ReleaseFormDialogComponent implements OnInit {
   onFileChanged(event: any) {
     this.imageFile = event.target.files[0];
 
-    const reader = new FileReader();
-    reader.readAsDataURL(this.imageFile);
-    reader.onload = (e: any) => {
-      this.imageUrl = e.target.result;
-    };
+    this.fileService.readFile(this.imageFile).subscribe({
+      next: (url) => {
+        this.imageUrl = url;
+      },
+      error: (msg) => {
+        this.snackbar.showError(msg);
+      },
+    });
   }
 
   onConfirm(): void {
@@ -315,7 +316,17 @@ export class ReleaseFormDialogComponent implements OnInit {
 
     this.uploading$.next(false);
     this.dialogRef.disableClose = false;
-    this.dialogRef.close();
+
+    if (this.releaseDialogData.actionType === 'Create') {
+      this.action$
+        .pipe(ofType(ReleaseActions.createdRelease), first())
+        .subscribe(({ release }) => {
+          this.router.navigate(['release/' + release.id]);
+          this.dialogRef.close();
+        });
+    } else {
+      this.dialogRef.close();
+    }
   }
 
   dispatchCreateOrUpdateRelease(
@@ -335,5 +346,13 @@ export class ReleaseFormDialogComponent implements OnInit {
 
   onDismiss(): void {
     this.dialogRef.close();
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.allGenreTypes.filter((genre) =>
+      genre.toLowerCase().includes(filterValue)
+    );
   }
 }

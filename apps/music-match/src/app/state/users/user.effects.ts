@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, switchMap } from 'rxjs';
-import { UserService } from './../../services/user.service';
+import { UserService } from '../../services/user.service';
 import * as UserActions from './user.actions';
 
 @Injectable()
 export class UserEffects {
-  constructor(private action$: Actions, private userService: UserService) {}
-
   loadUser$ = createEffect(() =>
     this.action$.pipe(
       ofType(UserActions.loadUser),
@@ -18,7 +16,6 @@ export class UserEffects {
       )
     )
   );
-
   toggleUserFollowing$ = createEffect(() =>
     this.action$.pipe(
       ofType(UserActions.toggleUserFollowing),
@@ -29,4 +26,6 @@ export class UserEffects {
       )
     )
   );
+
+  constructor(private action$: Actions, private userService: UserService) {}
 }

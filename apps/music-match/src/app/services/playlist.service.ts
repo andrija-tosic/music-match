@@ -41,7 +41,10 @@ export class PlaylistService {
   }
 
   toggleLike(id: number) {
-    return this.http.put(`${environment.api}/playlists/${id}/toggle-like`, {});
+    return this.http.put<void>(
+      `${environment.api}/playlists/${id}/toggle-like`,
+      {}
+    );
   }
 
   addTracks(id: number, tracksDto: AddTrackDto) {

@@ -4,10 +4,10 @@ import {
   ReleaseEntity,
   UserEntity,
 } from '@music-match/state-entities';
-import { Artist, TrackDto, User } from '@music-match/entities';
+import { TrackDto } from '@music-match/entities';
 import {
-  selectPlaylistsFromSearchResults,
   selectArtistsFromSearchResults,
+  selectPlaylistsFromSearchResults,
   selectReleasesFromSearchResults,
   selectTracksFromSearchResults,
   selectUsersFromSearchResults,
@@ -22,11 +22,11 @@ import {
 } from '@angular/core';
 import {
   debounceTime,
+  distinctUntilChanged,
   filter,
   map,
-  Subject,
   Observable,
-  distinctUntilChanged,
+  Subject,
 } from 'rxjs';
 import { AppState } from '../../app.state';
 import { querySearch } from '../../state/search/search.actions';
@@ -43,14 +43,13 @@ export class SearchComponent implements OnInit {
   trackResult$: Observable<TrackDto[]>;
   userResult$: Observable<UserEntity[]>;
   playlistResult$: Observable<PlaylistEntity[]>;
+  @ViewChild('searchInput') input: ElementRef;
+  public subject = new Subject<string>();
 
   constructor(
     private store: Store<AppState>,
     private cdRef: ChangeDetectorRef
   ) {}
-
-  @ViewChild('searchInput') input: ElementRef;
-  public subject = new Subject<string>();
 
   ngOnInit(): void {
     this.subject

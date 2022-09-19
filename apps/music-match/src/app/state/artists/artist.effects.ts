@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { switchMap, map, tap, filter, first } from 'rxjs';
+import { filter, first, map, switchMap } from 'rxjs';
 import { AppState } from '../../app.state';
 import { ArtistService } from '../../services/artist.service';
 import { isNotUndefined } from '../../type-guards';
@@ -11,13 +11,6 @@ import * as ArtistActions from './artist.actions';
 
 @Injectable()
 export class ArtistsEffects {
-  constructor(
-    private action$: Actions,
-    private artistService: ArtistService,
-    private router: Router,
-    private store: Store<AppState>
-  ) {}
-
   loadArtistWithReleases$ = createEffect(() =>
     this.action$.pipe(
       ofType(ArtistActions.loadArtistWithReleases),
@@ -30,7 +23,6 @@ export class ArtistsEffects {
       )
     )
   );
-
   createArtist$ = createEffect(() =>
     this.action$.pipe(
       ofType(ArtistActions.createArtist),
@@ -42,15 +34,6 @@ export class ArtistsEffects {
     )
   );
 
-  navigateToCreatedArtist$ = createEffect(
-    () =>
-      this.action$.pipe(
-        ofType(ArtistActions.createdArtist),
-        tap(({ artist }) => this.router.navigate(['/artist/' + artist.id]))
-      ),
-    { dispatch: false }
-  );
-
   updateSelectedArtist$ = createEffect(() =>
     this.action$.pipe(
       ofType(ArtistActions.updateSelectedArtist),
@@ -59,16 +42,16 @@ export class ArtistsEffects {
           filter(isNotUndefined),
           first(),
           switchMap((oldArtist) =>
-            this.artistService.updateArtist(oldArtist.id, artist).pipe(
-              tap((a) => console.log(a)),
-              map((artist) => ArtistActions.updatedSelectedArtist({ artist }))
-            )
+            this.artistService
+              .updateArtist(oldArtist.id, artist)
+              .pipe(
+                map((artist) => ArtistActions.updatedSelectedArtist({ artist }))
+              )
           )
         )
       )
     )
   );
-
   deleteArtist$ = createEffect(() =>
     this.action$.pipe(
       ofType(ArtistActions.deleteArtist),
@@ -79,4 +62,11 @@ export class ArtistsEffects {
       )
     )
   );
+
+  constructor(
+    private action$: Actions,
+    private artistService: ArtistService,
+    private router: Router,
+    private store: Store<AppState>
+  ) {}
 }

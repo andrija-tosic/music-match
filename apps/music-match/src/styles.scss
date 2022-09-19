@@ -25,7 +25,7 @@ input[type='image'] {
   box-shadow: 0px 0px 15px 2px rgb(0 0 0 / 8%);
 }
 
-.dialog {
+.form-dialog {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -36,6 +36,18 @@ input[type='image'] {
   img {
     width: 10em;
     height: 10em;
+
+    &:hover {
+      cursor: pointer;
+      -webkit-filter: brightness(70%);
+      filter: brightness(70%);
+
+      -webkit-transition: all 0.5s ease;
+      -moz-transition: all 0.5s ease;
+      -o-transition: all 0.5s ease;
+      -ms-transition: all 0.5s ease;
+      transition: all 0.5s ease;
+    }
   }
 }
 
@@ -84,4 +96,8 @@ mat-card {
   align-items: center;
   border-radius: 0.5em;
   box-shadow: 0px 0px 20px 2px rgb(0 0 0 / 15%);
+}
+
+.mat-sidenav {
+  width: 13em;
 }

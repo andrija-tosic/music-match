@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReleaseDto, TrackDto } from '@music-match/entities';
@@ -15,26 +15,24 @@ import {
 import { toggleTrackLike } from '../../state/tracks/track.actions';
 import { selectCurrentUser } from '../../state/users/user.selectors';
 import { isNotUndefined } from '../../type-guards';
-import { AddToPlaylistFormDialogComponent } from './../../components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
-import { selectedRelease } from './../../state/selectors';
+import { AddToPlaylistFormDialogComponent } from '../../components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
+import { selectedRelease } from '../../state/selectors';
 
 @Component({
   selector: 'release',
   templateUrl: './release.component.html',
   styleUrls: ['./release.component.css'],
 })
-export class ReleaseComponent implements OnInit {
+export class ReleaseComponent {
+  release$: Observable<ReleaseDto>;
+  currentUser$: Observable<UserEntity>;
+
   constructor(
     private route: ActivatedRoute,
     private store: Store<AppState>,
     private dialog: MatDialog,
     private router: Router
-  ) {}
-
-  release$: Observable<ReleaseDto>;
-  currentUser$: Observable<UserEntity>;
-
-  ngOnInit(): void {
+  ) {
     this.route.params.subscribe((params) => {
       const id = params['id'];
 
@@ -48,18 +46,6 @@ export class ReleaseComponent implements OnInit {
         .select(selectCurrentUser)
         .pipe(filter(isNotUndefined));
     });
-  }
-
-  getArtistImages() {
-    return this.release$.pipe(
-      map((release) => release.artists.map(({ imageUrl }) => imageUrl))
-    );
-  }
-
-  getArtistNames() {
-    return this.release$.pipe(
-      map((release) => release.artists.map(({ name }) => name))
-    );
   }
 
   getGenreTypes() {

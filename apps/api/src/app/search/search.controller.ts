@@ -1,4 +1,4 @@
-import { SessionGuard } from './../auth/guards/session.guard';
+import { SessionGuard } from '../auth/guards/session.guard';
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { UserFromSession } from '../decorators/user.decorator';

@@ -1,6 +1,8 @@
 import {
   Controller,
   Delete,
+  FileTypeValidator,
+  ParseFilePipe,
   Post,
   Query,
   UploadedFile,
@@ -18,7 +20,16 @@ export class FileController {
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   async upload(
-    @UploadedFile() file: Express.Multer.File
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({
+            fileType: 'jpeg|jpg|png|gif|webp|bmp|tif|tiff',
+          }),
+        ],
+      })
+    )
+    file: Express.Multer.File
   ): Promise<{ url: string }> {
     return await this.fileService.upload(file);
   }

@@ -1,18 +1,12 @@
-import { ReleaseService } from './../../services/release.service';
+import { ReleaseService } from '../../services/release.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, map, tap, mergeMap } from 'rxjs';
+import { map, mergeMap, switchMap, tap } from 'rxjs';
 import * as ReleaseActions from './release.actions';
 import { Router } from '@angular/router';
 
 @Injectable()
 export class ReleaseEffects {
-  constructor(
-    private action$: Actions,
-    private releaseService: ReleaseService,
-    private router: Router
-  ) {}
-
   loadRelease$ = createEffect(() =>
     this.action$.pipe(
       ofType(ReleaseActions.loadRelease),
@@ -23,7 +17,6 @@ export class ReleaseEffects {
       )
     )
   );
-
   createRelease$ = createEffect(() =>
     this.action$.pipe(
       ofType(ReleaseActions.createRelease),
@@ -34,7 +27,6 @@ export class ReleaseEffects {
       )
     )
   );
-
   navigateToCreatedRelease$ = createEffect(
     () =>
       this.action$.pipe(
@@ -43,7 +35,6 @@ export class ReleaseEffects {
       ),
     { dispatch: false }
   );
-
   updateRelease$ = createEffect(() =>
     this.action$.pipe(
       ofType(ReleaseActions.updateRelease),
@@ -54,7 +45,6 @@ export class ReleaseEffects {
       )
     )
   );
-
   deleteRelease$ = createEffect(() =>
     this.action$.pipe(
       ofType(ReleaseActions.deleteRelease),
@@ -65,4 +55,10 @@ export class ReleaseEffects {
       )
     )
   );
+
+  constructor(
+    private action$: Actions,
+    private releaseService: ReleaseService,
+    private router: Router
+  ) {}
 }

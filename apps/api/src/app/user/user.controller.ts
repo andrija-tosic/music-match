@@ -1,19 +1,20 @@
 import { SessionGuard } from './../auth/guards/session.guard';
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  ClassSerializerInterceptor,
+  Controller,
   Delete,
+  Get,
+  Inject,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Put,
+  UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
-  Inject,
-  UseInterceptors,
-  ClassSerializerInterceptor,
-  UseGuards,
-  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from '@music-match/entities';
@@ -38,34 +39,44 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.getAbout(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.getAbout(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto
+  ) {
+    return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.remove(id);
   }
 
   @Get(':id/playlists')
-  getUsersPlaylists(@Param('id') id: string) {
-    return this.userService.getUsersPlaylists(+id);
+  getUsersPlaylists(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.getUsersPlaylists(id);
   }
 
   @Put(':id/toggle-following')
   @UseGuards(SessionGuard)
-  addFriend(@Param('id') friendId: string, @UserFromSession() user) {
+  addFriend(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) friendId: number,
+    @UserFromSession() user
+  ) {
     return this.userService.toggleFollowing(+friendId, user);
   }
 
   @Get(':id/music-match')
   @UseGuards(SessionGuard)
-  calculateCompatibility(@Param('id') id: string, @UserFromSession() user) {
-    return this.userService.calculateCompatibility(+id, user);
+  calculateCompatibility(
+    @Param('id', ParseIntPipe) id: number,
+    @UserFromSession() user
+  ) {
+    return this.userService.calculateCompatibility(id, user);
   }
 }

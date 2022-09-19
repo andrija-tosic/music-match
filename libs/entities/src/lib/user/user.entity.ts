@@ -2,6 +2,7 @@ import { Exclude } from 'class-transformer';
 import {
   Column,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
@@ -24,6 +25,7 @@ export class User {
   @Exclude()
   password: string;
 
+  @Index()
   @Column()
   name: string;
 

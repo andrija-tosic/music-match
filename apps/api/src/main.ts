@@ -46,7 +46,7 @@ async function bootstrap() {
 
   app.use(
     session({
-      store: new RedisStore({ client: redisClient as any }),
+      store: new RedisStore({ client: redisClient }),
       name: environment.sessionName,
       secret: configService.getOrThrow('SESSION_SECRET'),
       resave: false,

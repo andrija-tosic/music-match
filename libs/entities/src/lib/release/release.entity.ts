@@ -5,6 +5,7 @@ import { ReleaseType } from './release-type';
 import {
   Column,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   OneToMany,
@@ -16,6 +17,7 @@ export class Release {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index()
   @Column()
   name: string;
 

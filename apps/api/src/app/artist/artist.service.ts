@@ -9,13 +9,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class ArtistService {
   constructor(
     @InjectRepository(Artist)
-    private readonly artistRepository: Repository<Artist>
+    private readonly artistRepository: Repository<Artist>,
+    private dataSource: DataSource
   ) {}
 
   async create(createArtistDto: CreateArtistDto) {
@@ -42,6 +43,7 @@ export class ArtistService {
     });
 
     if (!artist) throw new NotFoundException();
+
     return artist;
   }
 
@@ -54,6 +56,19 @@ export class ArtistService {
   }
 
   async remove(id: number) {
-    return await this.artistRepository.delete(id);
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const result = await this.artistRepository.delete(id);
+
+      await queryRunner.commitTransaction();
+      return result;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

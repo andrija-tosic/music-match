@@ -11,6 +11,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -19,7 +20,7 @@ import {
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Role } from '../decorators/role.decorator';
 import { UserFromSession } from '../decorators/user.decorator';
-import { SessionGuard } from './../auth/guards/session.guard';
+import { SessionGuard } from '../auth/guards/session.guard';
 import { ReleaseService } from './release.service';
 
 @Controller('releases')
@@ -45,8 +46,11 @@ export class ReleaseController {
 
   @UseGuards(SessionGuard)
   @Get(':id')
-  findOne(@Param('id') id: string, @UserFromSession() user: User) {
-    return this.releaseService.findOne(+id, user);
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @UserFromSession() user: User
+  ) {
+    return this.releaseService.findOne(id, user);
   }
 
   @Patch(':id')
@@ -54,18 +58,18 @@ export class ReleaseController {
   @UseGuards(RolesGuard)
   @Role(Roles.Admin)
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateReleaseDto: UpdateReleaseDto,
     @UserFromSession() user: User
   ) {
-    return this.releaseService.update(+id, updateReleaseDto, user);
+    return this.releaseService.update(id, updateReleaseDto, user);
   }
 
   @Delete(':id')
   @UseGuards(SessionGuard)
   @UseGuards(RolesGuard)
   @Role(Roles.Admin)
-  remove(@Param('id') id: string) {
-    return this.releaseService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.releaseService.remove(id);
   }
 }

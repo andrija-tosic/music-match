@@ -1,13 +1,12 @@
 import { SearchResultsDto } from '@music-match/entities';
-import { SearchService } from './../../search.service';
+import { SearchService } from '../../search.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, map } from 'rxjs';
+import { map, switchMap } from 'rxjs';
 import * as SearchActions from './search.actions';
 
 @Injectable()
 export class SearchEffects {
-  constructor(private action$: Actions, private searchService: SearchService) {}
   loadSearchResult$ = createEffect(() =>
     this.action$.pipe(
       ofType(SearchActions.querySearch),
@@ -26,4 +25,6 @@ export class SearchEffects {
       )
     )
   );
+
+  constructor(private action$: Actions, private searchService: SearchService) {}
 }

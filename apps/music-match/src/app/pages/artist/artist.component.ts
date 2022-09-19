@@ -59,7 +59,7 @@ export class ArtistComponent {
   }
 
   deleteArtist(artist: ArtistViewModel) {
-    this.store.dispatch(deleteArtist(artist));
+    this.store.dispatch(deleteArtist({ id: artist.id }));
     this.router.navigate(['/home']);
   }
 }

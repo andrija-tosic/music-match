@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, scan } from 'rxjs';
+import { map, Observable, Subscriber } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -8,6 +8,26 @@ import { environment } from '../../environments/environment';
 })
 export class FileService {
   constructor(private http: HttpClient) {}
+
+  readFile(imageFile: any): Observable<string> {
+    return new Observable((observer: Subscriber<any>): void => {
+      if (imageFile['type'].split('/')[0] !== 'image') {
+        observer.error('File is not an image');
+      }
+      const reader = new FileReader();
+      reader.readAsDataURL(imageFile);
+
+      reader.onload = (e: any) => {
+        const imageUrl = e.target.result;
+        observer.next(imageUrl);
+        observer.complete();
+      };
+
+      reader.onerror = (error: any): void => {
+        observer.error(error);
+      };
+    });
+  }
 
   uploadImage(image: any) {
     const formData = new FormData();

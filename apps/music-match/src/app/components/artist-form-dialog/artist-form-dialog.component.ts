@@ -1,21 +1,21 @@
 import { Component, Inject } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CreateArtistDto } from '@music-match/entities';
-import { Store } from '@ngrx/store';
-import { BehaviorSubject, filter, take } from 'rxjs';
+import { ActionsSubject, Store } from '@ngrx/store';
+import { BehaviorSubject, filter, first, take } from 'rxjs';
 import { AppState } from '../../app.state';
 import { FileService } from '../../services/file.service';
+import * as ArtistActions from '../../state/artists/artist.actions';
 import {
   createArtist,
   updateSelectedArtist,
 } from '../../state/artists/artist.actions';
 import { selectedArtist } from '../../state/selectors';
 import { isNotUndefined } from '../../type-guards';
+import { SnackbarService } from '../../services/snackbar.service';
+import { ofType } from '@ngrx/effects';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'music-match-artist-form-dialog',
@@ -34,7 +34,10 @@ export class ArtistFormDialogComponent {
     private fileService: FileService,
     private store: Store<AppState>,
     private dialogRef: MatDialogRef<ArtistFormDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public actionType: 'Update' | 'Create'
+    private snackbar: SnackbarService,
+    @Inject(MAT_DIALOG_DATA) public actionType: 'Update' | 'Create',
+    private action$: ActionsSubject,
+    private router: Router
   ) {
     this.form = new FormGroup({
       name: new FormControl('', {
@@ -61,11 +64,14 @@ export class ArtistFormDialogComponent {
   onFileChanged(event: any) {
     this.imageFile = event.target.files[0];
 
-    const reader = new FileReader();
-    reader.readAsDataURL(this.imageFile);
-    reader.onload = (e: any) => {
-      this.imageUrl = e.target.result;
-    };
+    this.fileService.readFile(this.imageFile).subscribe({
+      next: (url) => {
+        this.imageUrl = url;
+      },
+      error: (msg) => {
+        this.snackbar.showError(msg);
+      },
+    });
   }
 
   onConfirm(): void {
@@ -94,7 +100,17 @@ export class ArtistFormDialogComponent {
 
     this.uploading$.next(false);
     this.dialogRef.disableClose = false;
-    this.dialogRef.close();
+
+    if (this.actionType === 'Create') {
+      this.action$
+        .pipe(ofType(ArtistActions.createdArtist), first())
+        .subscribe(({ artist }) => {
+          this.router.navigate(['artist/' + artist.id]);
+          this.dialogRef.close();
+        });
+    } else {
+      this.dialogRef.close();
+    }
   }
 
   dispatchCreateOrUpdateArtist(

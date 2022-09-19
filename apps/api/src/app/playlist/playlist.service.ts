@@ -17,7 +17,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class PlaylistService {
@@ -28,7 +28,8 @@ export class PlaylistService {
     private readonly trackRepository: Repository<Track>,
     @InjectRepository(PlaylistTrack)
     private readonly ptRepository: Repository<PlaylistTrack>,
-    @InjectRepository(User) private readonly userRepository: Repository<User>
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private dataSource: DataSource
   ) {}
 
   async create(createPlaylistDto: CreatePlaylistDto, user: User) {
@@ -164,8 +165,20 @@ export class PlaylistService {
       }
     });
 
-    await this.ptRepository.delete(playlistTrackToRemove.id);
-    await this.ptRepository.save(playlist.playlistTracks);
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await this.ptRepository.delete(playlistTrackToRemove.id);
+      await this.ptRepository.save(playlist.playlistTracks);
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
 
     const tracksToReturn = playlist.playlistTracks
       .map((pt) => pt.track)
@@ -227,8 +240,20 @@ export class PlaylistService {
 
     playlist.playlistTracks = newPlaylistTracks;
 
-    await this.playlistRepository.save(playlist);
-    await this.ptRepository.save(newPlaylistTracks);
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await this.playlistRepository.save(playlist);
+      await this.ptRepository.save(newPlaylistTracks);
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
 
     return;
   }

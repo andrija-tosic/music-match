@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { constants } from '../../../constants';
+import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({
   selector: 'login',
@@ -15,7 +14,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private _snackBar: MatSnackBar
+    private _snackBar: SnackbarService
   ) {
     this.form = new FormGroup({
       username: new FormControl('', {
@@ -44,11 +43,7 @@ export class LoginComponent implements OnInit {
       },
       error: (res: { error: { message: string } }) => {
         console.log(res);
-        this._snackBar.open(res.error.message, '', {
-          ...constants.snackbarPosition,
-          duration: 3000,
-          panelClass: ['mat-toolbar', 'mat-warn'],
-        });
+        this._snackBar.showApiError(res);
       },
     });
   }

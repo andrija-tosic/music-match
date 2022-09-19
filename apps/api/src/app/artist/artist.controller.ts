@@ -6,6 +6,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -38,23 +39,26 @@ export class ArtistController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.artistService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.artistService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(SessionGuard)
   @UseGuards(RolesGuard)
   @Role(Roles.Admin)
-  update(@Param('id') id: string, @Body() updateArtistDto: UpdateArtistDto) {
-    return this.artistService.update(+id, updateArtistDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateArtistDto: UpdateArtistDto
+  ) {
+    return this.artistService.update(id, updateArtistDto);
   }
 
   @Delete(':id')
   @UseGuards(SessionGuard)
   @UseGuards(RolesGuard)
   @Role(Roles.Admin)
-  remove(@Param('id') id: string) {
-    return this.artistService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.artistService.remove(id);
   }
 }

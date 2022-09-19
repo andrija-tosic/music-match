@@ -1,10 +1,10 @@
 import {
   Column,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
-  Unique,
 } from 'typeorm';
 import { Release } from '../release/release.entity';
 
@@ -13,6 +13,7 @@ export class Artist {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index()
   @Column()
   name: string;
 

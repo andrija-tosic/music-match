@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { filter, first, map, switchMap, tap } from 'rxjs';
+import { filter, first, map, switchMap } from 'rxjs';
 import { AppState } from '../../app.state';
 import { PlaylistService } from '../../services/playlist.service';
 import { isNotUndefined } from '../../type-guards';
@@ -11,13 +11,6 @@ import * as PlaylistActions from './playlist.actions';
 
 @Injectable()
 export class PlaylistsEffects {
-  constructor(
-    private action$: Actions,
-    private playlistService: PlaylistService,
-    private store: Store<AppState>,
-    private router: Router
-  ) {}
-
   loadPlaylistWithTracks$ = createEffect(() =>
     this.action$.pipe(
       ofType(PlaylistActions.loadPlaylistWithTracks),
@@ -32,7 +25,6 @@ export class PlaylistsEffects {
       )
     )
   );
-
   createPlaylist$ = createEffect(() =>
     this.action$.pipe(
       ofType(PlaylistActions.createPlaylist),
@@ -44,17 +36,6 @@ export class PlaylistsEffects {
           )
       )
     )
-  );
-
-  navigateToCreatedPlaylist$ = createEffect(
-    () =>
-      this.action$.pipe(
-        ofType(PlaylistActions.createdPlaylist),
-        tap(({ playlist }) =>
-          this.router.navigate(['/playlist/' + playlist.id])
-        )
-      ),
-    { dispatch: false }
   );
 
   updateSelectedPlaylist$ = createEffect(() =>
@@ -77,7 +58,6 @@ export class PlaylistsEffects {
       )
     )
   );
-
   deletePlaylist$ = createEffect(
     () =>
       this.action$.pipe(
@@ -90,7 +70,6 @@ export class PlaylistsEffects {
       ),
     { dispatch: false }
   );
-
   addTracksToPlaylist$ = createEffect(() =>
     this.action$.pipe(
       ofType(PlaylistActions.addTracksToPlaylist),
@@ -103,7 +82,6 @@ export class PlaylistsEffects {
       )
     )
   );
-
   removeTracksFromPlaylist$ = createEffect(() =>
     this.action$.pipe(
       ofType(PlaylistActions.removeTracksFromPlaylist),
@@ -118,7 +96,6 @@ export class PlaylistsEffects {
       )
     )
   );
-
   changeTrackPosition$ = createEffect(() =>
     this.action$.pipe(
       ofType(PlaylistActions.changeTrackPosition),
@@ -129,7 +106,6 @@ export class PlaylistsEffects {
       )
     )
   );
-
   addCollaboratorToPlaylist$ = createEffect(() =>
     this.action$.pipe(
       ofType(PlaylistActions.addCollaboratorToPlaylist),
@@ -144,7 +120,6 @@ export class PlaylistsEffects {
       )
     )
   );
-
   removeCollaboratorFromPlaylist$ = createEffect(() =>
     this.action$.pipe(
       ofType(PlaylistActions.removeCollaboratorFromPlaylist),
@@ -155,7 +130,6 @@ export class PlaylistsEffects {
       )
     )
   );
-
   toggleLike$ = createEffect(() =>
     this.action$.pipe(
       ofType(PlaylistActions.togglePlaylistLike),
@@ -166,4 +140,11 @@ export class PlaylistsEffects {
       )
     )
   );
+
+  constructor(
+    private action$: Actions,
+    private playlistService: PlaylistService,
+    private store: Store<AppState>,
+    private router: Router
+  ) {}
 }

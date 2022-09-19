@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>{{ releaseDialogData.actionType }} release</h1>
 
 <form (ngSubmit)="onConfirm()" [formGroup]="form">
-  <div class="dialog">
+  <div class="form-dialog">
     <input
       #fileInput
       (change)="onFileChanged($event)"
