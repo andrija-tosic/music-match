@@ -12,14 +12,15 @@
   <div class="form-dialog">
     <img
       (click)="fileInput.click()"
-      [src]="this.imageUrl"
+      [src]="this.imageUrlInForm"
+      alt="Artist image"
       src-fallback="/assets/music-fallback.jpg"
       style="border-radius: 50%"
     />
 
     <button
       (click)="removeImage()"
-      [disabled]="!this.imageUrl || (this.uploading$ | async)"
+      [disabled]="!this.imageUrlInForm || (this.uploading$ | async)"
       mat-raised-button
     >
       <mat-icon class="material-icons-outlined">hide_image</mat-icon> Remove

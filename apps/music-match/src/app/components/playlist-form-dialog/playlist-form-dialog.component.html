@@ -12,13 +12,14 @@
   <div class="form-dialog">
     <img
       (click)="fileInput.click()"
-      [src]="this.imageUrl"
+      [src]="this.imageUrlInForm"
+      alt="Playlist cover"
       src-fallback="/assets/music-fallback.jpg"
     />
 
     <button
       (click)="removeImage()"
-      [disabled]="!this.imageUrl || (this.uploading$ | async)"
+      [disabled]="!this.imageUrlInForm || (this.uploading$ | async)"
       mat-stroked-button
       type="button"
     >

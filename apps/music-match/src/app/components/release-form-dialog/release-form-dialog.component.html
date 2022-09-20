@@ -12,13 +12,14 @@
 
     <img
       (click)="fileInput.click()"
-      [src]="this.imageUrl"
+      [src]="this.imageUrlInForm"
+      alt="Release cover"
       src-fallback="/assets/music-fallback.jpg"
     />
 
     <button
       (click)="removeImage()"
-      [disabled]="!this.imageUrl || (this.uploading$ | async)"
+      [disabled]="!this.imageUrlInForm || (this.uploading$ | async)"
       mat-stroked-button
       type="button"
     >
@@ -73,7 +74,7 @@
       </mat-chip-list>
       <mat-autocomplete
         #auto="matAutocomplete"
-        (optionSelected)="genreChipSelected($event)"
+        (optionSelected)="onGenreChipSelected($event)"
       >
         <mat-option
           *ngFor="let genre of filteredGenres$ | async"

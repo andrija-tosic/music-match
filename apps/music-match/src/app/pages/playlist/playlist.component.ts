@@ -21,13 +21,13 @@ import {
   removeTracksFromPlaylist,
   togglePlaylistLike,
 } from '../../state/playlists/playlist.actions';
-import { selectedPlaylist } from '../../state/selectors';
 import { toggleTrackLike } from '../../state/tracks/track.actions';
 import { selectCurrentUser } from '../../state/users/user.selectors';
 import { isNotUndefined } from '../../type-guards';
 import { AppState } from '../../app.state';
 import { AddToPlaylistFormDialogComponent } from '../../components/add-to-playlist-form-dialog/add-to-playlist-form-dialog.component';
 import { PlaylistFormDialogComponent } from '../../components/playlist-form-dialog/playlist-form-dialog.component';
+import { selectedPlaylist } from '../../state/selectors';
 
 @Component({
   selector: 'playlist',
@@ -142,7 +142,7 @@ export class PlaylistComponent {
   }
 
   openPlaylistFormDialog(actionType: 'Create' | 'Update') {
-    const dialogRef = this.dialog.open(PlaylistFormDialogComponent, {
+    this.dialog.open(PlaylistFormDialogComponent, {
       data: actionType,
     });
   }

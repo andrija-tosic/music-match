@@ -1,10 +1,14 @@
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { CreatePlaylistDto } from '@music-match/entities';
+import { ofType } from '@ngrx/effects';
 import { ActionsSubject, Store } from '@ngrx/store';
-import { BehaviorSubject, filter, first, take } from 'rxjs';
+import { filter, first, take } from 'rxjs';
 import { AppState } from '../../app.state';
 import { FileService } from '../../services/file.service';
+import { SnackbarService } from '../../services/snackbar.service';
 import * as PlaylistActions from '../../state/playlists/playlist.actions';
 import {
   createPlaylist,
@@ -12,30 +16,28 @@ import {
 } from '../../state/playlists/playlist.actions';
 import { selectedPlaylist } from '../../state/selectors';
 import { isNotUndefined } from '../../type-guards';
-import { SnackbarService } from '../../services/snackbar.service';
-import { ofType } from '@ngrx/effects';
-import { Router } from '@angular/router';
+import { AbstractFormDialog } from '../abstract-form-dialog/abstract-form.dialog';
 
 @Component({
   selector: 'playlist-form-dialog',
   templateUrl: './playlist-form-dialog.component.html',
   styleUrls: ['./playlist-form-dialog.component.css'],
 })
-export class PlaylistFormDialogComponent {
-  public form;
-  imageUrl: string = '';
-  imageFile: any = undefined;
-  uploading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
+export class PlaylistFormDialogComponent extends AbstractFormDialog<
+  PlaylistFormDialogComponent,
+  CreatePlaylistDto,
+  'Update' | 'Create'
+> {
   constructor(
-    private dialogRef: MatDialogRef<PlaylistFormDialogComponent>,
+    fileService: FileService,
+    store: Store<AppState>,
+    dialogRef: MatDialogRef<PlaylistFormDialogComponent>,
+    snackbar: SnackbarService,
     @Inject(MAT_DIALOG_DATA) public actionType: 'Update' | 'Create',
-    private fileService: FileService,
-    private store: Store<AppState>,
-    private snackbar: SnackbarService,
     private action$: ActionsSubject,
     private router: Router
   ) {
+    super(fileService, store, dialogRef, snackbar, actionType);
     this.form = new FormGroup({
       name: new FormControl('', {
         nonNullable: true,
@@ -51,61 +53,27 @@ export class PlaylistFormDialogComponent {
         .select(selectedPlaylist)
         .pipe(filter(isNotUndefined), take(1))
         .subscribe((playlist) => {
-          this.imageUrl = playlist.imageUrl;
+          this.imageUrlInForm = playlist.imageUrl;
           this.form.get('name')!.patchValue(playlist.name);
           this.form.get('description')!.patchValue(playlist.description);
         });
     }
   }
 
-  removeImage() {
-    this.imageUrl = '';
-  }
-
-  onFileChanged(event: any) {
-    this.imageFile = event.target.files[0];
-
-    this.fileService.readFile(this.imageFile).subscribe({
-      next: (url) => {
-        this.imageUrl = url;
-      },
-      error: (msg) => {
-        this.snackbar.showError(msg);
-      },
-    });
-  }
-
-  onConfirm(): void {
-    this.uploading$.next(true);
-    this.dialogRef.disableClose = true;
-
+  getFormValueAndDispatch(): void {
     const { name, description } = this.form.getRawValue();
 
-    if (this.imageFile && this.imageUrl !== '') {
-      this.fileService.uploadImage(this.imageFile).subscribe((newImageUrl) => {
-        this.uploading$.next(false);
-
-        this.imageUrl = newImageUrl;
-
-        this.dispatchCreateOrUpdatePlaylist(
-          name,
-          description,
-          this.imageUrl,
-          this.actionType
-        );
-      });
-    } else {
-      this.dispatchCreateOrUpdatePlaylist(
+    this.dispatchCreateOrUpdateEntity(
+      {
         name,
         description,
-        this.imageUrl,
-        this.actionType
-      );
-    }
+        imageUrl: this.imageUrlInForm,
+      },
+      this.actionType
+    );
+  }
 
-    this.uploading$.next(false);
-    this.dialogRef.disableClose = false;
-
+  navigateIfEntityCreatedOnAction(): void {
     if (this.actionType === 'Create') {
       this.action$
         .pipe(ofType(PlaylistActions.createdPlaylist), first())
@@ -118,36 +86,18 @@ export class PlaylistFormDialogComponent {
     }
   }
 
-  dispatchCreateOrUpdatePlaylist(
-    name: string,
-    description: string,
-    newImageUrl: string,
-    action: 'Create' | 'Update'
-  ) {
-    if (action === 'Create') {
+  dispatchCreateOrUpdateEntity(
+    entity: CreatePlaylistDto,
+    actionType: 'Update' | 'Create'
+  ): void {
+    if (actionType === 'Create') {
       this.store.dispatch(
         createPlaylist({
-          playlist: {
-            name,
-            description,
-            imageUrl: newImageUrl,
-          },
+          playlist: entity,
         })
       );
-    } else if (action === 'Update') {
-      this.store.dispatch(
-        updateSelectedPlaylist({
-          playlist: {
-            name,
-            description,
-            imageUrl: newImageUrl,
-          },
-        })
-      );
+    } else if (actionType === 'Update') {
+      this.store.dispatch(updateSelectedPlaylist({ playlist: entity }));
     }
-  }
-
-  onDismiss(): void {
-    this.dialogRef.close(null);
   }
 }

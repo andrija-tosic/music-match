@@ -1,5 +1,5 @@
 import { SearchResultsDto } from '@music-match/entities';
-import { SearchService } from '../../search.service';
+import { SearchService } from '../../services/search.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, switchMap } from 'rxjs';
