@@ -258,7 +258,7 @@ export class ReleaseFormDialogComponent
     if (this.releaseDialogData.actionType === 'Create') {
       releaseToDispatch = {
         name,
-        imageUrl: '',
+        imageUrl: this.imageUrlInForm,
         releaseDate,
         type: ReleaseType[releaseType as keyof typeof ReleaseType],
         tracks,
@@ -272,7 +272,7 @@ export class ReleaseFormDialogComponent
     } else if (this.releaseDialogData.actionType === 'Update') {
       releaseToDispatch = {
         name,
-        imageUrl: this.releaseDialogData.release!.imageUrl,
+        imageUrl: this.imageUrlInForm,
         releaseDate,
         type: ReleaseType[releaseType as keyof typeof ReleaseType],
         tracks,

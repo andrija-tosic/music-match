@@ -11,13 +11,20 @@
         <ng-container *ngFor="let user of playlist.owners">
           <div *ngIf="user.id !== currentUser.id" class="header-next-to-icon">
             <button [routerLink]="'/user/' + user.id" mat-button>
-              <span>
-                <img [src]="user.imageUrl" height="30" width="30" />
+              <h4 class="header-next-to-icon">
+                <img
+                  [src]="user.imageUrl"
+                  height="50"
+                  width="50"
+                  style="border-radius: 50%"
+                  src-fallback="assets/music-fallback.jpg"
+                />
                 {{ user.name }}
-              </span>
+              </h4>
             </button>
 
             <button
+              *ngIf="isCurrentUserPlaylistOwner(playlist, currentUser)"
               (click)="onRemoveCollaborator(playlist, user)"
               color="warn"
               mat-button

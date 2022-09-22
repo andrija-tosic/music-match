@@ -3,12 +3,13 @@ import {
   CreateReleaseDto,
   Genre,
   Release,
+  Track,
   UpdateReleaseDto,
   User,
 } from '@music-match/entities';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 
 @Injectable()
 export class ReleaseService {
@@ -17,23 +18,41 @@ export class ReleaseService {
     private readonly releaseRepository: Repository<Release>,
     @InjectRepository(Artist)
     private readonly artistRepository: Repository<Artist>,
+    @InjectRepository(Track)
+    private readonly trackRepository: Repository<Track>,
     @InjectRepository(Genre)
-    private readonly genreRepository: Repository<Genre>
+    private readonly genreRepository: Repository<Genre>,
+    private dataSource: DataSource
   ) {}
 
   async create(createReleaseDto: CreateReleaseDto) {
-    const release = this.releaseRepository.create(createReleaseDto);
-    release.artists = await this.artistRepository.findBy({
-      id: In(createReleaseDto.artistIds),
-    });
+    const queryRunner = this.dataSource.createQueryRunner();
 
-    const genres = await this.genreRepository.findBy({
-      type: In(createReleaseDto.genres.map(({ type }) => type)),
-    });
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const release = this.releaseRepository.create(createReleaseDto);
+      release.artists = await this.artistRepository.findBy({
+        id: In(createReleaseDto.artistIds),
+      });
 
-    release.genres = genres;
+      release.tracks = this.trackRepository.create(createReleaseDto.tracks);
 
-    return await this.releaseRepository.save(release);
+      const genres = await this.genreRepository.findBy({
+        type: In(createReleaseDto.genres.map(({ type }) => type)),
+      });
+
+      release.genres = genres;
+
+      await this.trackRepository.save(release.tracks);
+
+      await queryRunner.commitTransaction();
+      return await this.releaseRepository.save(release);
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async findAll() {
@@ -83,7 +102,7 @@ export class ReleaseService {
       if (!existingGenresMap.has(genre.type)) return genre;
     });
 
-    const newGenresFromDb = await this.genreRepository.create(newGenres);
+    const newGenresFromDb = this.genreRepository.create(newGenres);
 
     release.genres = [...existingGenres, ...newGenresFromDb];
 

@@ -6,7 +6,11 @@
     (click)="addCollaboratorToPlaylist(friend)"
   >
     <mat-card>
-      <img mat-card-sm-image [src]="friend.imageUrl" />
+      <img
+        mat-card-sm-image
+        [src]="friend.imageUrl"
+        src-fallback="assets/music-fallback.jpg"
+      />
       {{ friend.name }}
     </mat-card>
   </button>

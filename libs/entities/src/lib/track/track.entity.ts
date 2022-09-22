@@ -28,7 +28,7 @@ export class Track {
 
   @ManyToOne(() => Release, {
     onDelete: 'CASCADE',
-    cascade: ['insert', 'update'],
+    cascade: ['insert', 'update', 'remove'],
   })
   release: Release;
 

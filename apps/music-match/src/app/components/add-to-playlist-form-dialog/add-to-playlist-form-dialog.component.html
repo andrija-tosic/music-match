@@ -1,17 +1,19 @@
 <div class="form-dialog">
-  <h3>Add track to playlist</h3>
-  <button
-    (click)="addToPlaylist(playlist)"
-    *ngFor="let playlist of playlist$ | async"
-    mat-button
-  >
-    <mat-card>
-      <img
-        [src]="playlist.imageUrl"
-        mat-card-sm-image
-        src-fallback="/assets/music-fallback.jpg"
-      />
-      {{ playlist.name }}
-    </mat-card>
-  </button>
+  <div>
+    <h3>Add track to playlist</h3>
+    <button
+      (click)="addToPlaylist(playlist)"
+      *ngFor="let playlist of playlist$ | async"
+      mat-button
+    >
+      <mat-card>
+        <img
+          [src]="playlist.imageUrl"
+          mat-card-sm-image
+          src-fallback="/assets/music-fallback.jpg"
+        />
+        <h3>{{ playlist.name }}</h3>
+      </mat-card>
+    </button>
+  </div>
 </div>
