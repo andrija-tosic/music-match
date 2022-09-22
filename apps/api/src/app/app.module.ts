@@ -34,7 +34,7 @@ import { environment } from '../environments/environment';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
-        host: environment.typeormHost,
+        host: environment.dbHost,
         port: 5000,
         username: 'postgres',
         password: configService.getOrThrow('POSTGRES_PASSWORD'),
@@ -52,11 +52,14 @@ import { environment } from '../environments/environment';
       }),
       inject: [ConfigService],
     }),
-    CacheModule.register({
-      store: redisStore,
-      host: 'localhost',
-      port: 6379,
-      isGlobal: true,
+    CacheModule.registerAsync({
+      useFactory: () => ({
+        store: redisStore,
+        url: `redis://${environment.redisHost}:${environment.redisPort}`,
+        // host: `${environment.redisHost}`,
+        // port: environment.redisPort,
+        isGlobal: true,
+      }),
     }),
 
     UserModule,

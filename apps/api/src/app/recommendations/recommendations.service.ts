@@ -1,13 +1,14 @@
 import {
   Artist,
   Genre,
+  RecommendationsDto,
   Release,
   User,
-  RecommendationsDto,
 } from '@music-match/entities';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Not, Repository } from 'typeorm';
+
 @Injectable()
 export class RecommendationsService {
   constructor(
@@ -34,6 +35,8 @@ export class RecommendationsService {
 
     const usersLikedGenresArray = Array.from(usersLikedGenresSet.values());
 
+    const takeAmount = 10;
+
     const artistsBasedOnGenres = await this.artistRepository.find({
       where: {
         releases: {
@@ -42,7 +45,7 @@ export class RecommendationsService {
           },
         },
       },
-      take: 3,
+      take: takeAmount,
     });
 
     const releasesBasedOnGenres = await this.releaseRepository.find({
@@ -51,7 +54,7 @@ export class RecommendationsService {
           type: In(usersLikedGenresArray.map(({ type }) => type)),
         },
       },
-      take: 3,
+      take: takeAmount,
     });
 
     const friends = userFromDb.following;
@@ -75,7 +78,7 @@ export class RecommendationsService {
           },
         },
       },
-      take: 3,
+      take: takeAmount,
     });
 
     const releasesFromFriends = await this.releaseRepository.find({
@@ -84,7 +87,7 @@ export class RecommendationsService {
           type: In(friendsLikedGenresArray.map(({ type }) => type)),
         },
       },
-      take: 3,
+      take: takeAmount,
     });
 
     const newUsersBasedOnGenres = await this.userRepository.find({

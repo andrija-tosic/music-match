@@ -51,7 +51,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Get('/logout')
+  @Get('logout')
   public logout(@Req() req: Request, @Res() res: Response): void {
     this.authService.logout(req, res);
   }

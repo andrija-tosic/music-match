@@ -1,20 +1,26 @@
 FROM node:lts-alpine AS build
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY dist/apps/music-match .
 
-#COPY package.json package-lock.json ./
+COPY package.json package-lock.json ./
 
-#RUN npm install
-
-#COPY apps/music-match .
+RUN npm install --omit=dev --loglevel verbose
 
 
 FROM nginx
 
+WORKDIR /usr/share/nginx/html
+
+RUN rm -rf ./*
+
 COPY apps/music-match/nginx.conf /etc/nginx/nginx.conf
 
-COPY --from=build /usr/src/app /usr/share/nginx/html
+COPY --from=build /app .
+
+#RUN rm /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

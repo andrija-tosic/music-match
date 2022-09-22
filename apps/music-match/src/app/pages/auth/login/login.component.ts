@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -9,7 +9,7 @@ import { SnackbarService } from '../../../services/snackbar.service';
   templateUrl: './login.component.html',
   styleUrls: ['../auth.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   form;
   constructor(
     private authService: AuthService,
@@ -27,8 +27,6 @@ export class LoginComponent implements OnInit {
       }),
     });
   }
-
-  ngOnInit(): void {}
 
   onSubmit() {
     if (this.form.invalid) {

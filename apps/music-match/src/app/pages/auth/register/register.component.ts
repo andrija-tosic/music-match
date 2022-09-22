@@ -1,6 +1,6 @@
 import { ApiError } from '../../../types';
 import { Roles } from '@music-match/entities';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -11,7 +11,7 @@ import { SnackbarService } from '../../../services/snackbar.service';
   templateUrl: './register.component.html',
   styleUrls: ['../auth.scss'],
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
   form;
   constructor(
     private authService: AuthService,
@@ -33,8 +33,6 @@ export class RegisterComponent implements OnInit {
       }),
     });
   }
-
-  ngOnInit(): void {}
 
   onSubmit() {
     if (this.form.invalid) {

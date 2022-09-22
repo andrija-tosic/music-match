@@ -3,5 +3,7 @@ export const environment = {
   sessionName: 'music_match_session',
   port: 3000,
   redisHost: 'redis',
-  typeormHost: 'postgres',
+  redisPort: 6379,
+  dbHost: 'host.docker.internal',
+  corsOrigin: 'http://localhost',
 };

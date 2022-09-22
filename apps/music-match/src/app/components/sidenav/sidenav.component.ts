@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenav } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
@@ -15,15 +15,15 @@ import {
 } from '../../state/users/user.selectors';
 import { isNotUndefined } from '../../type-guards';
 import { ArtistFormDialogComponent } from '../artist-form-dialog/artist-form-dialog.component';
-import { AppState } from './../../app.state';
-import { PlaylistFormDialogComponent } from './../playlist-form-dialog/playlist-form-dialog.component';
+import { AppState } from '../../app.state';
+import { PlaylistFormDialogComponent } from '../playlist-form-dialog/playlist-form-dialog.component';
 
 @Component({
   selector: 'sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.css'],
 })
-export class SidenavComponent implements OnInit {
+export class SidenavComponent {
   @ViewChild('sideNav') sidenav: MatSidenav;
 
   isHandset$: Observable<boolean> = this.breakpointObserver
@@ -44,9 +44,7 @@ export class SidenavComponent implements OnInit {
     private breakpointObserver: BreakpointObserver,
     private authService: AuthService,
     private router: Router
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     this.usersPlaylist$ = this.store.select(selectCurrentUsersPlaylists);
     this.likedPlaylist$ = this.store.select(selectCurrentUsersLikedPlaylists);
 
@@ -60,13 +58,13 @@ export class SidenavComponent implements OnInit {
   }
 
   openPlaylistFormDialog(actionType: string) {
-    const dialogRef = this.dialog.open(PlaylistFormDialogComponent, {
+    this.dialog.open(PlaylistFormDialogComponent, {
       data: actionType,
     });
   }
 
   openArtistFormDialog(actionType: string) {
-    const dialogRef = this.dialog.open(ArtistFormDialogComponent, {
+    this.dialog.open(ArtistFormDialogComponent, {
       data: actionType,
     });
   }

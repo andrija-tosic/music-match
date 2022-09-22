@@ -15,7 +15,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
       credentials: true,
-      origin: 'http://localhost:4200',
+      origin: environment.corsOrigin,
     },
   });
   app.useGlobalPipes(new ValidationPipe());
@@ -31,7 +31,10 @@ async function bootstrap() {
 
   const RedisStore = connectRedis(session);
   const redisClient = createClient({
-    url: `redis://${environment.redisHost}:6379`,
+    socket: {
+      host: environment.redisHost,
+      port: environment.redisPort,
+    },
     legacyMode: true,
   });
 
@@ -59,7 +62,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  const port = process.env.PORT || environment.port;
+  const port = environment.port;
   await app.listen(port);
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`

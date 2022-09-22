@@ -14,6 +14,7 @@ import {
 } from '../../state/search/search.selectors';
 import { Store } from '@ngrx/store';
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -37,7 +38,7 @@ import { isNotUndefined } from '../../type-guards';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css'],
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, AfterViewInit {
   artistResult$: Observable<ArtistEntity[]>;
   releaseResult$: Observable<ReleaseEntity[]>;
   trackResult$: Observable<TrackDto[]>;

@@ -1,5 +1,3 @@
-<h1 mat-dialog-title>{{ releaseDialogData.actionType }} release</h1>
-
 <form (ngSubmit)="onConfirm()" [formGroup]="form">
   <div class="form-dialog">
     <input
@@ -9,6 +7,13 @@
       onclick="this.value=null"
       type="file"
     />
+
+    <h1>
+      {{ releaseDialogData.actionType }}
+      {{
+        releaseDialogData.release ? releaseDialogData.release.type : 'release'
+      }}
+    </h1>
 
     <img
       (click)="fileInput.click()"
@@ -86,6 +91,7 @@
       <mat-error>Genre is required.</mat-error>
     </mat-form-field>
 
+    <h2>Tracklist</h2>
     <ng-container formArrayName="tracks">
       <ng-container
         *ngFor="let trackForm of tracksInForm.controls; let i = index"

@@ -11,11 +11,13 @@ export class AuthService {
   ) {}
 
   public logout(req: Request, res: Response): void {
-    req.session.destroy(console.error);
-    req.logout(console.error);
-    res.clearCookie(environment.sessionName);
-    res.status(204);
-    res.send('');
+    req.session.destroy(() => {
+      req.logout(() => {
+        res.clearCookie(environment.sessionName);
+        res.status(204);
+        res.send('');
+      });
+    });
   }
 
   async validateUser(username: string, password: string) {
