@@ -10,7 +10,7 @@
   - Guards
   - Interceptors
   - Services
-- Docker compose for redis and NestJS
+- Docker compose for redis and Postgres
 - Angular
   - Material
   - Dialogs
@@ -21,6 +21,8 @@
   - NgRx store actions, effects, reducers and selectors
   - No manual subscriptions/unsubscriptions
 - Image upload using Azure Blob Service
+
+[Postgres database dump](./music-match-postgres-db-dump.sql)
 
 ## Example redux state
 
