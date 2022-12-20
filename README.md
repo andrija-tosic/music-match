@@ -1,4 +1,62 @@
-# MusicMatchWorkspace
+# Music Match
+
+## Features
+
+- Reusable TypeScript libraries with Nx
+- NestJS
+  - Authentication using passport.js with Redis session management
+  - TypeORM with Postgres
+  - CRUD actions on all entities
+  - Guards
+  - Interceptors
+  - Services
+- Docker compose for redis and NestJS
+- Angular
+  - Material
+  - Dialogs
+  - Snackbar notifications
+  - Guards
+  - Interceptors
+  - Services
+  - NgRx store actions, effects, reducers and selectors
+  - No manual subscriptions/unsubscriptions
+- Image upload using Azure Blob Service
+
+## Example redux state
+
+![Example redux state](./images/redux_example_state_cr.png 'Example redux state')
+
+## Login page
+
+![Login page](./images/login.jpg 'Login page')
+
+## Home page
+
+![Home page](./images/home.jpg 'Home page')
+
+## Artist page
+
+![Artist page](./images/artist.jpg 'Artist page')
+
+## Release page
+
+![Release page](./images/release.jpg 'Release page')
+
+## Playlist page
+
+![Playlist with collaborators](./images/playlist_collaborators.jpg 'Playlist with collaborators')
+
+## Search page
+
+![Search page](./images/search.jpg 'Search page')
+
+## Playlist create and update
+
+![Playlist create and update](./images/create_playlist.jpg 'Playlist create and update')
+
+## Adding tracks to a playlist
+
+![Adding tracks to a playlist](./images/add_track.jpg 'Adding tracks to a playlist')
 
 This project was generated using [Nx](https://nx.dev).
 
